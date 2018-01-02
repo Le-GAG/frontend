@@ -1,0 +1,9 @@
+# Project files
+.idea
+
+# Dependencies
+/node_modules/
+
+# Generated assets
+src/sprites/generated/
+www/assets/
