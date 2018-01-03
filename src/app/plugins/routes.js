@@ -7,7 +7,7 @@ import IndexPage from 'pages/IndexPage';
 Vue.use(Router);
 
 export default new Router({
-    mode: 'history',
+    mode: 'hash',
     routes: [
         {
             path: '/',
