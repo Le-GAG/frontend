@@ -1,7 +1,6 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = (config) => {
-
     const vueConfig = {
         test:    /\.vue$/,
         loader:  'vue-loader',
@@ -9,25 +8,38 @@ module.exports = (config) => {
             loaders: {},
             postcss: [
                 require('autoprefixer')({
-                    browsers: ['last 2 versions']
-                })
-            ]
-        }
+                    browsers: [ 'last 2 versions' ],
+                }),
+            ],
+        },
     };
 
 
     // Build : Sortir les styles dans des fichiers
     if (config.env == 'build') {
         vueConfig.options.loaders = {
-            css:  ExtractTextPlugin.extract({
-                use:      'css-loader',
-                fallback: 'vue-style-loader',
+            css: ExtractTextPlugin.extract({
+                use:        'css-loader',
+                // Override general publicPath configuration
+                // Must be relative to assets folder
+                publicPath: '',
+                fallback:   'vue-style-loader',
             }),
+
             less: ExtractTextPlugin.extract({
-                use:      'css-loader!less-loader',
-                fallback: 'vue-style-loader',
-                publicPath: ''
-            })
+                use:        [
+                    {
+                        loader: 'css-loader',
+                    },
+                    {
+                        loader: 'less-loader',
+                    },
+                ],
+                // Override general publicPath configuration
+                // Must be relative to assets folder
+                publicPath: '',
+                fallback:   'vue-style-loader',
+            }),
         };
     }
 
@@ -35,11 +47,9 @@ module.exports = (config) => {
     else {
         vueConfig.options.loaders = {
             css:  'vue-style-loader!css-loader',
-            less: 'vue-style-loader!css-loader!less-loader'
-        }
+            less: 'vue-style-loader!css-loader!less-loader',
+        };
     }
 
-
     return vueConfig;
-
 };

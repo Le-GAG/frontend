@@ -1,6 +1,5 @@
 const path = require('path');
 
-
 /**
  * Return absolute path
  * @param folder
@@ -8,8 +7,7 @@ const path = require('path');
  */
 exports.resolve = function (folder) {
     return path.join(__dirname, '..', '..', folder);
-}
-
+};
 
 /**
  * Require les fichiers contenus dans files, dans le dossier type
@@ -20,10 +18,10 @@ exports.resolve = function (folder) {
  * @param config
  * @param files
  */
-exports.require = function(type, config, files) {
+exports.require = function (type, config, files) {
     return files
         .map((file) => {
             return require(path.join(__dirname, '..', type, file))(config);
         })
         .filter(result => result);
-}
+};

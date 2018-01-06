@@ -8,6 +8,7 @@ if (!file_exists($webpackAssetsFile)) {
   die('Error : ' . $webpackAssetsFile . ' doesn\'t exist. => <code>npm run dev</code>');
 }
 $webpackAssets = json_decode(file_get_contents($webpackAssetsFile), true);
+
 ?><!doctype html>
 <html lang="fr">
 <head>

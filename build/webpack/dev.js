@@ -1,24 +1,23 @@
-const webpack = require('webpack');
+const webpack              = require('webpack');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
 module.exports = (config) => {
-
     // Get Webpack base config
     const webpackConfig = require('./base')(config);
 
-
     // Add hot module reload and dev server
     webpackConfig.entry.app.unshift(
-        'webpack-dev-server/client?http://localhost:8888/',
+        `webpack-dev-server/client?http://${config.devServerHost}:${config.devServerPort}/`,
         'webpack/hot/dev-server'
     );
-    webpackConfig.output.publicPath = 'http://localhost:8888/';
+    webpackConfig.output.publicPath = `http://${config.devServerHost}:${config.devServerPort}/`;
     webpackConfig.plugins.push(
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new FriendlyErrorsPlugin()
     );
 
-    return webpackConfig;
-}
+    console.log('Listening on ' + webpackConfig.output.publicPath);
 
+    return webpackConfig;
+};

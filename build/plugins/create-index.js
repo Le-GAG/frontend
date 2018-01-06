@@ -1,11 +1,10 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-
-module.exports = (config) => {
+module.exports = () => {
     return new HtmlWebpackPlugin({
-        filename: 'generated-assets-files.json',
-        template: 'underscore-template-loader!build/templates/assets-files.json.tpl',
-        inject: false,
-        chunksSortMode: 'dependency'
+        filename:       'generated-assets-files.json',
+        template:       'underscore-template-loader!build/templates/assets-files.json.tpl',
+        inject:         false,
+        chunksSortMode: 'dependency',
     });
 };

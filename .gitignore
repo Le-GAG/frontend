@@ -7,3 +7,8 @@
 # Generated assets
 src/sprites/generated/
 www/assets/
+
+# Secrets
+/environments/*.env
+!/environments/nstcactus.env
+/deployment/environments/*
