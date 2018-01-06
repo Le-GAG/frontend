@@ -1,5 +1,6 @@
 <template>
     <div class="IndexPage">
+        <router-link to="producteurs">Producteurs</router-link>
     </div>
 </template>
 

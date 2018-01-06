@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import IndexPage from 'pages/IndexPage';
-
+import HomePage from 'pages/Home';
+import ProducersPage from 'pages/Producers';
 
 Vue.use(Router);
 
@@ -12,7 +12,12 @@ export default new Router({
         {
             path: '/',
             name: 'index',
-            component: IndexPage,
+            component: HomePage,
+        },
+        {
+            path: '/producteurs',
+            name: 'producteurs',
+            component: ProducersPage,
         },
         {
             path: '*',
