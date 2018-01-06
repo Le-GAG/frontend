@@ -6,7 +6,7 @@
 
 
 <script>
-  import ProducerOverviewComponent from 'components/producers/overview';
+  import ProducerOverviewComponent from 'components/producers/Overview';
 
   export default {
     name: 'producers-page',

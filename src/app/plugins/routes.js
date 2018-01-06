@@ -11,12 +11,12 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'index',
+            name: 'home',
             component: HomePage,
         },
         {
             path: '/producteurs',
-            name: 'producteurs',
+            name: 'producers',
             component: ProducersPage,
         },
         {
