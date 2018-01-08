@@ -26,13 +26,13 @@ module.exports = (config) => {
                 fallback:   'vue-style-loader',
             }),
 
-            less: ExtractTextPlugin.extract({
+            sass: ExtractTextPlugin.extract({
                 use:        [
                     {
                         loader: 'css-loader',
                     },
                     {
-                        loader: 'less-loader',
+                        loader: 'sass-loader',
                     },
                 ],
                 // Override general publicPath configuration

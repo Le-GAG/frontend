@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = (config) => {
     return {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

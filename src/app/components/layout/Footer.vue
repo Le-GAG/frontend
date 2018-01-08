@@ -12,7 +12,7 @@
 </script>
 
 
-<style scoped lang="less">
+<style scoped lang="scss">
   .Footer {
     position: fixed;
     display: flex;

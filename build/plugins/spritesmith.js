@@ -15,7 +15,7 @@ module.exports = (config) => {
         },
 
         apiOptions: {
-            cssImageRef: "./sprite.png",
+            cssImageRef: config.sprite.generatedImage,
         },
 
         spritesmithOptions: {

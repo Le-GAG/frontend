@@ -26,10 +26,10 @@
 </script>
 
 
-<style src="styles/main.less" lang="less">
+<style src="styles/main.scss" lang="scss">
 </style>
 
-<style scoped lang="less">
+<style scoped lang="scss">
   .App {
   &__header {
      padding: .5em;

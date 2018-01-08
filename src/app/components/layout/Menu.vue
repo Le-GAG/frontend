@@ -15,7 +15,7 @@
 </script>
 
 
-<style scoped lang="less">
+<style scoped lang="scss">
   .Menu {
     &__container {
       display: flex;

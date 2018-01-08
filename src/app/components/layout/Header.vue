@@ -20,20 +20,21 @@
 
 <script>
   import MenuComponent from 'components/layout/Menu';
+
   export default {
     name: 'header-component',
 
     components: {
-      MenuComponent
+      MenuComponent,
     },
   };
 </script>
 
 
-<style scoped lang="less">
+<style scoped lang="scss">
   .Header {
-    display: flex;
-    flex-direction: row;
+    display:         flex;
+    flex-direction:  row;
 
     justify-content: flex-start;
     align-items: center;
