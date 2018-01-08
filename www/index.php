@@ -10,7 +10,7 @@ if (!file_exists($webpackAssetsFile)) {
 $webpackAssets = json_decode(file_get_contents($webpackAssetsFile), true);
 
 ?><!doctype html>
-<html lang="fr">
+<html lang="fr" class="has-navbar-fixed-top">
 <head>
   <title>Le GAG</title>
   <base href="<?php echo $baseUrl ?>">

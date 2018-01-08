@@ -1,19 +1,51 @@
 <template>
-  <header class="Header" role="banner">
-      <router-link :to="{ name: 'home' }">
-        <img
-          class="Header__logo"
-          src="~static/logo.png"
-          alt="Logo du GAG"
-          height="40"
+  <header class="Header">
+    <nav class="navbar is-primary is-fixed-top">
+      <div class="navbar-brand">
+        <router-link class="navbar-item" :to="{ name: 'home' }">
+          <h1 class="title is-4 has-text-white">
+            <span class="icon is-small"><i class="fa fa-shopping-cart"></i></span>
+            &nbsp;
+            Le GAG
+          </h1>
+        </router-link>
+        <div
+          class="navbar-burger burger"
+          data-target="navbarExampleTransparentExample"
+          @click="toggleMenu"
+          ref="burgerButton"
         >
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
 
-        <h1 class="Header__brand">Le GAG</h1>
-      </router-link>
+      <div
+        class="navbar-menu"
+        ref="menu"
+      >
+        <div class="navbar-start">
+          <router-link class="navbar-item" :to="{ name: 'producers' }">Producteurs</router-link>
+        </div>
 
-    <menu-component
-      class="Header__nav"
-    />
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="field is-grouped">
+              <p class="control">
+                <router-link
+                  class="button is-primary"
+                  :to="{ name: 'auth/sign-in' }"
+                >
+                  <span class="icon"><i class="fa fa-sign-in"></i></span>
+                  <span>Connexion</span>
+                </router-link>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
   </header>
 </template>
 
@@ -27,32 +59,17 @@
     components: {
       MenuComponent,
     },
+
+    methods: {
+      toggleMenu() {
+        // Toggle the class on both the "navbar-burger" and the "navbar-menu"
+        this.$refs.burgerButton.classList.toggle('is-active');
+        this.$refs.menu.classList.toggle('is-active');
+      }
+    },
   };
 </script>
 
 
 <style scoped lang="scss">
-  .Header {
-    display:         flex;
-    flex-direction:  row;
-
-    justify-content: flex-start;
-    align-items: center;
-
-    & > a {
-      text-decoration: none;
-    }
-
-    &__brand {
-      display: inline;
-
-      margin: 0 0.5em;
-
-      color: firebrick;
-    }
-
-    &__nav {
-
-    }
-  }
 </style>

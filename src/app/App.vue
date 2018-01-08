@@ -26,19 +26,16 @@
 </script>
 
 
-<style src="styles/main.scss" lang="scss">
-</style>
+<style src="styles/main.scss" lang="scss"></style>
 
 <style scoped lang="scss">
   .App {
-  &__header {
-     padding: .5em;
+    &__header {
 
-     background: tomato;
-   }
+    }
 
-  &__footer {
+    &__footer {
 
-   }
+    }
   }
 </style>
