@@ -3,6 +3,7 @@ import Router from 'vue-router';
 
 import HomePage from 'pages/Home';
 import ProducersPage from 'pages/Producers';
+import ProducerDetailsPage from 'pages/ProducerDetails';
 
 Vue.use(Router);
 
@@ -18,6 +19,11 @@ export default new Router({
             path: '/producteurs',
             name: 'producers',
             component: ProducersPage,
+        },
+        {
+            path: '/producteurs/:slug',
+            name: 'producer',
+            component: ProducerDetailsPage,
         },
         {
             path: '*',
