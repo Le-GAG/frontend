@@ -13,5 +13,22 @@ Vue.use({
       // accessToken: '', // TODO: Pass user token when a user is logged
       url: process.env.BACKEND_ENDPOINT,
     });
+
+    Vue.prototype.$directusSdk.getThumbnailUrl = (thumbnailSpecification) => {
+      // Ensure backend endpoint doesn't have a trailing /
+      const backendEndpoint = process.env.BACKEND_ENDPOINT.replace(/\/$/, '');
+
+      let thumbnailUrlParts = backendEndpoint.split('/');
+
+      // Remove the last to URL components (api and versionNumber)
+      thumbnailUrlParts.pop();
+      thumbnailUrlParts.pop();
+
+      // Ensure thumbnailSpecification doesn't have a leading /
+      thumbnailSpecification = thumbnailSpecification.replace(/^\//, '');
+
+      thumbnailUrlParts.push('thumbnail', thumbnailSpecification);
+      return thumbnailUrlParts.join('/');
+    };
   },
 });

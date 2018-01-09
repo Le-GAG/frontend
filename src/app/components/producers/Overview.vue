@@ -23,7 +23,7 @@
       <div class="card">
         <div class="card-image">
           <figure class="image is-16by9">
-            <img src="https://bulma.io/images/placeholders/640x360.png" alt="Placeholder image">
+            <img :src="getPhotoUrl(producer)" alt="Placeholder image">
           </figure>
         </div>
         <div class="card-content">
@@ -69,6 +69,16 @@
         type: Boolean,
         default: false
       },
+    },
+
+    methods: {
+      getPhotoUrl(producer) {
+        if (producer.photo_de_presentation) {
+          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/best/${producer.photo_de_presentation.data.name}`);
+        }
+
+        return 'https://via.placeholder.com/480x270';
+      }
     },
   };
 </script>
