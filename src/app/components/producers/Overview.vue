@@ -57,27 +57,18 @@
       ClipLoader,
     },
 
-    data() {
-      return {
-        loading:   true,
-        error:     null,
-        producers: null,
-      };
-    },
-
-    async mounted() {
-      try {
-        const result = await this.$directusSdk.getItems('producteurs', {
-          order: { raison_sociale: 'ASC' },
-        });
-
-        this.producers = result.data;
-      } catch (e) {
-        console.error(e);
-        this.error = e;
-      } finally {
-        this.loading = false;
-      }
+    props: {
+      producers: {
+        type: Array,
+        default: [],
+      },
+      error: {
+        default: null,
+      },
+      loading: {
+        type: Boolean,
+        default: false
+      },
     },
   };
 </script>
