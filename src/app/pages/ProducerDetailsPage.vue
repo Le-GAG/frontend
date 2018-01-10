@@ -1,5 +1,5 @@
 <template>
-  <div class="Producer-details-page">
+  <div class="producer-details-page">
     <section
       class="hero"
       :class="{
@@ -23,8 +23,8 @@
           </template>
 
           <template v-if="producer">
-            <h1 class="Producer-details-page__name title" :data-content="producer.raison_sociale"></h1>
-            <ul class="Producer-details-page__activites tags" v-if="producer.activites.data">
+            <h1 class="producer-details-page__name title" :data-content="producer.raison_sociale"></h1>
+            <ul class="producer-details-page__activites tags" v-if="producer.activites.data">
               <li
                 class="tag"
                 v-for="activite in producer.activites.data"
@@ -42,14 +42,14 @@
         </div>
 
         <div class="column is-one-third">
-          <contact-details-component
+          <contact-details-card-component
             :name="producer.raison_sociale"
             :latLng="latLng"
             :addressLine1="addressLine1"
             :addressLine2="addressLine2"
             :email="producer.email"
             :phone="producer.numero_de_telephone"
-            :website="producer.site_internetz"
+            :website="producer.site_internet"
           />
         </div>
       </div>
@@ -60,14 +60,14 @@
 
 <script>
   import ClipLoader from 'vue-spinner/src/ClipLoader';
-  import ContactDetailsComponent from 'components/producers/ContactDetails';
+  import ContactDetailsCardComponent from 'components/producers/ProducerContactDetailsCardComponent';
 
   export default {
     name: 'producers-page',
 
     components: {
       ClipLoader,
-      ContactDetailsComponent,
+      ContactDetailsCardComponent,
     },
 
     data() {
@@ -152,7 +152,7 @@
 
 
 <style scoped lang="scss">
-  .Producer-details-page {
+  .producer-details-page {
     &__name {
       position: relative;
 

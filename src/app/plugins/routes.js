@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import HomePage from 'pages/Home';
-import ProducersPage from 'pages/Producers';
-import ProducerDetailsPage from 'pages/ProducerDetails';
+import HomePage from 'pages/HomePage';
+import ProducerOverviewPage from 'pages/ProducerOverviewPage';
+import ProducerDetailsPage from 'pages/ProducerDetailsPage';
 
 Vue.use(Router);
 
@@ -16,9 +16,9 @@ export default new Router({
             component: HomePage,
         },
         {
-            path: '/producteurs',
-            name: 'producers',
-            component: ProducersPage,
+            path:      '/producteurs',
+            name:      'producers',
+            component: ProducerOverviewPage,
         },
         {
             path: '/producteurs/:slug',

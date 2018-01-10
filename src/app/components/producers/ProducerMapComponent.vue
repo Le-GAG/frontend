@@ -1,6 +1,6 @@
 <template>
   <gmap-map
-    class="ProducerOverview__map"
+    class="producer-map-component"
     ref="map"
     :center.sync="center"
     :zoom.sync="zoom"
@@ -139,5 +139,7 @@
 
 
 <style scoped lang="scss">
-
+  .producer-map-component {
+    height: 500px;
+  }
 </style>

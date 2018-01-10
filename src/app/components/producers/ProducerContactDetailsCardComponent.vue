@@ -1,8 +1,8 @@
 <template>
-  <div class="Producer-contact-details-component card">
+  <div class="producer-contact-details-component card">
     <div class="card-image">
       <gmap-map
-        class="Producer-contact-details-component__map"
+        class="producer-contact-details-component__map"
         :center="latLng"
         :zoom="12"
       >
@@ -13,9 +13,9 @@
       </gmap-map>
     </div>
     <div class="card-content">
-      <div class="content">
+      <div class="producer-contact-details-component__contact-details content">
         <div
-          class="Producer-contact-details-component__website"
+          class="producer-contact-details-component__website"
           v-if="website"
         >
           <span class="icon"><i class="fa fa-globe"></i></span>
@@ -23,7 +23,7 @@
         </div>
 
         <div
-          class="Producer-contact-details-component__email"
+          class="producer-contact-details-component__email"
           v-if="email"
         >
           <span class="icon"><i class="fa fa-at"></i></span>
@@ -31,20 +31,20 @@
         </div>
 
         <address
-          class="Producer-contact-details-component__address"
+          class="producer-contact-details-component__address"
           v-if="addressLine1 || addressLine2"
         >
           <span class="icon"><i class="fa fa-envelope"></i></span>
-          <div class="Producer-contact-details-component__addressLine1" v-if="addressLine1">
+          <div class="producer-contact-details-component__addressLine1" v-if="addressLine1">
             {{ addressLine1 }}
           </div>
-          <div class="Producer-contact-details-component__addressLine2" v-if="addressLine2">
+          <div class="producer-contact-details-component__addressLine2" v-if="addressLine2">
             {{ addressLine2 }}
           </div>
         </address>
 
         <div
-          class="Producer-contact-details-component__phone"
+          class="producer-contact-details-component__phone"
           v-if="phone"
         >
           <span class="icon"><i class="fa fa-phone"></i></span>
@@ -59,7 +59,7 @@
 
 <script>
   export default {
-    name: 'contact-details-component',
+    name: 'contact-details-card-component',
 
     props: {
       name:         String,
@@ -75,13 +75,13 @@
 
 
 <style scoped lang="scss">
-  .Producer-contact-details-component {
+  .producer-contact-details-component {
     &__map {
       height: 300px;
     }
 
-    &__map + &__address {
-      margin-top: 1rem;
+    &__contact-details > *:not(:last-child) {
+      margin-bottom: 0.4rem;
     }
 
     &__address,
@@ -100,7 +100,7 @@
 
       a {
         color: inherit;
-        
+
         &:hover,
         &:active {
           text-decoration: underline;
