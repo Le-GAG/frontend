@@ -8,7 +8,7 @@ module.exports = (config) => {
             loaders: {},
             postcss: [
                 require('autoprefixer')({
-                    browsers: [ 'last 2 versions' ],
+                    browsers: [ 'chrome >= 49', 'last 2 versions' ],
                 }),
             ],
         },
