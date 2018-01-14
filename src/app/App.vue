@@ -30,12 +30,6 @@
 
 <style scoped lang="scss">
   .App {
-    &__header {
-
-    }
-
-    &__footer {
-
-    }
+    background-color: #f9f5ee;
   }
 </style>

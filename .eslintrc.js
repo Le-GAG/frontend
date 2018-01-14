@@ -1,13 +1,18 @@
 module.exports = {
-  env: {
-    browser:   true,
+  parserOptions: {
+    parser:      "babel-eslint",
+    ecmaVersion: 2017,
+    sourceType:  "module",
   },
-  extends: [
+  env:           {
+    browser: true,
+  },
+  extends:       [
     // add more generic rulesets here, such as:
     'eslint:recommended',
-    'plugin:vue/recommended'
+    'plugin:vue/recommended',
   ],
-  globals: {
+  globals:       {
     process: false,
-  }
+  },
 };

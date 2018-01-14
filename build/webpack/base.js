@@ -21,13 +21,13 @@ module.exports = (config) => {
             ],
             alias:      {
                 'vue$':       'vue/dist/vue.common.js',
-                'src':        utils.resolve('src'),
-                'static':     utils.resolve('src/static'),
+                'api':        utils.resolve('src/app/api'),
                 'components': utils.resolve('src/app/components'),
                 'pages':      utils.resolve('src/app/pages'),
-                'router':     utils.resolve('src/app/router'),
-                'services':   utils.resolve('src/app/services'),
-                'models':     utils.resolve('src/app/models'),
+                'plugins':    utils.resolve('src/app/plugins'),
+                'src':        utils.resolve('src'),
+                'store':      utils.resolve('store'),
+                'static':     utils.resolve('src/static'),
             },
             symlinks: false, // Without this, module link using NPM link aren't resolved. But beware, it seems they can't be watched for changes.
         },

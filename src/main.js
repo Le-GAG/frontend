@@ -1,14 +1,17 @@
 import Vue from 'vue';
 
 import App from 'app/App';
-import router from 'app/plugins/routes.js';
-import 'app/plugins/dataStore.js';
-import 'app/plugins/directusSdk';
-import 'app/plugins/googlemaps';
+import router from 'plugins/routes.js';
+import store from 'app/store/index';
+import 'plugins/dataStore.js';
+import 'plugins/authentication';
+import 'plugins/directusSdk';
+import 'plugins/googlemaps';
 
 // Instanciate the vue
 new Vue({
   el:         '#app',
+  store:      store,
   router:     router,
   components: {App},
   template:   '<App></App>',
