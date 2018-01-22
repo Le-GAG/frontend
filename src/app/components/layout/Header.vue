@@ -4,8 +4,8 @@
       <div class="navbar-brand">
         <router-link class="navbar-item" :to="{ name: 'home' }">
           <h1 class="title is-4 has-text-white">
-            <span class="icon is-small"><i class="fa fa-shopping-cart"></i></span>
-            &nbsp;Le GAG
+            <span class="icon is-small"><i class="fa fa-shopping-basket"></i></span>
+            &nbsp;Le G@G
           </h1>
         </router-link>
         <div

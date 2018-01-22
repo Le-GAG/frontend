@@ -1,6 +1,6 @@
 <template>
-  <section class="section">
-    <ul class="producer-list-component columns is-multiline is-mobile">
+  <section class="producer-list-component section">
+    <ul class="columns is-multiline is-mobile">
       <li class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd" v-for="producer in producers">
         <producer-card-component :producer="producer"/>
       </li>
@@ -22,13 +22,6 @@
       producers: {
         type:    Array,
         default: [],
-      },
-      error:     {
-        default: null,
-      },
-      loading:   {
-        type:    Boolean,
-        default: false,
       },
     },
   };
