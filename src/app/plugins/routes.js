@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import HomePage from 'pages/HomePage';
 import ProducerOverviewPage from 'pages/producers/ProducerOverviewPage';
 import ProducerDetailsPage from 'pages/producers/ProducerDetailsPage';
+import ProductOverviewPage from 'pages/products/ProductOverviewPage';
 import AuthSignInPage from 'pages/auth/AuthSignInPage';
 
 Vue.use(Router);
@@ -42,6 +43,12 @@ export default new Router({
       path:      '/producteurs/:slug',
       name:      'producer',
       component: ProducerDetailsPage,
+    },
+
+    {
+      path:      '/produits',
+      name:      'products',
+      component: ProductOverviewPage,
     },
 
     {

@@ -26,6 +26,7 @@
       >
         <div class="navbar-start">
           <router-link class="navbar-item" :to="{ name: 'producers' }">Producteurs</router-link>
+          <router-link class="navbar-item" :to="{ name: 'products' }">Produits</router-link>
         </div>
 
         <div class="navbar-end">
