@@ -48,13 +48,12 @@
 
     computed: {
       photoUrl() {
-        if (this.product.photo) {
-          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photo.data.name}`);
+        if (this.product.photos && this.product.photos.data && this.product.photos.data.length > 0) {
+          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[0].name}`);
         }
 
         return 'https://via.placeholder.com/480x270';
       }
-
     },
   };
 </script>

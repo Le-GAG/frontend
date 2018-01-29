@@ -71,14 +71,19 @@
               'categorie',
               'tags',
               'prix',
+              'photos',
 
               'prix_des_produits.conditionnement',
               'prix_des_produits.unite',
               'prix_des_produits.unite_de_mesure',
             ],
+
+            filters: {
+              prix: { has: 1 },
+            },
           });
 
-          this.products = response.data.filter(product => product.prix.meta.total > 0);
+          this.products = response.data;
         } catch (e) {
           console.error(e);
           this.loadingError = e.toString();
