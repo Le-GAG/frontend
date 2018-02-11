@@ -64,5 +64,6 @@
         "write-file-webpack-plugin": "^4.0.0"
     },
     "dependencies": {
+        "moment": "^2.20.1"
     }
 }

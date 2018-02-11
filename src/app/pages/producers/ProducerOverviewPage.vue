@@ -71,9 +71,8 @@
     methods: {
       async fetchProducers() {
         try {
-          const result = await this.$directusSdk.getItems('producteurs', { order: { raison_sociale: 'ASC' }, });
-
-          this.producers = result.data;
+          const result = await this.$api.producers.getProducers();
+          this.producers = Array.from(result.values());
         } catch (e) {
           console.error(e);
           this.loadingError = e.toString();
