@@ -1,20 +1,20 @@
-import Vue from 'vue';
+import Vue from 'vue/dist/vue.esm';
 
-import App from 'app/App';
-import router from 'plugins/routes.js';
-import store from 'app/store/index';
-import 'plugins/dataStore.js';
-import 'plugins/authentication';
-import 'plugins/directusSdk';
-import 'plugins/api';
-import 'plugins/googlemaps';
+import App from '@/App';
+import router from '@/plugins/router';
+import store from '@/store/index';
+import '@/plugins/dataStore';
+import '@/plugins/authentication';
+import '@/plugins/directusSdk';
+import '@/plugins/api';
+import '@/plugins/googlemaps';
 
 // Instanciate the vue
+// eslint-disable-next-line no-new
 new Vue({
   el:         '#app',
   store:      store,
   router:     router,
-  components: {App},
+  components: { App },
   template:   '<App></App>',
 });
-

@@ -5,8 +5,7 @@ module.exports = function () {
     // Common configuration
     // These options will be merged with those specific to the environment
     common: {
-      mode:      'synchronize',
-      localPath: 'dist',
+      localPath: 'www',
       exclude:   [
         'www/app/user-config/**',
         'www/app/tmp/**',
