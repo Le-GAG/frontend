@@ -1,13 +1,11 @@
 import Vue from 'vue/dist/vue.esm';
 import Router from 'vue-router';
 
-import HomePage from '@/pages/HomePage';
-import ProducerOverviewPage from '@/pages/producers/ProducerOverviewPage';
-import ProducerDetailsPage from '@/pages/producers/ProducerDetailsPage';
-import ProductOverviewPage from '@/pages/products/ProductOverviewPage';
-import AuthSignInPage from '@/pages/auth/AuthSignInPage';
-
 Vue.use(Router);
+
+function loadPage (page) {
+  return () => import(/* webpackChunkName: "page-[request]" */ `@/pages/${page}.vue`);
+}
 
 export default new Router({
   mode:   'hash',
@@ -15,40 +13,40 @@ export default new Router({
     {
       path:      '/',
       name:      'home',
-      component: HomePage,
+      component: loadPage('HomePage'),
     },
 
     {
       path:      '/auth/sign-in',
       name:      'auth/sign-in',
-      component: AuthSignInPage,
+      component: loadPage('auth/AuthSignInPage'),
     },
     {
       path:      '/auth/inscription',
       name:      'auth/sign-up',
-      component: AuthSignInPage,
+      component: loadPage('auth/AuthSignInPage'),
     },
     {
       path:      '/auth/mot-de-passe-oublie',
       name:      'auth/recover-password',
-      component: AuthSignInPage,
+      component: loadPage('auth/AuthSignInPage'),
     },
 
     {
       path:      '/producteurs',
       name:      'producers',
-      component: ProducerOverviewPage,
+      component: loadPage('producers/ProducerOverviewPage'),
     },
     {
       path:      '/producteurs/:slug',
       name:      'producer',
-      component: ProducerDetailsPage,
+      component: loadPage('producers/ProducerDetailsPage'),
     },
 
     {
       path:      '/produits',
       name:      'products',
-      component: ProductOverviewPage,
+      component: loadPage('products/ProductOverviewPage'),
     },
 
     {
