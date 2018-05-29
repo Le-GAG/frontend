@@ -3,7 +3,7 @@
  * @date 12/01/2018 10:28
  */
 
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import authentication from './modules/authentication';
 

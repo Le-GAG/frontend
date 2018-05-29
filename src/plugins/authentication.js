@@ -4,7 +4,7 @@
  */
 
 import Cookies from 'js-cookie';
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 
 const authenticationCookieName = 'auth-token';
 const stayConnectedCookieName  = 'authenticated-since';

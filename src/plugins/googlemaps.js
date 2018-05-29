@@ -3,7 +3,7 @@
  * @date 08/01/2018 17:19
  */
 
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 import * as VueGoogleMaps from 'vue2-google-maps';
 
 Vue.use(VueGoogleMaps, {

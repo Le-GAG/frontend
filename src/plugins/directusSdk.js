@@ -3,7 +3,7 @@
  * @date 02/01/2018 23:51
  */
 
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 import DirectusSdk from 'directus-sdk-javascript';
 import '@/plugins/dataStore.js';
 

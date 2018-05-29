@@ -3,7 +3,7 @@
  * @date 11/02/2018 17:14
  */
 
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 import ProducersApi from '@/api/producers';
 
 Vue.use({

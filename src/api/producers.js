@@ -3,7 +3,7 @@
  * @date 30/01/2018 13:21
  */
 
-import Vue from 'vue/dist/vue.esm';
+import Vue from 'vue';
 import moment from 'moment';
 
 let producers     = new WeakMap();
