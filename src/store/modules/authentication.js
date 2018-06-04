@@ -14,28 +14,28 @@ export default {
   },
 
   mutations: {
-    [ types.AUTHENTICATION_SUCCESSFUL ](state, payload) {
+    [ types.AUTHENTICATION_SUCCESSFUL ] (state, payload) {
       state.token     = payload;
       state.isPending = false;
     },
 
-    [ types.AUTHENTICATION_FAILED ](state, payload) {
+    [ types.AUTHENTICATION_FAILED ] (state, payload) {
       state.error     = payload.toString();
       state.isPending = false;
     },
 
-    [ types.DEAUTHENTICATE ](state) {
+    [ types.DEAUTHENTICATE ] (state) {
       state.token = null;
     },
 
-    [ types.AUTHENTICATE ](state) {
+    [ types.AUTHENTICATE ] (state) {
       state.isPending = true;
       state.error     = null;
     },
   },
 
   actions: {
-    async authenticate({ commit }, { email, password, stayConnected }) {
+    async authenticate ({ commit }, { email, password, stayConnected }) {
       try {
         commit(types.AUTHENTICATE);
         const token = await authentication.authenticate(email, password, stayConnected);
@@ -45,15 +45,15 @@ export default {
       }
     },
 
-    deauthenticate({ commit }) {
+    deauthenticate ({ commit }) {
       authentication.deauthenticate();
       commit(types.DEAUTHENTICATE);
-    }
+    },
   },
 
   getters: {
     isAuthenticating: state => state.isPending,
-    isLoggedIn:       state => state.token != null,
+    isLoggedIn:       state => null != state.token,
     errorMessage:     state => state.error,
   },
 };
