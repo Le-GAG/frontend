@@ -15,12 +15,12 @@ export default {
 
   mutations: {
     [ types.AUTHENTICATION_SUCCESSFUL ] (state, payload) {
-      state.token     = payload;
+      state.token = payload;
       state.isPending = false;
     },
 
     [ types.AUTHENTICATION_FAILED ] (state, payload) {
-      state.error     = payload.toString();
+      state.error = payload.toString();
       state.isPending = false;
     },
 
@@ -30,7 +30,7 @@ export default {
 
     [ types.AUTHENTICATE ] (state) {
       state.isPending = true;
-      state.error     = null;
+      state.error = null;
     },
   },
 
