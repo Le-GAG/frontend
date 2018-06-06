@@ -1,47 +1,63 @@
 <template>
-  <nav class="Menu" role="navigation">
-    <ul class="Menu__container">
-      <li class="Menu__link"><router-link :to="{ name: 'producers' }">Producteurs</router-link></li>
-      <li class="Menu__link"><router-link :to="{ name: 'about' }">À propos</router-link></li>
-    </ul>
+  <nav
+    class="navbar-menu Menu"
+    :class="{ 'is-active': isMenuOpened }"
+    role="navigation"
+  >
+    <div class="navbar-start">
+      <router-link class="navbar-item" :to="{ name: 'producers' }">Producteurs</router-link>
+      <router-link class="navbar-item" :to="{ name: 'products' }">Produits</router-link>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="field is-grouped">
+          <p class="control">
+            <a
+              class="button is-primary"
+              @click="signOut"
+              v-if="isAuthenticated"
+            >
+              <span class="icon"><i class="fa fa-sign-out"></i></span>
+              <span>Déconnexion</span>
+            </a>
+
+            <router-link
+              class="button is-primary"
+              :to="{ name: 'auth/sign-in' }"
+              v-else
+            >
+              <span class="icon"><i class="fa fa-sign-in"></i></span>
+              <span>Connexion</span>
+            </router-link>
+          </p>
+        </div>
+      </div>
+    </div>
   </nav>
 </template>
 
 
 <script>
-    export default {
-        name: 'MenuComponent',
-    };
+  export default {
+    name: 'MenuComponent',
+
+    props: [ 'isMenuOpened' ],
+
+    computed: {
+      isAuthenticated () {
+        return this.$store.getters.isLoggedIn;
+      },
+    },
+
+    methods: {
+      signOut () {
+        this.$store.dispatch('deauthenticate');
+      },
+    },
+  };
 </script>
 
 
 <style scoped lang="scss">
-  .Menu {
-    &__container {
-      display: flex;
-
-      margin: 0.6em 0 0;
-      padding: 0;
-    }
-
-    &__link {
-      display: block;
-
-      padding: 0 .25em;
-
-      font-weight: bold;
-
-      a {
-        color: firebrick;
-        font-family: 'Open Sans', sans-serif;
-        font-weight: 800;
-        text-decoration: none;
-
-        &:active,
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-  }
 </style>

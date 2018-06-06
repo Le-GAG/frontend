@@ -28,6 +28,5 @@
 
 <style scoped lang="scss">
   .App {
-    background-color: #f9f5ee;
   }
 </style>

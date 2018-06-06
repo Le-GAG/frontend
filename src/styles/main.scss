@@ -1,3 +1,9 @@
 @import "~normalize.css";
 @import "~font-awesome/css/font-awesome.css";
 @import "./_bulma";
+
+body {
+  background-color: #f9f5ee;
+
+  min-height: 100vh;
+}
