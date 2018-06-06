@@ -1,15 +1,16 @@
 <template>
   <section class="product-list-component section">
-    <ul class="columns is-multiline is-mobile">
-      <li
-        v-for="product in products"
-        :key="product.id"
-        class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
-        <product-card-component :product="product"/>
-      </li>
-    </ul>
+    <div class="container">
+      <ul class="columns is-multiline is-tablet">
+        <li
+          v-for="product in products"
+          :key="product.id"
+          class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
+          <product-card-component :product="product"/>
+        </li>
+      </ul>
+    </div>
   </section>
-
 </template>
 
 
