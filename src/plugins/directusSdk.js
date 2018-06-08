@@ -6,12 +6,13 @@
 import Vue from 'vue';
 import DirectusSdk from 'directus-sdk-javascript';
 import '@/plugins/dataStore.js';
+import VuexStore from '@/store';
 
 Vue.use({
   install (Vue) {
     Vue.prototype.$directusSdk = new DirectusSdk.RemoteInstance({
-      // accessToken: '', // TODO: Pass user token when a user is logged
-      url: process.env.VUE_APP_BACKEND_ENDPOINT,
+      accessToken: VuexStore.getters.authToken,
+      url:         process.env.VUE_APP_BACKEND_ENDPOINT,
     });
 
     Vue.prototype.$directusSdk.getThumbnailUrl = (thumbnailSpecification) => {
