@@ -48,42 +48,23 @@
       ClipLoader,
     },
 
-    data() {
+    data () {
       return {
-        products:    null,
+        products:     null,
         loadingError: null,
         loading:      true,
       };
     },
 
-    async created() {
+    async created () {
       await this.fetchProducts();
     },
 
     methods: {
-      async fetchProducts() {
+      async fetchProducts () {
         try {
-          const response = await this.$directusSdk.getItems('produits', {
-            columns: [
-              'nom',
-              'producteur',
-              'descriptions',
-              'categorie',
-              'tags',
-              'prix',
-              'photos',
-
-              'prix_des_produits.conditionnement',
-              'prix_des_produits.unite',
-              'prix_des_produits.unite_de_mesure',
-            ],
-
-            filters: {
-              prix: { has: 1 },
-            },
-          });
-
-          this.products = response.data;
+          const result = await this.$api.products.getAll();
+          this.products = Array.from(result.values());
         } catch (e) {
           console.error(e);
           this.loadingError = e.toString();

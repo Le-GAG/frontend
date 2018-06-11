@@ -71,7 +71,7 @@
     methods: {
       async fetchProducers() {
         try {
-          const result = await this.$api.producers.getProducers();
+          const result = await this.$api.producers.getAll();
           this.producers = Array.from(result.values());
         } catch (e) {
           console.error(e);
