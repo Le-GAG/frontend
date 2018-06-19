@@ -28,9 +28,7 @@ export default {
     [ types.DEAUTHENTICATE ] (state, payload) {
       state.token = null;
 
-      // FIXME: Call Vue.prototype$directusSdk.deauthenticate() when https://github.com/directus/directus-sdk-javascript/pull/39 has been merged
-      Vue.prototype.$directusSdk.accessToken = null;
-      delete Vue.prototype.$directusSdk._requestHeaders.Authorization;
+      Vue.prototype.$directusSdk.deauthenticate();
     },
 
     [ types.AUTHENTICATE ] (state) {
