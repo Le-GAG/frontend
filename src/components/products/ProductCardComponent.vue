@@ -25,13 +25,25 @@
           v-text="tag.nom"></li>
       </ul>
 
-      <div class="select">
-        <select>
-          <option
-            v-for="prix in product.prix.data"
-            v-text="prix.conditionnement.data.nom + ' ' + prix.contenance"
-          ></option>
-        </select>
+      <div class="field has-addons">
+        <p class="control">
+          <input class="input is-small has-text-centered" type="text" placeholder="Quantité">
+        </p>
+        <p class="control">
+          <span class="select is-small">
+            <select>
+              <option
+                v-for="prix in product.prix.data"
+                v-text="getConditionnement(prix)"
+              ></option>
+            </select>
+          </span>
+        </p>
+        <p class="control">
+          <a class="button is-primary is-small">
+            <i class="fa fa-shopping-basket"></i>
+          </a>
+        </p>
       </div>
     </div>
   </div>
@@ -47,13 +59,23 @@
     },
 
     computed: {
-      photoUrl() {
+      photoUrl () {
         if (this.product.photos && this.product.photos.data && this.product.photos.data.length > 0) {
-          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[0].name}`);
+          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[ 0 ].name}`);
         }
 
         return 'https://via.placeholder.com/480x270';
-      }
+      },
+    },
+
+    methods: {
+      getConditionnement (prix) {
+        if (prix.unite_de_mesure.data.sans_quantite) {
+          return prix.conditionnement.data.nom;
+        }
+
+        return prix.conditionnement.data.nom + ' ' + prix.contenance;
+      },
     },
   };
 </script>
