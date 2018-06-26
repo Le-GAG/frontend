@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <menu-component :is-menu-opened="isMenuOpened"/>
+      <menu-component :is-menu-opened="isMenuOpened" @close="isMenuOpened = false"/>
     </nav>
   </header>
 </template>

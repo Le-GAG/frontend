@@ -5,8 +5,14 @@
     role="navigation"
   >
     <div class="navbar-start">
-      <router-link class="navbar-item" :to="{ name: 'producers' }">Producteurs</router-link>
-      <router-link class="navbar-item" :to="{ name: 'products' }">Produits</router-link>
+      <router-link
+        v-for="route of routes"
+        :key="route.name"
+        class="navbar-item"
+        :to="{ name: route.name }"
+        v-text="route.label"
+        @click.native="close"
+      />
     </div>
 
     <div class="navbar-end">
@@ -15,7 +21,7 @@
           <p class="control">
             <a
               class="button is-primary"
-              @click="signOut"
+              @click="signOutButtonClickedHandler"
               v-if="isAuthenticated"
             >
               <span class="icon"><i class="fa fa-sign-out"></i></span>
@@ -25,6 +31,7 @@
             <router-link
               class="button is-primary"
               :to="{ name: 'auth/sign-in' }"
+              @click.native="close"
               v-else
             >
               <span class="icon"><i class="fa fa-sign-in"></i></span>
@@ -44,6 +51,21 @@
 
     props: [ 'isMenuOpened' ],
 
+    data () {
+      return {
+        routes: [
+          {
+            name: 'producers',
+            label: 'Producteurs',
+          },
+          {
+            name: 'products',
+            label: 'Produits',
+          },
+        ],
+      };
+    },
+
     computed: {
       isAuthenticated () {
         return this.$store.getters.isLoggedIn;
@@ -51,8 +73,13 @@
     },
 
     methods: {
-      signOut () {
+      close () {
+        this.$emit('close');
+      },
+
+      signOutButtonClickedHandler () {
         this.$store.dispatch('deauthenticate');
+        this.close();
       },
     },
   };
