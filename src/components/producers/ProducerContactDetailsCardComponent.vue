@@ -84,6 +84,16 @@
       margin-bottom: 0.4rem;
     }
 
+    &__website,
+    &__email {
+      overflow: hidden;
+
+      max-width: 100%;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     &__address,
     &__phone,
     &__website,
