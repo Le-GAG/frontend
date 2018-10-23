@@ -4,6 +4,8 @@
 
 declare module 'vue2-google-maps'
 {
+  import {PluginFunction} from 'vue';
+
   export interface Vue2GoogleMapsPluginOptions
   {
     load: {
@@ -11,7 +13,7 @@ declare module 'vue2-google-maps'
       key: string,
 
       // Additional Google Maps libraries to load
-      libraries?: string[],
+      libraries?: string,
 
       // Specific version of the Google Maps JS API to load
       v?: string,
@@ -20,5 +22,5 @@ declare module 'vue2-google-maps'
     installComponents?: boolean,
   }
 
-  export function install();
+  export function install(): PluginFunction<Vue2GoogleMapsPluginOptions>;
 }
