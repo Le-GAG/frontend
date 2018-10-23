@@ -72,47 +72,46 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'auth-sign-in-page',
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
 
-    data() {
-      return {
-        email:      '',
-        password:   '',
-        rememberMe: false,
-      };
-    },
+  @Component
+  export default class AuthSignInPage extends Vue
+  {
+    email: string       = '';
+    password: string    = '';
+    rememberMe: boolean = false;
 
-    computed: {
-      isAuthenticating() {
-        return this.$store.getters.isAuthenticating;
-      },
-      errorMessage() {
-        return this.$store.getters.errorMessage;
-      },
-    },
+    get isAuthenticating()
+    {
+      return this.$store.getters.isAuthenticating;
+    }
 
-    methods: {
-      async submitForm() {
-        await this.$store.dispatch('authenticate', {
-          email:         this.email,
-          password:      this.password,
-          stayConnected: this.rememberMe,
-        });
+    get errorMessage()
+    {
+      return this.$store.getters.errorMessage;
+    }
 
-        if (this.$store.getters.isLoggedIn) {
-          this.$router.push('/');
-        } else {
-          this.shakeForm();
-        }
-      },
+    async submitForm()
+    {
+      await this.$store.dispatch('authenticate', {
+        email:         this.email,
+        password:      this.password,
+        stayConnected: this.rememberMe,
+      });
 
-      shakeForm() {
-        // TODO: Animate the form to indicate sign-in failure
-      },
-    },
-  };
+      if (this.$store.getters.isLoggedIn) {
+        this.$router.push('/');
+      } else {
+        this.shakeForm();
+      }
+    }
+
+    shakeForm()
+    {
+      // TODO: Animate the form to indicate sign-in failure
+    }
+  }
 </script>
 
 

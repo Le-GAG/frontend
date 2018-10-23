@@ -13,23 +13,16 @@
   </section>
 </template>
 
-<script>
-  import ProducerCardComponent from '@/components/producers/ProducerCardComponent';
+<script lang="ts">
+  import ProducerCardComponent from '@/components/producers/ProducerCardComponent.vue';
+  import {Component, Vue, Prop} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-  export default {
-    name: 'ProducerListComponent',
-
-    components: {
-      ProducerCardComponent,
-    },
-
-    props: {
-      producers: {
-        type:    Array,
-        default: () => [],
-      },
-    },
-  };
+  @Component({components: {ProducerCardComponent}})
+  export default class ProducerListComponent extends Vue
+  {
+    @Prop({default: []}) protected producers!: ProducerModel[];
+  }
 </script>
 
 <style scoped lang="scss">

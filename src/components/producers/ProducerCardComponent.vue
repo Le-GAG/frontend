@@ -1,6 +1,6 @@
 <template>
   <div class="producer-card-component card">
-    <router-link :to="{ name: 'producer', params: { slug: producer.slug } }" class="card-image">
+    <router-link :to="{ name: 'product', params: { slug: producer.slug } }" class="card-image">
       <figure class="image is-16by9">
         <img :src="photoUrl" alt="Placeholder image">
       </figure>
@@ -8,7 +8,7 @@
     <div class="card-content">
       <router-link
         class="producer-card-component__link title is-4"
-        :to="{ name: 'producer', params: { slug: producer.slug } }"
+        :to="{ name: 'product', params: { slug: producer.slug } }"
       >
         {{ producer.raison_sociale }}
       </router-link>
@@ -30,25 +30,24 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'producer-card-component',
+<script lang="ts">
+  import {Component, Prop, Vue} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-    props: {
-      producer: Object,
-    },
+  @Component
+  export default class ProducerCardComponent extends Vue
+  {
+    @Prop() protected producer!: ProducerModel;
 
-    computed: {
-      photoUrl() {
-        if (this.producer.photo_de_presentation) {
-          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.producer.photo_de_presentation.data.name}`);
-        }
-
-        return 'https://via.placeholder.com/480x270';
+    get photoUrl()
+    {
+      if (this.producer.photo_de_presentation) {
+        return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.producer.photo_de_presentation}`);
       }
 
-    },
-  };
+      return 'https://via.placeholder.com/480x270';
+    }
+  }
 </script>
 
 

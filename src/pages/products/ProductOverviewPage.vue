@@ -36,44 +36,36 @@
 </template>
 
 
-<script>
-  import ProductListComponent from '@/components/products/ProductListComponent';
-  import ClipLoader from 'vue-spinner/src/ClipLoader';
+<script lang="ts">
+  import ProductListComponent from '@/components/products/ProductListComponent.vue';
+  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import {Component, Vue} from 'vue-property-decorator';
 
-  export default {
-    name: 'products-page',
+  @Component({components: {ProductListComponent, ClipLoader}})
+  export default class ProductOverviewPage extends Vue
+  {
+    products: Array<any> = []; // TODO: Declare a product type
+    loadingError: any    = null;
+    loading: boolean     = true;
 
-    components: {
-      ProductListComponent,
-      ClipLoader,
-    },
-
-    data () {
-      return {
-        products:     null,
-        loadingError: null,
-        loading:      true,
-      };
-    },
-
-    async created () {
+    async created()
+    {
       await this.fetchProducts();
-    },
+    }
 
-    methods: {
-      async fetchProducts () {
-        try {
-          const result = await this.$api.products.getAll();
-          this.products = Array.from(result.values());
-        } catch (e) {
-          console.error(e);
-          this.loadingError = e.toString();
-        } finally {
-          this.loading = false;
-        }
-      },
-    },
-  };
+    async fetchProducts()
+    {
+      try {
+        const result  = await this.$api.products.getAll();
+        this.products = Array.from(result.values());
+      } catch (e) {
+        console.error(e);
+        this.loadingError = e.toString();
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 </script>
 
 

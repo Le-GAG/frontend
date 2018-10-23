@@ -10,17 +10,20 @@
   </footer>
 </template>
 
-<script>
-  export default {
-    name: 'FooterComponent',
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+
+  @Component
+  export default class FooterComponent extends Vue
+  {
   };
 </script>
 
 <style scoped lang="scss">
   .Footer {
     abbr {
-      cursor: help;
-      border-bottom: 1px dotted;
+      cursor:          help;
+      border-bottom:   1px dotted;
       text-decoration: none;
     }
   }

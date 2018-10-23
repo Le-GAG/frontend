@@ -50,34 +50,32 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'product-card-component',
+<script lang="ts">
+  import {Component, Prop, Vue} from 'vue-property-decorator';
 
-    props: {
-      product: Object,
-    },
+  @Component
+  export default class ProductCardComponent extends Vue
+  {
+    @Prop() protected product: any; // TODO: Declare a product type
 
-    computed: {
-      photoUrl () {
-        if (this.product.photos && this.product.photos.data && this.product.photos.data.length > 0) {
-          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[ 0 ].name}`);
-        }
+    get photoUrl()
+    {
+      if (this.product.photos && this.product.photos.data && this.product.photos.data.length > 0) {
+        return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[0].name}`);
+      }
 
-        return 'https://via.placeholder.com/480x270';
-      },
-    },
+      return 'https://via.placeholder.com/480x270';
+    };
 
-    methods: {
-      getConditionnement (prix) {
-        if (prix.unite_de_mesure.data.sans_quantite) {
-          return prix.conditionnement.data.nom;
-        }
+    getConditionnement(prix: any) // TODO: Declare a ProductPrice type
+    {
+      if (prix.unite_de_mesure.data.sans_quantite) {
+        return prix.conditionnement.data.nom;
+      }
 
-        return prix.conditionnement.data.nom + ' ' + prix.contenance;
-      },
-    },
-  };
+      return prix.conditionnement.data.nom + ' ' + prix.contenance;
+    }
+  }
 </script>
 
 

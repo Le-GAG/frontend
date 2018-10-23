@@ -1,27 +1,27 @@
 module.exports = {
-  'root':          true,
-  'env':           {
+  'root': true,
+  'env':  {
     'node': true,
   },
-  'extends':       [
+  'extends': [
     'eslint:recommended',
     'plugin:vue/recommended',
-    '@vue/standard',
+    // '@vue/standard',
+    '@vue/typescript',
   ],
-  'plugins':       [
+  'plugins': [
     'html',
   ],
-  'rules':         {
+  'rules': {
     'indent':             ['warn', 2],
     'comma-dangle':       ['warn', 'always-multiline'],
-    'semi':               ['warn', 'always', {'omitLastInOneLineBlock': true}],
+    'semi':               ['warn', 'always', { 'omitLastInOneLineBlock': true }],
     'operator-linebreak': ['warn', 'before'],
     'yoda':               ['error', 'always'],
-    'no-multi-spaces':    ["warn", { exceptions: { VariableDeclarator: true } }],
-    'key-spacing':        ['error', {'align': {'beforeColon': false, 'afterColon': true, 'on': 'value'}}],
+    'no-multi-spaces':    ['warn', { exceptions: { VariableDeclarator: true } }],
+    'key-spacing':        ['error', { 'align': { 'beforeColon': false, 'afterColon': true, 'on': 'value' } }],
   },
   'parserOptions': {
-    'parser': 'babel-eslint',
+    'parser': 'typescript-eslint-parser',
   },
 };
-

@@ -57,22 +57,21 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'contact-details-card-component',
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
 
-    props: {
-      name:         String,
-      latLng:       Object,
-      addressLine1: String,
-      addressLine2: String,
-      phone:        String,
-      email:        String,
-      website:      String,
-    },
-  };
+  @Component
+  export default class ContactDetailsCardComponent extends Vue
+  {
+    @Prop() protected name: String = '';
+    @Prop() protected latLng: Object = {};
+    @Prop() protected addressLine1:string = '';
+    @Prop() protected addressLine2:string = '';
+    @Prop() protected phone:string = '';
+    @Prop() protected email:string = '';
+    @Prop() protected website:string = '';
+  }
 </script>
-
 
 <style scoped lang="scss">
   .producer-contact-details-component {
@@ -86,12 +85,12 @@
 
     &__website,
     &__email {
-      overflow: hidden;
+      overflow:      hidden;
 
-      max-width: 100%;
+      max-width:     100%;
 
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space:   nowrap;
     }
 
     &__address,

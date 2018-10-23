@@ -58,96 +58,102 @@
 </template>
 
 
-<script>
-  import ClipLoader from 'vue-spinner/src/ClipLoader';
-  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent';
+<script lang="ts">
+  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent.vue';
+  import {Component, Vue, Watch} from 'vue-property-decorator';
+  import ProducerModel, {LatLng} from '../../models/ProducerModel';
 
-  export default {
-    name: 'producers-page',
+  @Component({components: {ClipLoader, ContactDetailsCardComponent}})
+  export default class ProducerDetailsPage extends Vue
+  {
+    producer?:ProducerModel;
+    loadingError:any = undefined;
+    loading:boolean = true;
 
-    components: {
-      ClipLoader,
-      ContactDetailsCardComponent,
-    },
-
-    data() {
-      return {
-        producer:     null,
-        loadingError: null,
-        loading:      true,
-      };
-    },
-
-    computed: {
-      latLng() {
-        const parts = this.producer.adresse.split(',');
-        return { lat: parseFloat(parts[ 0 ]), lng: parseFloat(parts[ 1 ]) };
-      },
-
-      photoUrl() {
-        if (this.producer && this.producer.photo_de_presentation) {
-          return this.$directusSdk.getThumbnailUrl(`/1200/675/crop/good/${this.producer.photo_de_presentation.data.name}`);
-        }
-
-        return 'https://via.placeholder.com/480x270';
-      },
-
-      addressLine1() {
-        if (
-          (this.producer.numero && this.producer.numero.trim().length > 0)
-          || (this.producer.rue && this.producer.rue.trim().length > 0)
-        ) {
-          return [ this.producer.numero, this.producer.rue ].join(' ').trim();
-        }
-
+    get latLng(): LatLng|null
+    {
+      if (!this.producer || !this.producer.adresse) {
         return null;
-      },
+      }
 
-      addressLine2() {
-        if (
-          (this.producer.code_postal && this.producer.code_postal.trim().length > 0)
-          || (this.producer.ville && this.producer.ville.trim().length > 0)
-        ) {
-          return [ this.producer.code_postal, this.producer.ville ].join(' ').trim();
-        }
+      return this.producer.adresse;
+    }
 
+    get photoUrl()
+    {
+      if (this.producer && this.producer.photo_de_presentation) {
+        return this.$directusSdk.getThumbnailUrl(
+          `/1200/675/crop/good/${this.producer.photo_de_presentation}`
+        );
+      }
+
+      return 'https://via.placeholder.com/480x270';
+    }
+
+    get addressLine1()
+    {
+      if (
+        !this.producer
+        || (
+          (!this.producer.numero || this.producer.numero.trim().length === 0)
+          && (!this.producer.rue || this.producer.rue.trim().length === 0)
+        )
+      ) {
         return null;
-      },
-    },
+      }
 
-    async created() {
+      return [this.producer.numero, this.producer.rue].join(' ').trim();
+    }
+
+    get addressLine2()
+    {
+      if (
+        !this.producer
+        || (
+          (!this.producer.code_postal || this.producer.code_postal.trim().length === 0)
+          && (!this.producer.ville || this.producer.ville.trim().length === 0)
+        )
+      ) {
+        return null;
+      }
+
+      return [this.producer.code_postal, this.producer.ville].join(' ').trim();
+    }
+
+    async created()
+    {
       await this.fetchProducer();
-    },
+    }
 
-    watch: {
-      '$route': 'fetchProducer',
-    },
+    @Watch('$route')
+    onRouteChanged()
+    {
+      this.fetchProducer();
+    }
 
-    methods: {
-      async fetchProducer() {
-        this.loadingError = null;
-        this.loading      = true;
+    async fetchProducer()
+    {
+      this.loadingError = undefined;
+      this.loading      = true;
+      this.producer     = undefined;
 
-        try {
-          const result = await this.$directusSdk.getItems('producteurs', {
-            filters: { slug: this.$route.params.slug, },
-            limit:   1,
-          });
+      try {
+        const producer = await ProducerModel.getBySlug(this.$route.params['slug']);
 
-          if (result.data.length < 1) {
-            this.loadingError = 'Erreur 404';
-          }
-
-          this.producer = result.data[ 0 ];
-        } catch (e) {
-          console.error(e);
-          this.loadingError = e.toString();
-        } finally {
-          this.loading = false;
+        if (producer === null) {
+          this.loadingError = 'Erreur 404';
         }
-      },
-    },
-  };
+
+        this.producer = producer as ProducerModel;
+      } catch (e) {
+        console.error(e);
+        this.loadingError = e.toString();
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 </script>
 
 

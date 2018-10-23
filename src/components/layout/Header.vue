@@ -26,21 +26,14 @@
 </template>
 
 
-<script>
-  import MenuComponent from '@/components/layout/Menu';
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import MenuComponent from '@/components/layout/Menu.vue';
 
-  export default {
-    name: 'header-component',
-
-    components: {
-      MenuComponent,
-    },
-
-    data () {
-      return {
-        isMenuOpened: false,
-      };
-    },
+  @Component({components: {MenuComponent}})
+  export default class HeaderComponent extends Vue
+  {
+    isMenuOpened: boolean = false;
   };
 </script>
 

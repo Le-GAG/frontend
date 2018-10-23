@@ -45,43 +45,41 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'MenuComponent',
+<script lang="ts">
+  interface MenuRoutes {
+    name:  string,
+    label: string,
+  }
 
-    props: [ 'isMenuOpened' ],
+  import { Component, Vue, Prop} from 'vue-property-decorator';
 
-    data () {
-      return {
-        routes: [
-          {
-            name: 'producers',
-            label: 'Producteurs',
-          },
-          {
-            name: 'products',
-            label: 'Produits',
-          },
-        ],
-      };
-    },
+  @Component
+  export default class MenuComponent extends Vue {
+    public readonly routes:Array<MenuRoutes> = [
+      {
+        name: 'producers',
+        label: 'Producteurs',
+      },
+      {
+        name: 'products',
+        label: 'Produits',
+      },
+    ];
 
-    computed: {
-      isAuthenticated () {
+    @Prop(Boolean) isMenuOpened: boolean = false;
+
+    get isAuthenticated () {
         return this.$store.getters.isLoggedIn;
-      },
-    },
+    }
 
-    methods: {
-      close () {
-        this.$emit('close');
-      },
+    close () {
+      this.$emit('close');
+    }
 
-      signOutButtonClickedHandler () {
-        this.$store.dispatch('deauthenticate');
-        this.close();
-      },
-    },
+    signOutButtonClickedHandler () {
+      this.$store.dispatch('deauthenticate');
+      this.close();
+    }
   };
 </script>
 

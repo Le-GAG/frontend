@@ -42,46 +42,37 @@
 </template>
 
 
-<script>
-  import ProducerListComponent from '@/components/producers/ProducerListComponent';
-  import ProducerMapComponent from '@/components/producers/ProducerMapComponent';
-  import ClipLoader from 'vue-spinner/src/ClipLoader';
+<script lang="ts">
+  import ProducerListComponent from '@/components/producers/ProducerListComponent.vue';
+  import ProducerMapComponent from '@/components/producers/ProducerMapComponent.vue';
+  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import {Component, Vue} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-  export default {
-    name: 'producers-page',
+  @Component({components: {ProducerListComponent, ProducerMapComponent, ClipLoader}})
+  export default class ProducerOverviewPage extends Vue
+  {
+    public producers: ProducerModel[]  = [];
+    loadingError: any = null;
+    loading: boolean  = true;
 
-    components: {
-      ProducerListComponent,
-      ProducerMapComponent,
-      ClipLoader,
-    },
-
-    data() {
-      return {
-        producers:    null,
-        loadingError: null,
-        loading:      true,
-      };
-    },
-
-    async created() {
+    async created()
+    {
       await this.fetchProducers();
-    },
+    }
 
-    methods: {
-      async fetchProducers() {
-        try {
-          const result = await this.$api.producers.getAll();
-          this.producers = Array.from(result.values());
-        } catch (e) {
-          console.error(e);
-          this.loadingError = e.toString();
-        } finally {
-          this.loading = false;
-        }
-      },
-    },
-  };
+    async fetchProducers()
+    {
+      try {
+        this.producers = await ProducerModel.findAll();
+      } catch (e) {
+        console.error(e);
+        this.loadingError = e.toString();
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 </script>
 
 

@@ -14,23 +14,14 @@
 </template>
 
 
-<script>
-  import ProductCardComponent from '@/components/products/ProductCardComponent';
+<script lang="ts">
+  import ProductCardComponent from '@/components/products/ProductCardComponent.vue';
+  import {Component, Prop, Vue} from 'vue-property-decorator';
 
-  export default {
-    name: 'ProductListComponent',
-
-    components: {
-      ProductCardComponent,
-    },
-
-    props: {
-      products: {
-        type:    Array,
-        default: () => [],
-      },
-    },
-  };
+  @Component({components: {ProductCardComponent}})
+  export default class ProductListComponent extends Vue{
+    @Prop({ default: []}) protected products!: Array<any>; // TODO: Declare a product type
+  }
 </script>
 
 
