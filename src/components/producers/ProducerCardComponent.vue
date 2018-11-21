@@ -1,6 +1,6 @@
 <template>
   <div class="producer-card-component card">
-    <router-link :to="{ name: 'product', params: { slug: producer.slug } }" class="card-image">
+    <router-link :to="{ name: 'producer', params: { slug: producer.slug } }" class="card-image">
       <figure class="image is-16by9">
         <img :src="photoUrl" alt="Placeholder image">
       </figure>
@@ -8,7 +8,7 @@
     <div class="card-content">
       <router-link
         class="producer-card-component__link title is-4"
-        :to="{ name: 'product', params: { slug: producer.slug } }"
+        :to="{ name: 'producer', params: { slug: producer.slug } }"
       >
         {{ producer.raison_sociale }}
       </router-link>

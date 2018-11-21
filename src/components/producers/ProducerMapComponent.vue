@@ -106,7 +106,7 @@
       this.infoWindowSubtitle = producer.ville || '';
 
       let infoWindowContent = `<ul class="tags">`;
-      producer.activites.forEach((activite: ProducerActivityModel) => {
+      producer.activites!.forEach((activite: ProducerActivityModel) => {
         infoWindowContent += `<li class="tag">${activite.nom}</li>`;
       });
       infoWindowContent += '</ul>';

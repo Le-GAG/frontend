@@ -1,23 +1,34 @@
 import Vue from 'vue';
-import {DirectusSdkFetchParams} from 'directus-sdk-javascript';
-
-interface DirectusResponse
-{
-  data: {}[],
-  meta: {},
-}
+import {DirectusResponse, DirectusSdkFetchParams} from 'directus-sdk-javascript';
 
 /**
  * @author nstCactus
  * @date 18/07/2018 13:15
  */
-export default class AbstractDirectusModel {
-  find (conditions:Array<any>) {}
 
-  protected static async _findAll(table: string, fetchParams?: DirectusSdkFetchParams): Promise<DirectusResponse> {
-    const result = await Vue.prototype.$directusSdk.getItems(table, fetchParams);
+import Cache from '../helpers/CacheHelper';
 
-    // TODO: Implement caching
-    return result;
+export default class AbstractDirectusModel
+{
+  protected static readonly responseCache = new Cache<string, DirectusResponse>();
+
+  protected static async _findAll(table: string, fetchParams?: DirectusSdkFetchParams): Promise<DirectusResponse>
+  {
+    const cacheKey = this.getCacheKey(table, fetchParams);
+    let response = this.responseCache.get(cacheKey);
+
+    if (response !== undefined) {
+      return response;
+    }
+
+    response = await Vue.prototype.$directusSdk.getItems(table, fetchParams);
+
+    this.responseCache.set(cacheKey, response!, 60);
+    return response!;
+  }
+
+  protected static getCacheKey(table: string, fetchParams?: DirectusSdkFetchParams)
+  {
+    return table + '_' + JSON.stringify(fetchParams);
   }
 }

@@ -52,16 +52,16 @@
   @Component({components: {ProducerListComponent, ProducerMapComponent, ClipLoader}})
   export default class ProducerOverviewPage extends Vue
   {
-    public producers: ProducerModel[]  = [];
+    producers: ProducerModel[] = [];
     loadingError: any = null;
     loading: boolean  = true;
 
     async created()
     {
-      await this.fetchProducers();
+      await this.populateProducers();
     }
 
-    async fetchProducers()
+    async populateProducers()
     {
       try {
         this.producers = await ProducerModel.findAll();

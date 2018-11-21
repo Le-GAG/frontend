@@ -5,6 +5,12 @@
 declare module 'directus-sdk-javascript' {
   import { AxiosError } from 'axios';
 
+  export interface DirectusResponse
+  {
+    data: {}[],
+    meta: {},
+  }
+
   export interface DirectusSdkFetchParams
   {
     order?:string,

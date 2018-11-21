@@ -63,13 +63,13 @@
   @Component
   export default class ContactDetailsCardComponent extends Vue
   {
-    @Prop() protected name: String = '';
-    @Prop() protected latLng: Object = {};
-    @Prop() protected addressLine1:string = '';
-    @Prop() protected addressLine2:string = '';
-    @Prop() protected phone:string = '';
-    @Prop() protected email:string = '';
-    @Prop() protected website:string = '';
+    @Prop({ default: '', type: String }) protected name!:string;
+    @Prop({ default: {}, type: Object }) protected latLng!:object;
+    @Prop({ default: '', type: String }) protected addressLine1!:string;
+    @Prop({ default: '', type: String }) protected addressLine2!:string;
+    @Prop({ default: '', type: String }) protected phone!:string;
+    @Prop({ default: '', type: String }) protected email!:string;
+    @Prop({ default: '', type: String }) protected website!:string;
   }
 </script>
 

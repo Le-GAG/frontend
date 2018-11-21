@@ -62,16 +62,16 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
   import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent.vue';
   import {Component, Vue, Watch} from 'vue-property-decorator';
-  import ProducerModel, {LatLng} from '../../models/ProducerModel';
+  import ProducerModel from '../../models/ProducerModel';
 
   @Component({components: {ClipLoader, ContactDetailsCardComponent}})
   export default class ProducerDetailsPage extends Vue
   {
-    producer?:ProducerModel;
-    loadingError:any = undefined;
+    producer?:ProducerModel|null = null;
+    loadingError:any = null;
     loading:boolean = true;
 
-    get latLng(): LatLng|null
+    get latLng(): any|null
     {
       if (!this.producer || !this.producer.adresse) {
         return null;
@@ -80,7 +80,7 @@
       return this.producer.adresse;
     }
 
-    get photoUrl()
+    get photoUrl(): string
     {
       if (this.producer && this.producer.photo_de_presentation) {
         return this.$directusSdk.getThumbnailUrl(
@@ -91,7 +91,7 @@
       return 'https://via.placeholder.com/480x270';
     }
 
-    get addressLine1()
+    get addressLine1(): string|null
     {
       if (
         !this.producer
@@ -106,7 +106,7 @@
       return [this.producer.numero, this.producer.rue].join(' ').trim();
     }
 
-    get addressLine2()
+    get addressLine2(): string|null
     {
       if (
         !this.producer
@@ -127,9 +127,9 @@
     }
 
     @Watch('$route')
-    onRouteChanged()
+    async onRouteChanged()
     {
-      this.fetchProducer();
+      await this.fetchProducer();
     }
 
     async fetchProducer()
@@ -140,12 +140,12 @@
 
       try {
         const producer = await ProducerModel.getBySlug(this.$route.params['slug']);
-
         if (producer === null) {
           this.loadingError = 'Erreur 404';
         }
 
-        this.producer = producer as ProducerModel;
+        this.producer = producer;
+        console.log(this.producer);
       } catch (e) {
         console.error(e);
         this.loadingError = e.toString();

@@ -6,24 +6,33 @@
 import AbstractDirectusModel from '@/models/AbstractDirectusModel';
 import ProducerActivityModel from '@/models/ProducerActivityModel';
 import {DirectusMeta} from 'directus-sdk-javascript';
+import DirectusItemFactory from '@/factories/DirectusItemFactory';
 
-interface DirectusMedia {
+interface DirectusMedia
+{
   name: string,
   width: number,
   height: number,
 }
 
-export interface LatLng {
+export interface LatLng
+{
   lat: number,
   lng: number,
 }
 
 interface ProducerModelConstructorOptions
 {
+  [index: string]: any;
+
   id: number,
   slug: string,
   raison_sociale: string,
+  siret: string,
+
   email: string,
+  site_internet: string,
+  numero_de_telephone: string,
 
   adresse: string,
   numero: string,
@@ -31,33 +40,50 @@ interface ProducerModelConstructorOptions
   code_postal: string,
   ville: string,
 
-  activites: { meta: DirectusMeta, data: {id: number, nom: string}},
-  photo_de_presentation: {data: DirectusMedia},
+  activites: { meta: DirectusMeta, data: { id: number, nom: string } },
+  photo_de_presentation: { data: DirectusMedia },
+  presentation: string,
 }
 
-export default class ProducerModel extends AbstractDirectusModel {
-  protected static readonly itemName:string = 'producteurs';
+export default class ProducerModel extends AbstractDirectusModel
+{
+  [index: string]: any;
 
-  id: number;
-  slug: string;
-  raison_sociale: string;
+  protected static readonly itemName: string = 'producteurs';
+
+  id?: number;
+  slug?: string;
+
+  raison_sociale?: string;
+  siret?: string;
+
+  email?: string;
+  site_internet?: string;
+  numero_de_telephone?: string;
 
   photo_de_presentation?: string;
 
   adresse?: LatLng;
-  numero: string = '';
-  rue: string = '';
-  code_postal: string = '';
-  ville: string = '';
+  numero?: string      = '';
+  rue?: string         = '';
+  code_postal?: string = '';
+  ville?: string       = '';
 
-  activites: ProducerActivityModel[] = [];
+  activites?: ProducerActivityModel[] = [];
+  presentation?: string;
 
-  constructor (options: ProducerModelConstructorOptions) {
+  constructor(options: ProducerModelConstructorOptions)
+  {
     super();
 
-    this.id = options.id;
-    this.slug = options.slug;
-    this.raison_sociale = options.raison_sociale;
+    [
+      'id', 'slug',
+      'raison_sociale', 'siret', 'email', 'site_internet', 'numero_de_telephone',
+      'presentation',
+      'numero', 'rue', 'ville', 'code_postal',
+    ].forEach(property => {
+      this[property] = options[property];
+    });
 
     this.photo_de_presentation = '';
     if (
@@ -70,39 +96,27 @@ export default class ProducerModel extends AbstractDirectusModel {
 
     if (options.adresse) {
       const [lat, lng] = options.adresse.split(',');
-      this.adresse = {
+      this.adresse     = {
         lat: Number(lat),
         lng: Number(lng),
       };
     }
-
-    this.numero = options.numero;
-    this.rue = options.rue;
-    this.code_postal = options.code_postal;
-    this.ville = options.ville;
   }
 
-  static async getBySlug(slug: string): Promise<ProducerModel|null>
+  static async getBySlug(slug: string): Promise<ProducerModel>
   {
-    const response =  await ProducerModel._findAll(ProducerModel.itemName, {
+    const response = await ProducerModel._findAll(ProducerModel.itemName, {
       filters: {slug},
       limit:   1,
     });
 
-    console.log(response);
-
-    return new ProducerModel(response.data as unknown as ProducerModelConstructorOptions);
+    return DirectusItemFactory.instantiateSingleItem(ProducerModel, response);
   }
 
   static async findAll(fetchParams?: {}): Promise<ProducerModel[]>
   {
     const results = await AbstractDirectusModel._findAll(ProducerModel.itemName, fetchParams);
 
-    const producers:ProducerModel[] = [];
-    results.data.forEach((result:any) => {
-      producers.push(new ProducerModel(result));
-    });
-
-    return producers;
+    return DirectusItemFactory.instantiateCollection(ProducerModel, results);
   }
 }
