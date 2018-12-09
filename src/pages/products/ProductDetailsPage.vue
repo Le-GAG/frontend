@@ -28,7 +28,7 @@
               <li
                 class="tag"
                 v-for="activite in product.activites.data"
-                v-text="activite.nom"></li>
+                v-text="activite.name"></li>
             </ul>
           </template>
         </div>

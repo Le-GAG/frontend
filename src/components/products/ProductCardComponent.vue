@@ -10,19 +10,19 @@
         class="product-card-component__link title is-4"
         :to="{ name: 'product', params: { slug: product.slug } }"
       >
-        {{ product.nom }}
+        {{ product.name }}
       </router-link>
       <p class="subtitle is-6">
-        <router-link :to="{ name: 'producer', params: { slug: product.producteur.data.slug }}">
-          {{ product.producteur.data.raison_sociale }}
+        <router-link :to="{ name: 'producer', params: { slug: product.producer.slug }}">
+          {{ product.producer.raison_sociale }}
         </router-link>
       </p>
 
-      <ul class="tags" v-if="product.tags.data">
+      <ul class="tags" v-if="product.tags.length > 0">
         <li
           class="tag"
-          v-for="tag in product.tags.data"
-          v-text="tag.nom"></li>
+          v-for="tag in product.tags"
+          v-text="tag.name"></li>
       </ul>
 
       <div class="field has-addons">
@@ -33,7 +33,7 @@
           <span class="select is-small">
             <select>
               <option
-                v-for="prix in product.prix.data"
+                v-for="prix in product.prices"
                 v-text="getConditionnement(prix)"
               ></option>
             </select>
@@ -52,31 +52,32 @@
 
 <script lang="ts">
   import {Component, Prop, Vue} from 'vue-property-decorator';
+  import ProductModel from '@/models/ProductModel';
+  import ProductPriceModel from '@/models/ProductPriceModel';
 
   @Component
   export default class ProductCardComponent extends Vue
   {
-    @Prop() protected product: any; // TODO: Declare a product type
+    @Prop() protected product!: ProductModel;
 
     get photoUrl()
     {
-      if (this.product.photos && this.product.photos.data && this.product.photos.data.length > 0) {
-        return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[0].name}`);
+      if (this.product.photos.length > 0) {
+        return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos[0].name}`);
       }
 
       return 'https://via.placeholder.com/480x270';
     };
 
-    getConditionnement(prix: any) // TODO: Declare a ProductPrice type
+    getConditionnement(price: ProductPriceModel)
     {
-      if (prix.unite_de_mesure.data.sans_quantite) {
-        return prix.conditionnement.data.nom;
+      if (price.unitOfMeasurement.isUnitless) {
+        return price.conditionnement;
       }
 
-      return prix.conditionnement.data.nom + ' ' + prix.contenance;
+      return price.conditionnement + ' ' + price.capacity;
     }
-  }
-</script>
+  }</script>
 
 
 <style scoped lang="scss">

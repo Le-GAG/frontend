@@ -10,12 +10,12 @@ export default class ProductsApi extends AbstractApi {
   fetchParams:DirectusSdkFetchParams = {
     columns: [
       'id',
-      'nom',
+      'name',
       'producteur',
       'descriptions',
       'categorie',
       'tags',
-      'prix',
+      'prices',
       'photos',
       'slug',
 

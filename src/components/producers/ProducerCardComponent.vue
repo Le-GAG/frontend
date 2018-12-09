@@ -23,7 +23,7 @@
         <li
           class="tag"
           v-for="activite in producer.activites.data"
-          v-text="activite.nom"></li>
+          v-text="activite.name"></li>
       </ul>
     </div>
   </div>
@@ -47,8 +47,7 @@
 
       return 'https://via.placeholder.com/480x270';
     }
-  }
-</script>
+  }</script>
 
 
 <style scoped lang="scss">

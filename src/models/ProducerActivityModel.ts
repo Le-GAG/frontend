@@ -4,8 +4,8 @@
  */
 
 export interface ProducerActivityConstructorOptions {
-  id: number,
-  nom: string,
+  id: number;
+  nom: string;
 }
 
 export default class ProducerActivityModel {

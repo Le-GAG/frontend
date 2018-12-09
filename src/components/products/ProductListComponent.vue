@@ -17,12 +17,12 @@
 <script lang="ts">
   import ProductCardComponent from '@/components/products/ProductCardComponent.vue';
   import {Component, Prop, Vue} from 'vue-property-decorator';
+  import ProductModel from '@/models/ProductModel';
 
   @Component({components: {ProductCardComponent}})
   export default class ProductListComponent extends Vue{
-    @Prop({ default: []}) protected products!: Array<any>; // TODO: Declare a product type
-  }
-</script>
+    @Prop({ default: []}) protected products!: ProductModel[];
+  }</script>
 
 
 <style scoped lang="scss">

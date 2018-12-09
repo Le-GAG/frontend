@@ -40,24 +40,42 @@
   import ProductListComponent from '@/components/products/ProductListComponent.vue';
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
   import {Component, Vue} from 'vue-property-decorator';
+  import ProductModel from '@/models/ProductModel';
 
   @Component({components: {ProductListComponent, ClipLoader}})
   export default class ProductOverviewPage extends Vue
   {
-    products: Array<any> = []; // TODO: Declare a product type
+    products: ProductModel[] = [];
     loadingError: any    = null;
     loading: boolean     = true;
 
     async created()
     {
-      await this.fetchProducts();
+      await this.populateProducts();
     }
 
-    async fetchProducts()
+    async populateProducts()
     {
       try {
-        const result  = await this.$api.products.getAll();
-        this.products = Array.from(result.values());
+        const products = await ProductModel.findAll({
+          columns: [
+            'id',
+            'nom',
+            'producteur',
+            'descriptions',
+            'categorie',
+            'tags',
+            'prix',
+            'photos',
+            'slug',
+
+            'prix_des_produits.conditionnement',
+            'prix_des_produits.unite',
+            'prix_des_produits.unite_de_mesure',
+          ],
+        });
+
+        this.products = products.filter(product => product.prices.length > 0);
       } catch (e) {
         console.error(e);
         this.loadingError = e.toString();
@@ -65,8 +83,7 @@
         this.loading = false;
       }
     }
-  }
-</script>
+  }</script>
 
 
 <style scoped lang="scss">

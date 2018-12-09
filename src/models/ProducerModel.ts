@@ -4,7 +4,7 @@
  */
 
 import AbstractDirectusModel from '@/models/AbstractDirectusModel';
-import ProducerActivityModel from '@/models/ProducerActivityModel';
+import ProducerActivityModel, {ProducerActivityConstructorOptions} from '@/models/ProducerActivityModel';
 import {DirectusMeta} from 'directus-sdk-javascript';
 import DirectusItemFactory from '@/factories/DirectusItemFactory';
 
@@ -21,10 +21,8 @@ export interface LatLng
   lng: number,
 }
 
-interface ProducerModelConstructorOptions
+export interface ProducerModelConstructorOptions
 {
-  [index: string]: any;
-
   id: number,
   slug: string,
   raison_sociale: string,
@@ -40,50 +38,52 @@ interface ProducerModelConstructorOptions
   code_postal: string,
   ville: string,
 
-  activites: { meta: DirectusMeta, data: { id: number, nom: string } },
-  photo_de_presentation: { data: DirectusMedia },
+  activites: {meta: any, data: ProducerActivityConstructorOptions[]},
+  photo_de_presentation: { meta: any, data: DirectusMedia },
   presentation: string,
 }
 
 export default class ProducerModel extends AbstractDirectusModel
 {
-  [index: string]: any;
-
   protected static readonly itemName: string = 'producteurs';
 
-  id?: number;
-  slug?: string;
+  id: number;
+  slug: string;
 
-  raison_sociale?: string;
-  siret?: string;
+  raison_sociale: string;
+  siret: string;
 
-  email?: string;
-  site_internet?: string;
-  numero_de_telephone?: string;
+  email: string;
+  site_internet: string;
+  numero_de_telephone: string;
 
-  photo_de_presentation?: string;
+  photo_de_presentation: string;
 
   adresse?: LatLng;
-  numero?: string      = '';
-  rue?: string         = '';
-  code_postal?: string = '';
-  ville?: string       = '';
+  numero: string      = '';
+  rue: string         = '';
+  code_postal: string = '';
+  ville: string       = '';
 
-  activites?: ProducerActivityModel[] = [];
-  presentation?: string;
+  activites: ProducerActivityModel[] = [];
+  presentation: string;
 
   constructor(options: ProducerModelConstructorOptions)
   {
     super();
 
-    [
-      'id', 'slug',
-      'raison_sociale', 'siret', 'email', 'site_internet', 'numero_de_telephone',
-      'presentation',
-      'numero', 'rue', 'ville', 'code_postal',
-    ].forEach(property => {
-      this[property] = options[property];
-    });
+    this.id = options.id;
+    this.slug = options.slug;
+    this.raison_sociale = options.raison_sociale;
+    this.siret = options.siret;
+    this.email = options.email;
+    this.site_internet = options.site_internet;
+    this.numero_de_telephone = options.numero_de_telephone;
+    this.numero = options.numero;
+    this.rue = options.rue;
+    this.code_postal = options.code_postal;
+    this.ville = options.ville;
+    this.presentation = options.presentation;
 
     this.photo_de_presentation = '';
     if (
@@ -94,12 +94,20 @@ export default class ProducerModel extends AbstractDirectusModel
       this.photo_de_presentation = options.photo_de_presentation.data.name;
     }
 
+    this.adresse = undefined;
     if (options.adresse) {
       const [lat, lng] = options.adresse.split(',');
       this.adresse     = {
         lat: Number(lat),
         lng: Number(lng),
       };
+    }
+
+    this.activites = [];
+    if (options.activites) {
+      options.activites.data.forEach((activite: ProducerActivityConstructorOptions) => {
+        this.activites.push(new ProducerActivityModel(activite));
+      });
     }
   }
 
