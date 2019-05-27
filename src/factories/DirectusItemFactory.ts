@@ -16,8 +16,12 @@ export default class DirectusItemFactory
     return items;
   }
 
-  static instantiateSingleItem<T>(itemClass: {new(data: any): T}, response: DirectusResponse): T
+  static instantiateSingleItem<T>(itemClass: {new(data: any): T}, response: DirectusResponse): T|null
   {
+    if (response.data.length === 0) {
+      return null;
+    }
+
     return new itemClass(response.data[0]);
   }
 }

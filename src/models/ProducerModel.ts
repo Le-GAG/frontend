@@ -5,8 +5,8 @@
 
 import AbstractDirectusModel from '@/models/AbstractDirectusModel';
 import ProducerActivityModel, {ProducerActivityConstructorOptions} from '@/models/ProducerActivityModel';
-import {DirectusMeta} from 'directus-sdk-javascript';
 import DirectusItemFactory from '@/factories/DirectusItemFactory';
+import DirectusMediaModel, {DirectusMediaModelConstructorOptions} from '@/models/DirectusMediaModel';
 
 interface DirectusMedia
 {
@@ -38,8 +38,9 @@ export interface ProducerModelConstructorOptions
   code_postal: string,
   ville: string,
 
-  activites: {meta: any, data: ProducerActivityConstructorOptions[]},
-  photo_de_presentation: { meta: any, data: DirectusMedia },
+  activites: { activite_id: ProducerActivityConstructorOptions }[],
+  photo_de_presentation: DirectusMediaModelConstructorOptions;
+
   presentation: string,
 }
 
@@ -57,13 +58,13 @@ export default class ProducerModel extends AbstractDirectusModel
   site_internet: string;
   numero_de_telephone: string;
 
-  photo_de_presentation: string;
+  photo_de_presentation: DirectusMediaModel|null;
 
-  adresse?: LatLng;
-  numero: string      = '';
-  rue: string         = '';
-  code_postal: string = '';
-  ville: string       = '';
+  adresse: LatLng|null = null;
+  numero: string       = '';
+  rue: string          = '';
+  code_postal: string  = '';
+  ville: string        = '';
 
   activites: ProducerActivityModel[] = [];
   presentation: string;
@@ -85,37 +86,28 @@ export default class ProducerModel extends AbstractDirectusModel
     this.ville = options.ville;
     this.presentation = options.presentation;
 
-    this.photo_de_presentation = '';
-    if (
-      options.photo_de_presentation
-      && options.photo_de_presentation.data
-      && options.photo_de_presentation.data.name
-    ) {
-      this.photo_de_presentation = options.photo_de_presentation.data.name;
-    }
+    this.photo_de_presentation = ProducerModel.instantiatePhoto(options.photo_de_presentation);
 
-    this.adresse = undefined;
-    if (options.adresse) {
-      const [lat, lng] = options.adresse.split(',');
+    if (options.adresse && 'object' == typeof options.adresse) {
+      const {lat, lng} = options.adresse;
       this.adresse     = {
-        lat: Number(lat),
-        lng: Number(lng),
+        lat: lat,
+        lng: lng,
       };
     }
 
-    this.activites = [];
-    if (options.activites) {
-      options.activites.data.forEach((activite: ProducerActivityConstructorOptions) => {
-        this.activites.push(new ProducerActivityModel(activite));
-      });
-    }
+    this.activites = ProducerModel.instantiateActivites(options.activites);
   }
 
-  static async getBySlug(slug: string): Promise<ProducerModel>
+  static async getBySlug(slug: string, fields?: string[]): Promise<ProducerModel|null>
   {
     const response = await ProducerModel._findAll(ProducerModel.itemName, {
-      filters: {slug},
-      limit:   1,
+      fields: fields,
+      filter: {
+        slug:   slug,
+        active: 'published',
+      },
+      limit: 1,
     });
 
     return DirectusItemFactory.instantiateSingleItem(ProducerModel, response);
@@ -126,5 +118,24 @@ export default class ProducerModel extends AbstractDirectusModel
     const results = await AbstractDirectusModel._findAll(ProducerModel.itemName, fetchParams);
 
     return DirectusItemFactory.instantiateCollection(ProducerModel, results);
+  }
+
+  private static instantiatePhoto(photoDescriptor: DirectusMediaModelConstructorOptions): DirectusMediaModel|null
+  {
+    if (!photoDescriptor) {
+      return null;
+    }
+
+    return new DirectusMediaModel(photoDescriptor);
+  }
+
+  private static instantiateActivites(activiteDescriptors: { activite_id: ProducerActivityConstructorOptions }[]): ProducerActivityModel[]
+  {
+    const activites: ProducerActivityModel[] = [];
+    activiteDescriptors.forEach(activiteDescriptor => {
+      activites.push(new ProducerActivityModel(activiteDescriptor.activite_id));
+    });
+
+    return activites;
   }
 }

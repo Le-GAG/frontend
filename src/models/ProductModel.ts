@@ -18,14 +18,11 @@ interface ProductModelConstructorOptions
   slug: string,
 
   categorie: ProductCategoryModel|ProductCategoryModelConstructorOptions;
-  tags: {meta: any, data: {name: string, id: number}[]};
+  tags: { tag_id: ProductTagModelConstructorOptions }[];
 
   producteur: ProducerModel|ProducerModelConstructorOptions;
-  prix: {meta: any, data: ProductPriceModelConstructorOptions[]};
-  photos: {
-    meta: any[],
-    data: DirectusMediaModelConstructorOptions[],
-  };
+  prix: ProductPriceModelConstructorOptions[];
+  photos: { photo: DirectusMediaModelConstructorOptions }[];
 
   thumbnail: DirectusMediaModel|DirectusMediaModelConstructorOptions;
 }
@@ -56,15 +53,11 @@ export default class ProductModel extends AbstractDirectusModel
     this.slug      = options.slug;
 
     this.category  = ProductModel.instanciateCategory(options.categorie);
-    this.tags      = ProductModel.instanciateTags(options.tags.data);
+    this.tags      = ProductModel.instanciateTags(options.tags);
 
     this.producer  = ProductModel.instantiateProducer(options.producteur);
-    this.prices    = ProductModel.instanciatePrices(options.prix.data);
-    this.photos    = DirectusMediaModel.instanciatePhotos(options.photos.data);
-
-    if (options.thumbnail) {
-      this.thumbnail = ProductModel.instanciateThumbnail(options.thumbnail);
-    }
+    this.prices    = ProductModel.instanciatePrices(options.prix);
+    this.photos    = ProductModel.instanciatePhotos(options.photos);
   }
 
   private static instanciateCategory(category: ProductCategoryModel|ProductCategoryModelConstructorOptions): ProductCategoryModel
@@ -72,15 +65,8 @@ export default class ProductModel extends AbstractDirectusModel
     if (!(category instanceof ProductCategoryModel)) {
       category = new ProductCategoryModel(<ProductCategoryModelConstructorOptions>category);
     }
-    return <ProductCategoryModel>category;
-  }
 
-  private static instanciateThumbnail(thumbnail: DirectusMediaModel|DirectusMediaModelConstructorOptions): DirectusMediaModel
-  {
-    if (!(thumbnail instanceof DirectusMediaModel)) {
-      thumbnail = new DirectusMediaModel(<DirectusMediaModelConstructorOptions>thumbnail);
-    }
-    return <DirectusMediaModel>thumbnail;
+    return <ProductCategoryModel>category;
   }
 
   private static instantiateProducer(producer: ProducerModel|ProducerModelConstructorOptions): ProducerModel
@@ -88,6 +74,7 @@ export default class ProductModel extends AbstractDirectusModel
     if (!(producer instanceof ProducerModel)) {
       producer = new ProducerModel(<ProducerModelConstructorOptions>producer);
     }
+
     return <ProducerModel>producer;
   }
 
@@ -106,24 +93,35 @@ export default class ProductModel extends AbstractDirectusModel
     return instantiatedPrices;
   }
 
-  private static instanciateTags(tags: ProductTagModel[] | ProductTagModelConstructorOptions[])
+  private static instanciateTags(tags: ProductTagModel[] | { tag_id: ProductTagModelConstructorOptions}[])
   {
     const instantiatedTags:ProductTagModel[] = [];
 
     for (let tag of tags) {
       if (!(tag instanceof ProductTagModel)) {
-        instantiatedTags.push(new ProductTagModel(<ProductTagModelConstructorOptions>tag));
+        instantiatedTags.push(new ProductTagModel(<ProductTagModelConstructorOptions>tag.tag_id));
       }
     }
 
     return instantiatedTags;
   }
 
-  static async getBySlug(slug: string): Promise<ProductModel>
+  private static instanciatePhotos(photoDescriptors: { photo: DirectusMediaModelConstructorOptions}[])
+  {
+    const photos: DirectusMediaModel[] = [];
+    photoDescriptors.forEach(photoDescriptor => {
+      photos.push(new DirectusMediaModel(photoDescriptor.photo));
+    });
+
+    return photos;
+  }
+
+
+  static async getBySlug(slug: string): Promise<ProductModel|null>
   {
     const response = await ProductModel._findAll(ProductModel.itemName, {
-      filters: {slug},
-      limit:   1,
+      filter: { slug },
+      limit:  1,
     });
 
     return DirectusItemFactory.instantiateSingleItem(ProductModel, response);

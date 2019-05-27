@@ -26,12 +26,12 @@
       </div>
     </section>
 
-    <template v-else>
-      <product-list-component
-        :products="products"
-        :loading="loading"
-      />
-    </template>
+    <product-list-component
+      v-else
+      :products="products"
+      :loading="loading"
+
+    />
   </div>
 </template>
 
@@ -57,25 +57,27 @@
     async populateProducts()
     {
       try {
-        const products = await ProductModel.findAll({
-          columns: [
+        this.products = await ProductModel.findAll({
+          fields: [
             'id',
             'nom',
-            'producteur',
-            'descriptions',
-            'categorie',
-            'tags',
-            'prix',
-            'photos',
+            'producteur.*.*',
+            'description',
+            'categorie.*',
+            'tags.tag_id.*',
+            'prix.*',
+            'prix.conditionnement.*',
+            'prix.unite_de_mesure.*',
+            'photos.*.*',
             'slug',
-
-            'prix_des_produits.conditionnement',
-            'prix_des_produits.unite',
-            'prix_des_produits.unite_de_mesure',
           ],
+          filter: {
+            'categorie.nom':     { nempty: true },
+            'producteur.active': 'published',
+            'active':            'published',
+            'prix':              { has: 0 },
+          },
         });
-
-        this.products = products.filter(product => product.prices.length > 0);
       } catch (e) {
         console.error(e);
         this.loadingError = e.toString();

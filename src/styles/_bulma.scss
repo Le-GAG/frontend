@@ -8,8 +8,28 @@
 
 
 // 2. Set your own initial variables
-// Update blue
-$blue: #72d0eb;
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,700');
+
+// Set your brand colors
+$purple: #8A4D76;
+$pink: #FA7C91;
+$brown: #757763;
+$beige-light: #D0D1CD;
+$beige-lighter: #EFF0EB;
+
+// Update Bulma's global variables
+$family-sans-serif: "Nunito", sans-serif;
+$grey-dark: $brown;
+$grey-light: $beige-light;
+$primary: $purple;
+$link: $pink;
+
+// Update some of Bulma's component variables
+$control-border-width: 2px;
+$input-background-color: $beige-lighter;
+$input-border-color: transparent;
+$input-shadow: none;
 
 // 3. Set the derived variables
 
@@ -41,11 +61,11 @@ $colors: map-merge($colors, $addColors);
 @import "~bulma/sass/components/navbar";
 @import "~bulma/sass/components/level";
 
+@import "~bulma/sass/form/_all";
 @import "~bulma/sass/elements/box";
 @import "~bulma/sass/elements/button";
 @import "~bulma/sass/elements/container";
 @import "~bulma/sass/elements/content";
-@import "~bulma/sass/elements/form";
 @import "~bulma/sass/elements/icon";
 @import "~bulma/sass/elements/image";
 @import "~bulma/sass/elements/tag";

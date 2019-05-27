@@ -21,17 +21,18 @@ export default {
 
   async authenticate (email: string, password: string, stayConnected: boolean) {
     try {
-      const response = await Vue.prototype.$directusSdk.authenticate(email, password);
-      if (response.data && response.data.token) {
+      const response = await Vue.prototype.$directusSdk.login({email, password});
+      if (response.token) {
         // Persists authentication using cookies
         const options:CookieAttributes = {};
         if (stayConnected) {
+          console.log('Let\'s persist auth token for: ', stayConnected, stayConnectedCookieName, authenticationCookieName); // eslint-disable-line
           options.expires = stayConnectedExpiration;
           Cookies.set(stayConnectedCookieName, new Date(), options);
         }
-        Cookies.set(authenticationCookieName, response.data.token, options);
+        Cookies.set(authenticationCookieName, response.token, options);
 
-        return response.data.token;
+        return response.token;
       } else {
         // FIXME: Handle errors more nicely
         // noinspection ExceptionCaughtLocallyJS

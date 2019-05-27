@@ -8,45 +8,51 @@
         'is-primary': producer,
       }"
       :style="{
-        backgroundSize:     'cover',
+        backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundImage:    `url('${photoUrl}')`,
+        backgroundImage: `url('${photoUrl}')`,
       }"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
-            <h1 class="title">Erreur de chargement</h1>
-            <h2 class="subtitle">{{ loadingError }}</h2>
+            <h1 class="title">
+              Erreur de chargement
+            </h1>
+            <h2 class="subtitle">
+              {{ loadingError }}
+            </h2>
           </template>
 
           <template v-if="producer">
-            <h1 class="producer-details-page__name title" :data-content="producer.raison_sociale"></h1>
-            <ul class="producer-details-page__activites tags" v-if="producer.activites.data">
+            <h1 class="producer-details-page__name title" :data-content="producer.raison_sociale" />
+            <ul v-if="producer.activites" class="producer-details-page__activites tags">
               <li
+                v-for="activite in producer.activites"
+                :key="activite.id"
                 class="tag"
-                v-for="activite in producer.activites.data"
-                v-text="activite.name"></li>
+                v-text="activite.nom"
+              />
             </ul>
           </template>
         </div>
       </div>
     </section>
 
-    <section class="section" v-if="producer">
+    <section v-if="producer" class="section">
       <div class="columns">
         <div class="column is-two-thirds">
-          <div class="content" v-html="producer.presentation"></div>
+          <div class="content" v-html="producer.presentation" /><!-- eslint-disable-line vue/no-v-html-->
         </div>
 
         <div class="column is-one-third">
           <contact-details-card-component
             :name="producer.raison_sociale"
-            :latLng="latLng"
-            :addressLine1="addressLine1"
-            :addressLine2="addressLine2"
+            :lat-lng="latLng"
+            :address-line1="addressLine1"
+            :address-line2="addressLine2"
             :email="producer.email"
             :phone="producer.numero_de_telephone"
             :website="producer.site_internet"
@@ -67,7 +73,7 @@
   @Component({components: {ClipLoader, ContactDetailsCardComponent}})
   export default class ProducerDetailsPage extends Vue
   {
-    producer?:ProducerModel|null = null;
+    producer:ProducerModel|null = null;
     loadingError:any = null;
     loading:boolean = true;
 
@@ -80,15 +86,17 @@
       return this.producer.adresse;
     }
 
-    get photoUrl(): string
+    get photoUrl()
     {
       if (this.producer && this.producer.photo_de_presentation) {
-        return this.$directusSdk.getThumbnailUrl(
-          `/1200/675/crop/good/${this.producer.photo_de_presentation}`
-        );
+        const thumbnail = this.producer.photo_de_presentation.getThumbnailUrl('crop', 1200, 400);
+
+        if (thumbnail !== null) {
+          return thumbnail;
+        }
       }
 
-      return 'https://via.placeholder.com/480x270';
+      return 'https://via.placeholder.com/1200x400';
     }
 
     get addressLine1(): string|null
@@ -136,18 +144,37 @@
     {
       this.loadingError = undefined;
       this.loading      = true;
-      this.producer     = undefined;
+      this.producer     = null;
 
       try {
-        const producer = await ProducerModel.getBySlug(this.$route.params['slug']);
+        const producer = await ProducerModel.getBySlug(this.$route.params['slug'], [
+          'id',
+          'raison_sociale',
+          'siret',
+          'slug',
+
+          'presentation',
+          'photo_de_presentation.*',
+
+          'adresse',
+          'numero',
+          'rue',
+          'code_postal',
+          'ville',
+
+          'email',
+          'numero_de_telephone',
+          'site_internet',
+
+          'activites.*.*',
+        ]);
         if (producer === null) {
-          this.loadingError = 'Erreur 404';
+          this.loadingError = 'Ce producteur n\'existe pas';
         }
 
         this.producer = producer;
-        console.log(this.producer);
       } catch (e) {
-        console.error(e);
+        console.error(e);// eslint-disable-line no-console
         this.loadingError = e.toString();
       } finally {
         this.loading = false;

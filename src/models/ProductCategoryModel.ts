@@ -36,9 +36,9 @@ export default class ProductCategoryModel extends AbstractDirectusModel {
     }
 
     this.seo = new SeoModel({
-      SEO_titre: options.SEO_titre || '',
+      SEO_titre:       options.SEO_titre || '',
       SEO_description: options.SEO_description || '',
-      SEO_keywords: options.SEO_keywords || '',
+      SEO_keywords:    options.SEO_keywords || '',
     });
   }
 }

@@ -11,9 +11,9 @@ export interface ProductPriceModelConstructorOptions {
   prix_unitaire: string,
 
   contenance: string,
-  conditionnement: {meta: any, data: {id: number, nom: string}},
-  produit: {meta: any, data: {id: number, active: 0|1, nom: string, [key:string]: any}},
-  unite_de_mesure: {meta: any, data: UnitOfMeasurementModelConstructorOptions},
+  conditionnement: {id: number, nom: string},
+  produit: {id: number, active: 0|1, nom: string, [key:string]: any},
+  unite_de_mesure: UnitOfMeasurementModelConstructorOptions,
 }
 
 export default class ProductPriceModel {
@@ -30,8 +30,8 @@ export default class ProductPriceModel {
     this.id = options.id;
 
     this.capacity          = options.contenance;
-    this.conditionnement   = options.conditionnement.data.nom;
-    this.unitOfMeasurement = new UnitOfMeasurementModel(options.unite_de_mesure.data);
+    this.conditionnement   = options.conditionnement.nom;
+    this.unitOfMeasurement = new UnitOfMeasurementModel(options.unite_de_mesure);
 
     this.price = Number(options.prix);
     this.unitPrice = Number(options.prix_unitaire);

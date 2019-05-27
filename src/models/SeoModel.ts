@@ -21,5 +21,5 @@ export default class SeoModel
     this.title = options.SEO_titre;
     this.description = options.SEO_description;
     this.keywords = options.SEO_keywords.split(',');
-  };
+  }
 }

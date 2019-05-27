@@ -5,17 +5,12 @@
 
 import VuexStore from '@/store';
 
-import {RemoteInstance} from 'directus-sdk-javascript';
-declare module 'directus-sdk-javascript' {
-  interface RemoteInstance {
-    getThumbnailUrl(thumbnailSpecification: string):string;
-  }
-}
+import DirectusSDK from '@directus/sdk-js';
 
 import Vue from 'vue';
 declare module 'vue/types/vue' {
   interface Vue {
-    $directusSdk: RemoteInstance
+    $directusSdk: DirectusSDK,
   }
 }
 
@@ -25,9 +20,9 @@ Vue.use({
       throw new ReferenceError('The "VUE_APP_BACKEND_ENDPOINT" environment variable must be defined.');
     }
 
-    Vue.prototype.$directusSdk = new RemoteInstance({
-      accessToken: VuexStore.getters.authToken,
-      url:         process.env.VUE_APP_BACKEND_ENDPOINT,
+    Vue.prototype.$directusSdk = new DirectusSDK({
+      token: VuexStore.getters.authToken,
+      url:   process.env.VUE_APP_BACKEND_ENDPOINT,
     });
 
     Vue.prototype.$directusSdk.getThumbnailUrl = (thumbnailSpecification: string):string => {

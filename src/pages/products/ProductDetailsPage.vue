@@ -8,14 +8,14 @@
         'is-primary': product,
       }"
       :style="{
-        backgroundSize:     'cover',
+        backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundImage:    `url('${photoUrl}')`,
+        backgroundImage: `url('${photoUrl}')`,
       }"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
             <h1 class="title">Erreur de chargement</h1>
@@ -23,30 +23,32 @@
           </template>
 
           <template v-if="product">
-            <h1 class="product-details-page__name title" :data-content="product.raison_sociale"></h1>
-            <ul class="product-details-page__activites tags" v-if="false && product.activites.data">
+            <h1 class="product-details-page__name title" :data-content="product.raison_sociale" />
+            <ul v-if="false && product.activites.data" class="product-details-page__activites tags">
               <li
+                v-for="(activite, index) in product.activites.data"
+                :key="index"
                 class="tag"
-                v-for="activite in product.activites.data"
-                v-text="activite.name"></li>
+                v-text="activite.name"
+              />
             </ul>
           </template>
         </div>
       </div>
     </section>
 
-    <section class="section" v-if="product">
+    <section v-if="product" class="section">
       <div class="columns">
         <div class="column is-two-thirds">
-          <div class="content" v-html="product.presentation"></div>
+          <div class="content" v-html="product.presentation" /><!-- eslint-disable-line vue/no-v-html -->
         </div>
 
         <div class="column is-one-third">
           <contact-details-card-component
             :name="product.raison_sociale"
-            :latLng="latLng"
-            :addressLine1="addressLine1"
-            :addressLine2="addressLine2"
+            :lat-lng="latLng"
+            :address-line1="addressLine1"
+            :address-line2="addressLine2"
             :email="product.email"
             :phone="product.numero_de_telephone"
             :website="product.site_internet"
@@ -78,11 +80,7 @@
 
     get photoUrl()
     {
-      if (this.product && this.product.photo_de_presentation) {
-        return this.$directusSdk.getThumbnailUrl(
-          `/1200/675/crop/good/${this.product.photo_de_presentation.data.name}`);
-      }
-
+      // TODO: implement this
       return 'https://via.placeholder.com/480x270';
     }
 

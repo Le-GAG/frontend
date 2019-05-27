@@ -7,28 +7,6 @@ import AbstractApi from '@/api/abstractApi';
 import { DirectusSdkFetchParams } from 'directus-sdk-javascript';
 
 export default class ProductsApi extends AbstractApi {
-  fetchParams:DirectusSdkFetchParams = {
-    columns: [
-      'id',
-      'name',
-      'producteur',
-      'descriptions',
-      'categorie',
-      'tags',
-      'prices',
-      'photos',
-      'slug',
-
-      'prix_des_produits.conditionnement',
-      'prix_des_produits.unite',
-      'prix_des_produits.unite_de_mesure',
-    ],
-
-    filters: {
-      prix: { has: 1 },
-    },
-  };
-
   constructor () {
     super();
 

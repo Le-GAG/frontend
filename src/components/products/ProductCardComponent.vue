@@ -2,7 +2,7 @@
   <div class="product-card-component card">
     <router-link :to="{ name: 'product', params: { slug: product.slug } }" class="card-image">
       <figure class="image is-16by9">
-        <img :src="photoUrl" alt="Placeholder image">
+        <img :src="photoUrl" alt="Placeholder image" class="product-card-component__product-photo">
       </figure>
     </router-link>
     <div class="card-content">
@@ -18,11 +18,13 @@
         </router-link>
       </p>
 
-      <ul class="tags" v-if="product.tags.length > 0">
+      <ul v-if="product.tags.length > 0" class="tags">
         <li
-          class="tag"
           v-for="tag in product.tags"
-          v-text="tag.name"></li>
+          :key="tag.id"
+          class="tag"
+          v-text="tag.name"
+        />
       </ul>
 
       <div class="field has-addons">
@@ -34,14 +36,15 @@
             <select>
               <option
                 v-for="prix in product.prices"
+                :key="prix.id"
                 v-text="getConditionnement(prix)"
-              ></option>
+              />
             </select>
           </span>
         </p>
         <p class="control">
           <a class="button is-primary is-small">
-            <i class="fa fa-shopping-basket"></i>
+            <i class="fa fa-shopping-basket" />
           </a>
         </p>
       </div>
@@ -63,11 +66,11 @@
     get photoUrl()
     {
       if (this.product.photos.length > 0) {
-        return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos[0].name}`);
+        return this.product.photos[0].getThumbnailUrl('crop', 480, 270);
       }
 
       return 'https://via.placeholder.com/480x270';
-    };
+    }
 
     getConditionnement(price: ProductPriceModel)
     {
@@ -89,6 +92,10 @@
       &:active {
         text-decoration: underline;
       }
+    }
+
+    &__product-photo {
+      object-fit: cover;
     }
   }
 </style>

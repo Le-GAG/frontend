@@ -10,13 +10,13 @@
     </section>
 
     <section
-      class="hero is-medium"
       v-if="loading || loadingError"
+      class="hero is-medium"
       :class="{ 'is-danger': loadingError }"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
             <h1 class="title">Erreur de chargement</h1>
@@ -64,9 +64,34 @@
     async populateProducers()
     {
       try {
-        this.producers = await ProducerModel.findAll();
+        this.producers = await ProducerModel.findAll({
+          fields: [
+            'id',
+            'raison_sociale',
+            'siret',
+            'slug',
+
+            'presentation',
+            'photo_de_presentation.*',
+
+            'adresse',
+            'numero',
+            'rue',
+            'code_postal',
+            'ville',
+
+            'email',
+            'numero_de_telephone',
+            'site_internet',
+
+            'activites.*.*',
+          ],
+          filter: {
+            'active': 'published',
+          },
+        });
       } catch (e) {
-        console.error(e);
+        console.error(e);// eslint-disable-line no-console
         this.loadingError = e.toString();
       } finally {
         this.loading = false;

@@ -20,8 +20,8 @@ declare module 'directus-sdk-javascript' {
     offset?:number,
     status?: Array<number>|string,
     ids?: Array<number>|string,
-    filters?: object,
-    columns?: Array<string>,
+    filter?: object,
+    fields?: Array<string>,
   }
 
   export interface Options {
