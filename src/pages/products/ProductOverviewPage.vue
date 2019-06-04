@@ -10,13 +10,13 @@
     </section>
 
     <section
-      class="hero is-medium"
       v-if="loading || loadingError"
+      class="hero is-medium"
       :class="{ 'is-danger': loadingError }"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
             <h1 class="title">Erreur de chargement</h1>
@@ -30,7 +30,6 @@
       v-else
       :products="products"
       :loading="loading"
-
     />
   </div>
 </template>
@@ -75,11 +74,11 @@
             'categorie.nom':     { nempty: true },
             'producteur.active': 'published',
             'active':            'published',
-            'prix':              { has: 0 },
+            'prix':              { has: 1 },
           },
         });
       } catch (e) {
-        console.error(e);
+        console.error(e); // eslint-disable-line no-console
         this.loadingError = e.toString();
       } finally {
         this.loading = false;

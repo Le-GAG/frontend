@@ -1,12 +1,12 @@
 <template>
   <div class="App">
-    <header-component class="App__header"/>
+    <header-component class="App__header" />
 
     <main>
-      <router-view/>
+      <router-view />
     </main>
 
-    <footer-component class="App__footer"/>
+    <footer-component class="App__footer" />
   </div>
 </template>
 

@@ -2,9 +2,9 @@
   <section class="product-list-component section">
     <div class="container">
       <ul class="columns is-multiline is-tablet">
-        <li class="product-list-component__card-container column is-half-tablet is-one-third-desktop is-one-quarter-fullhd"
-            v-for="product in products"
+        <li v-for="product in products"
             :key="product.id"
+            class="product-list-component__card-container column is-half-tablet is-one-third-desktop is-one-quarter-fullhd"
         >
           <product-card-component class="product-list-component__card"
                                   :product="product"

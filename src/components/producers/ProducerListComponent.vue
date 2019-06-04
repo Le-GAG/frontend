@@ -5,8 +5,9 @@
         <li
           v-for="producer in producers"
           :key="producer.id"
-          class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
-          <producer-card-component :producer="producer"/>
+          class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd"
+        >
+          <producer-card-component :producer="producer" />
         </li>
       </ul>
     </div>

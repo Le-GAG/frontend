@@ -15,39 +15,39 @@
     <div class="card-content">
       <div class="producer-contact-details-component__contact-details content">
         <div
-          class="producer-contact-details-component__website"
           v-if="website"
+          class="producer-contact-details-component__website"
         >
-          <span class="icon"><i class="fa fa-globe"></i></span>
+          <span class="icon"><i class="fa fa-globe" /></span>
           <a :href="website" target="_blank" rel="noopener noreferrer">{{ website }}</a>
         </div>
 
         <div
-          class="producer-contact-details-component__email"
           v-if="email"
+          class="producer-contact-details-component__email"
         >
-          <span class="icon"><i class="fa fa-at"></i></span>
+          <span class="icon"><i class="fa fa-at" /></span>
           <a :href="`mailto:${email}`">{{ email }}</a>
         </div>
 
         <address
-          class="producer-contact-details-component__address"
           v-if="addressLine1 || addressLine2"
+          class="producer-contact-details-component__address"
         >
-          <span class="icon"><i class="fa fa-envelope"></i></span>
-          <div class="producer-contact-details-component__addressLine1" v-if="addressLine1">
+          <span class="icon"><i class="fa fa-envelope" /></span>
+          <div v-if="addressLine1" class="producer-contact-details-component__addressLine1">
             {{ addressLine1 }}
           </div>
-          <div class="producer-contact-details-component__addressLine2" v-if="addressLine2">
+          <div v-if="addressLine2" class="producer-contact-details-component__addressLine2">
             {{ addressLine2 }}
           </div>
         </address>
 
         <div
-          class="producer-contact-details-component__phone"
           v-if="phone"
+          class="producer-contact-details-component__phone"
         >
-          <span class="icon"><i class="fa fa-phone"></i></span>
+          <span class="icon"><i class="fa fa-phone" /></span>
           <a :href="`tel:${phone.replace(/[ -()]/, '')}`">
             {{ phone }}</a>
         </div>
