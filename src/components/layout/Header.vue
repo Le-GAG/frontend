@@ -4,7 +4,7 @@
       <div class="navbar-brand Header__top-bar">
         <router-link class="navbar-item" :to="{ name: 'home' }">
           <div class="navbar-item has-text-white">
-            <span class="icon is-small"><i class="fa fa-shopping-basket"></i></span>
+            <span class="icon is-small"><i class="fa fa-shopping-basket" /></span>
           </div>
           <h1 class="title is-4 has-text-white" title="Groupement d'Achats du Grésivaudan">Le G@G</h1>
         </router-link>
@@ -14,34 +14,27 @@
           data-target="navbarExampleTransparentExample"
           @click="isMenuOpened = !isMenuOpened"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span />
+          <span />
+          <span />
         </div>
       </div>
 
-      <menu-component :is-menu-opened="isMenuOpened" @close="isMenuOpened = false"/>
+      <menu-component :is-menu-opened="isMenuOpened" @close="isMenuOpened = false" />
     </nav>
   </header>
 </template>
 
 
-<script>
-  import MenuComponent from '@/components/layout/Menu';
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import MenuComponent from '@/components/layout/Menu.vue';
 
-  export default {
-    name: 'header-component',
-
-    components: {
-      MenuComponent,
-    },
-
-    data () {
-      return {
-        isMenuOpened: false,
-      };
-    },
-  };
+  @Component({components: {MenuComponent}})
+  export default class HeaderComponent extends Vue
+  {
+    isMenuOpened: boolean = false;
+  }
 </script>
 
 

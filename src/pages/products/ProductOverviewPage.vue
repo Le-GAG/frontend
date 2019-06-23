@@ -10,13 +10,14 @@
     </section>
 
     <section
-      class="hero is-medium"
       v-if="loading || loadingError"
+      class="hero is-medium"
       :class="{ 'is-danger': loadingError }"
+      @click="retryLoading"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
             <h1 class="title">Erreur de chargement</h1>
@@ -26,55 +27,73 @@
       </div>
     </section>
 
-    <template v-else>
-      <product-list-component
-        :products="products"
-        :loading="loading"
-      />
-    </template>
+    <product-list-component
+      v-else
+      :products="products"
+      :loading="loading"
+    />
   </div>
 </template>
 
 
-<script>
-  import ProductListComponent from '@/components/products/ProductListComponent';
-  import ClipLoader from 'vue-spinner/src/ClipLoader';
+<script lang="ts">
+  import ProductListComponent from '@/components/products/ProductListComponent.vue';
+  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import {Component, Vue} from 'vue-property-decorator';
+  import ProductModel from '@/models/ProductModel';
 
-  export default {
-    name: 'products-page',
+  @Component({components: {ProductListComponent, ClipLoader}})
+  export default class ProductOverviewPage extends Vue
+  {
+    products: ProductModel[] = [];
+    loadingError: any    = null;
+    loading: boolean     = true;
 
-    components: {
-      ProductListComponent,
-      ClipLoader,
-    },
+    created()
+    {
+      this.populateProducts();
+    }
 
-    data () {
-      return {
-        products:     null,
-        loadingError: null,
-        loading:      true,
-      };
-    },
+    retryLoading() {
+      if (this.loadingError) {
+        this.loadingError = null;
+        this.loading = true;
+        this.populateProducts();
+      }
+    }
 
-    async created () {
-      await this.fetchProducts();
-    },
-
-    methods: {
-      async fetchProducts () {
-        try {
-          const result = await this.$api.products.getAll();
-          this.products = Array.from(result.values());
-        } catch (e) {
-          console.error(e);
-          this.loadingError = e.toString();
-        } finally {
-          this.loading = false;
-        }
-      },
-    },
-  };
-</script>
+    async populateProducts()
+    {
+      try {
+        this.products = await ProductModel.findAll({
+          fields: [
+            'id',
+            'nom',
+            'producteur.*.*',
+            'description',
+            'categorie.*',
+            'tags.tag_id.*',
+            'variantes.*',
+            'variantes.conditionnement.*',
+            'variantes.unite_de_mesure.*',
+            'photos.*.*',
+            'slug',
+          ],
+          filter: {
+            'variantes.prix':    { nnull: true },
+            'categorie':         { nnull: true },
+            'active':            'published',
+            'producteur.active': 'published',
+          },
+        });
+      } catch (e) {
+        console.error(e); // eslint-disable-line no-console
+        this.loadingError = e.message;
+      } finally {
+        this.loading = false;
+      }
+    }
+  }</script>
 
 
 <style scoped lang="scss">

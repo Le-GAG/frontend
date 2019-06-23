@@ -12,6 +12,10 @@ module.exports = {
     ],
   },
 
+  devServer: {
+    allowedHosts: [ 'localhost', 'directus.test' ],
+  },
+
   pluginOptions: {
     webpackBundleAnalyzer: {
       openAnalyzer: false,

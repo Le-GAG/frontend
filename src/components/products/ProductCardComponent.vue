@@ -2,7 +2,7 @@
   <div class="product-card-component card">
     <router-link :to="{ name: 'product', params: { slug: product.slug } }" class="card-image">
       <figure class="image is-16by9">
-        <img :src="photoUrl" alt="Placeholder image">
+        <img :src="photoUrl" alt="Placeholder image" class="product-card-component__product-photo">
       </figure>
     </router-link>
     <div class="card-content">
@@ -10,19 +10,21 @@
         class="product-card-component__link title is-4"
         :to="{ name: 'product', params: { slug: product.slug } }"
       >
-        {{ product.nom }}
+        {{ product.name }}
       </router-link>
       <p class="subtitle is-6">
-        <router-link :to="{ name: 'producer', params: { slug: product.producteur.data.slug }}">
-          {{ product.producteur.data.raison_sociale }}
+        <router-link :to="{ name: 'producer', params: { slug: product.producer.slug }}">
+          {{ product.producer.raison_sociale }}
         </router-link>
       </p>
 
-      <ul class="tags" v-if="product.tags.data">
+      <ul v-if="product.tags.length > 0" class="tags">
         <li
+          v-for="tag in product.tags"
+          :key="tag.id"
           class="tag"
-          v-for="tag in product.tags.data"
-          v-text="tag.nom"></li>
+          v-text="tag.name"
+        />
       </ul>
 
       <div class="field has-addons">
@@ -33,15 +35,16 @@
           <span class="select is-small">
             <select>
               <option
-                v-for="prix in product.prix.data"
-                v-text="getConditionnement(prix)"
-              ></option>
+                v-for="variant in product.variants"
+                :key="variant.id"
+                v-text="getConditionnement(variant)"
+              />
             </select>
           </span>
         </p>
         <p class="control">
           <a class="button is-primary is-small">
-            <i class="fa fa-shopping-basket"></i>
+            <i class="fa fa-shopping-basket" />
           </a>
         </p>
       </div>
@@ -50,35 +53,34 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'product-card-component',
+<script lang="ts">
+  import {Component, Prop, Vue} from 'vue-property-decorator';
+  import ProductModel from '@/models/ProductModel';
+  import ProductVariantModel from '@/models/ProductPriceModel';
 
-    props: {
-      product: Object,
-    },
+  @Component
+  export default class ProductCardComponent extends Vue
+  {
+    @Prop() protected product!: ProductModel;
 
-    computed: {
-      photoUrl () {
-        if (this.product.photos && this.product.photos.data && this.product.photos.data.length > 0) {
-          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.product.photos.data[ 0 ].name}`);
-        }
+    get photoUrl()
+    {
+      if (this.product.photos.length > 0) {
+        return this.product.photos[0].getThumbnailUrl('crop', 480, 270);
+      }
 
-        return 'https://via.placeholder.com/480x270';
-      },
-    },
+      return 'https://via.placeholder.com/480x270';
+    }
 
-    methods: {
-      getConditionnement (prix) {
-        if (prix.unite_de_mesure.data.sans_quantite) {
-          return prix.conditionnement.data.nom;
-        }
+    getConditionnement(variant: ProductVariantModel)
+    {
+      if (variant.unitOfMeasurement.isUnitless) {
+        return variant.conditionnement;
+      }
 
-        return prix.conditionnement.data.nom + ' ' + prix.contenance;
-      },
-    },
-  };
-</script>
+      return variant.conditionnement + ' ' + variant.capacity;
+    }
+  }</script>
 
 
 <style scoped lang="scss">
@@ -90,6 +92,10 @@
       &:active {
         text-decoration: underline;
       }
+    }
+
+    &__product-photo {
+      object-fit: cover;
     }
   }
 </style>

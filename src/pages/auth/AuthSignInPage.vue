@@ -10,7 +10,7 @@
                   <p
                     ref="validationMessage"
                     v-text="errorMessage"
-                  ></p>
+                  />
                 </div>
 
                 <div class="field">
@@ -23,8 +23,8 @@
                       required
                       placeholder="Adresse e-mail"
                     >
-                    <span class="icon is-small is-left"><i class="fa fa-envelope"></i></span>
-                    <span class="auth-sign-in-page__validation-icon icon is-small is-right"><i class="fa fa-close"></i></span>
+                    <span class="icon is-small is-left"><i class="fa fa-envelope" /></span>
+                    <span class="auth-sign-in-page__validation-icon icon is-small is-right"><i class="fa fa-close" /></span>
                   </div>
                 </div>
 
@@ -38,14 +38,14 @@
                       required
                       placeholder="Mot de passe"
                     >
-                    <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
-                    <span class="auth-sign-in-page__validation-icon icon is-small is-right"><i class="fa fa-close"></i></span>
+                    <span class="icon is-small is-left"><i class="fa fa-lock" /></span>
+                    <span class="auth-sign-in-page__validation-icon icon is-small is-right"><i class="fa fa-close" /></span>
                   </div>
                 </div>
 
                 <div class="auth-sign-in-page__remember-me field">
                   <label class="checkbox">
-                    <input type="checkbox" v-model="rememberMe">
+                    <input v-model="rememberMe" type="checkbox">
                     Se souvenir de moi
                   </label>
                 </div>
@@ -54,7 +54,8 @@
                   class="auth-sign-in-page__submit-button button is-block is-primary is-medium"
                   :class="{ 'is-loading': isAuthenticating }"
                   type="submit"
-                >Connexion
+                >
+                  Connexion
                 </button>
               </form>
             </div>
@@ -72,47 +73,46 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'auth-sign-in-page',
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
 
-    data() {
-      return {
-        email:      '',
-        password:   '',
-        rememberMe: false,
-      };
-    },
+  @Component
+  export default class AuthSignInPage extends Vue
+  {
+    email: string       = '';
+    password: string    = '';
+    rememberMe: boolean = false;
 
-    computed: {
-      isAuthenticating() {
-        return this.$store.getters.isAuthenticating;
-      },
-      errorMessage() {
-        return this.$store.getters.errorMessage;
-      },
-    },
+    get isAuthenticating()
+    {
+      return this.$store.getters.isAuthenticating;
+    }
 
-    methods: {
-      async submitForm() {
-        await this.$store.dispatch('authenticate', {
-          email:         this.email,
-          password:      this.password,
-          stayConnected: this.rememberMe,
-        });
+    get errorMessage()
+    {
+      return this.$store.getters.errorMessage;
+    }
 
-        if (this.$store.getters.isLoggedIn) {
-          this.$router.push('/');
-        } else {
-          this.shakeForm();
-        }
-      },
+    async submitForm()
+    {
+      await this.$store.dispatch('authenticate', {
+        email:         this.email,
+        password:      this.password,
+        stayConnected: this.rememberMe,
+      });
 
-      shakeForm() {
-        // TODO: Animate the form to indicate sign-in failure
-      },
-    },
-  };
+      if (this.$store.getters.isLoggedIn) {
+        this.$router.push('/');
+      } else {
+        this.shakeForm();
+      }
+    }
+
+    shakeForm()
+    {
+      // TODO: Animate the form to indicate sign-in failure
+    }
+  }
 </script>
 
 

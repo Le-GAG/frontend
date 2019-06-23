@@ -10,13 +10,13 @@
     </section>
 
     <section
-      class="hero is-medium"
       v-if="loading || loadingError"
+      class="hero is-medium"
       :class="{ 'is-danger': loadingError }"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
             <h1 class="title">Erreur de chargement</h1>
@@ -42,46 +42,62 @@
 </template>
 
 
-<script>
-  import ProducerListComponent from '@/components/producers/ProducerListComponent';
-  import ProducerMapComponent from '@/components/producers/ProducerMapComponent';
-  import ClipLoader from 'vue-spinner/src/ClipLoader';
+<script lang="ts">
+  import ProducerListComponent from '@/components/producers/ProducerListComponent.vue';
+  import ProducerMapComponent from '@/components/producers/ProducerMapComponent.vue';
+  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import {Component, Vue} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-  export default {
-    name: 'producers-page',
+  @Component({components: {ProducerListComponent, ProducerMapComponent, ClipLoader}})
+  export default class ProducerOverviewPage extends Vue
+  {
+    producers: ProducerModel[] = [];
+    loadingError: any = null;
+    loading: boolean  = true;
 
-    components: {
-      ProducerListComponent,
-      ProducerMapComponent,
-      ClipLoader,
-    },
+    async created()
+    {
+      await this.populateProducers();
+    }
 
-    data() {
-      return {
-        producers:    null,
-        loadingError: null,
-        loading:      true,
-      };
-    },
+    async populateProducers()
+    {
+      try {
+        this.producers = await ProducerModel.findAll({
+          fields: [
+            'id',
+            'raison_sociale',
+            'siret',
+            'slug',
 
-    async created() {
-      await this.fetchProducers();
-    },
+            'presentation',
+            'photo_de_presentation.*',
 
-    methods: {
-      async fetchProducers() {
-        try {
-          const result = await this.$api.producers.getAll();
-          this.producers = Array.from(result.values());
-        } catch (e) {
-          console.error(e);
-          this.loadingError = e.toString();
-        } finally {
-          this.loading = false;
-        }
-      },
-    },
-  };
+            'adresse',
+            'numero',
+            'rue',
+            'code_postal',
+            'ville',
+
+            'email',
+            'numero_de_telephone',
+            'site_internet',
+
+            'activites.*.*',
+          ],
+          filter: {
+            'active': 'published',
+          },
+        });
+      } catch (e) {
+        console.error(e);// eslint-disable-line no-console
+        this.loadingError = e.toString();
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 </script>
 
 

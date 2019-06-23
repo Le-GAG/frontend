@@ -7,16 +7,11 @@ module.exports = function () {
     common: {
       mode:      'synchronize',
       localPath: 'dist',
-      exclude:   [
-        'www/app/user-config/**',
-        'www/app/tmp/**',
-        'www/app/logs/**',
-      ],
     },
 
     // Environment specific configuration
     environments: {
-      production: require('./environments/production.js'),
+      preproduction: require('./environments/preproduction.js'),
     },
   };
 };

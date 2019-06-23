@@ -15,39 +15,39 @@
     <div class="card-content">
       <div class="producer-contact-details-component__contact-details content">
         <div
-          class="producer-contact-details-component__website"
           v-if="website"
+          class="producer-contact-details-component__website"
         >
-          <span class="icon"><i class="fa fa-globe"></i></span>
+          <span class="icon"><i class="fa fa-globe" /></span>
           <a :href="website" target="_blank" rel="noopener noreferrer">{{ website }}</a>
         </div>
 
         <div
-          class="producer-contact-details-component__email"
           v-if="email"
+          class="producer-contact-details-component__email"
         >
-          <span class="icon"><i class="fa fa-at"></i></span>
+          <span class="icon"><i class="fa fa-at" /></span>
           <a :href="`mailto:${email}`">{{ email }}</a>
         </div>
 
         <address
-          class="producer-contact-details-component__address"
           v-if="addressLine1 || addressLine2"
+          class="producer-contact-details-component__address"
         >
-          <span class="icon"><i class="fa fa-envelope"></i></span>
-          <div class="producer-contact-details-component__addressLine1" v-if="addressLine1">
+          <span class="icon"><i class="fa fa-envelope" /></span>
+          <div v-if="addressLine1" class="producer-contact-details-component__addressLine1">
             {{ addressLine1 }}
           </div>
-          <div class="producer-contact-details-component__addressLine2" v-if="addressLine2">
+          <div v-if="addressLine2" class="producer-contact-details-component__addressLine2">
             {{ addressLine2 }}
           </div>
         </address>
 
         <div
-          class="producer-contact-details-component__phone"
           v-if="phone"
+          class="producer-contact-details-component__phone"
         >
-          <span class="icon"><i class="fa fa-phone"></i></span>
+          <span class="icon"><i class="fa fa-phone" /></span>
           <a :href="`tel:${phone.replace(/[ -()]/, '')}`">
             {{ phone }}</a>
         </div>
@@ -57,22 +57,21 @@
 </template>
 
 
-<script>
-  export default {
-    name: 'contact-details-card-component',
+<script lang="ts">
+  import {Component, Vue, Prop} from 'vue-property-decorator';
 
-    props: {
-      name:         String,
-      latLng:       Object,
-      addressLine1: String,
-      addressLine2: String,
-      phone:        String,
-      email:        String,
-      website:      String,
-    },
-  };
+  @Component
+  export default class ContactDetailsCardComponent extends Vue
+  {
+    @Prop({ default: '', type: String }) protected name!:string;
+    @Prop({ default: {}, type: Object }) protected latLng!:object;
+    @Prop({ default: '', type: String }) protected addressLine1!:string;
+    @Prop({ default: '', type: String }) protected addressLine2!:string;
+    @Prop({ default: '', type: String }) protected phone!:string;
+    @Prop({ default: '', type: String }) protected email!:string;
+    @Prop({ default: '', type: String }) protected website!:string;
+  }
 </script>
-
 
 <style scoped lang="scss">
   .producer-contact-details-component {
@@ -86,12 +85,12 @@
 
     &__website,
     &__email {
-      overflow: hidden;
+      overflow:      hidden;
 
-      max-width: 100%;
+      max-width:     100%;
 
       text-overflow: ellipsis;
-      white-space: nowrap;
+      white-space:   nowrap;
     }
 
     &__address,

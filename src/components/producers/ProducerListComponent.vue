@@ -5,31 +5,25 @@
         <li
           v-for="producer in producers"
           :key="producer.id"
-          class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd">
-          <producer-card-component :producer="producer"/>
+          class="column is-half-tablet is-one-third-desktop is-one-quarter-fullhd"
+        >
+          <producer-card-component :producer="producer" />
         </li>
       </ul>
     </div>
   </section>
 </template>
 
-<script>
-  import ProducerCardComponent from '@/components/producers/ProducerCardComponent';
+<script lang="ts">
+  import ProducerCardComponent from '@/components/producers/ProducerCardComponent.vue';
+  import {Component, Vue, Prop} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-  export default {
-    name: 'ProducerListComponent',
-
-    components: {
-      ProducerCardComponent,
-    },
-
-    props: {
-      producers: {
-        type:    Array,
-        default: () => [],
-      },
-    },
-  };
+  @Component({components: {ProducerCardComponent}})
+  export default class ProducerListComponent extends Vue
+  {
+    @Prop({default: []}) protected producers!: ProducerModel[];
+  }
 </script>
 
 <style scoped lang="scss">

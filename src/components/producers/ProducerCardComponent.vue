@@ -13,42 +13,47 @@
         {{ producer.raison_sociale }}
       </router-link>
       <p class="subtitle is-6">
-            <span class="icon">
-              <i class="fa fa-map-marker"></i>
-            </span>
+        <span class="icon">
+          <i class="fa fa-map-marker" />
+        </span>
         {{ producer.ville }}
       </p>
 
-      <ul class="tags" v-if="producer.activites.data">
+      <ul v-if="producer.activites.length > 0" class="tags">
         <li
+          v-for="activite in producer.activites"
+          :key="activite.id"
           class="tag"
-          v-for="activite in producer.activites.data"
-          v-text="activite.nom"></li>
+          v-text="activite.nom"
+        />
       </ul>
     </div>
   </div>
 </template>
 
 
-<script>
-  export default {
-    name: 'producer-card-component',
+<script lang="ts">
+  import {Component, Prop, Vue} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-    props: {
-      producer: Object,
-    },
+  @Component
+  export default class ProducerCardComponent extends Vue
+  {
+    @Prop() protected producer!: ProducerModel;
 
-    computed: {
-      photoUrl() {
-        if (this.producer.photo_de_presentation) {
-          return this.$directusSdk.getThumbnailUrl(`/480/270/crop/good/${this.producer.photo_de_presentation.data.name}`);
+    get photoUrl()
+    {
+      if (this.producer.photo_de_presentation) {
+        const thumbnail = this.producer.photo_de_presentation.getThumbnailUrl('crop', 480, 270);
+
+        if (thumbnail !== null) {
+          return thumbnail;
         }
-
-        return 'https://via.placeholder.com/480x270';
       }
 
-    },
-  };
+      return 'https://via.placeholder.com/480x270';
+    }
+  }
 </script>
 
 

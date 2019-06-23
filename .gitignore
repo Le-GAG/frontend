@@ -20,3 +20,8 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+# Generated files
+*.js.map
+
+src/types/directus-sdk-javascript/index\.d\.ts\.backup

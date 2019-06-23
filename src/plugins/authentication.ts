@@ -31,7 +31,7 @@ Vue.use({
         const options = {
           expires: stayConnectedExpiration,
         };
-        Cookies.set(stayConnectedCookieName, Date.now(), options);
+        Cookies.set(stayConnectedCookieName, Date.now().toString(), options);
         Cookies.set(authenticationCookieName, token, options);
       }
     }

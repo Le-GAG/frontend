@@ -3,12 +3,12 @@
  * @date 12/01/2018 11:09
  */
 
-import Cookies from 'js-cookie';
+import Cookies, { CookieAttributes } from 'js-cookie';
 import Vue from 'vue';
 
-const authenticationCookieName = 'auth-token';
-const stayConnectedCookieName  = 'authenticated-since';
-const stayConnectedExpiration  = 28;
+const authenticationCookieName:string = 'auth-token';
+const stayConnectedCookieName:string  = 'authenticated-since';
+const stayConnectedExpiration:number  = 28;
 
 export default {
   isAuthenticated () {
@@ -19,19 +19,20 @@ export default {
     return Cookies.get(authenticationCookieName);
   },
 
-  async authenticate (email, password, stayConnected) {
+  async authenticate (email: string, password: string, stayConnected: boolean) {
     try {
-      const response = await Vue.prototype.$directusSdk.authenticate(email, password);
-      if (response.data && response.data.token) {
+      const response = await Vue.prototype.$directusSdk.login({email, password});
+      if (response.token) {
         // Persists authentication using cookies
-        const options = {};
+        const options:CookieAttributes = {};
         if (stayConnected) {
+          console.log('Let\'s persist auth token for: ', stayConnected, stayConnectedCookieName, authenticationCookieName); // eslint-disable-line
           options.expires = stayConnectedExpiration;
-          Cookies.set(stayConnectedCookieName, Date.now(), options);
+          Cookies.set(stayConnectedCookieName, new Date(), options);
         }
-        Cookies.set(authenticationCookieName, response.data.token, options);
+        Cookies.set(authenticationCookieName, response.token, options);
 
-        return response.data.token;
+        return response.token;
       } else {
         // FIXME: Handle errors more nicely
         // noinspection ExceptionCaughtLocallyJS

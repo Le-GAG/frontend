@@ -3,7 +3,7 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-function loadPage (page) {
+function loadPage (page:string) {
   return () => import(/* webpackChunkName: "page-[request]" */ `@/pages/${page}.vue`);
 }
 
@@ -47,6 +47,11 @@ export default new Router({
       path:      '/produits',
       name:      'products',
       component: loadPage('products/ProductOverviewPage'),
+    },
+    {
+      path:      '/produits/:slug',
+      name:      'product',
+      component: loadPage('products/ProductDetailsPage'),
     },
 
     {

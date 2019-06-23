@@ -9,9 +9,10 @@ import moment from 'moment';
 let items     = new WeakMap();
 let lastFetchDate = new WeakMap();
 
+// FIXME: Get rid of moment.js in favor of plain old JS Date object
 export default class AbstractApi {
   itemName = 'change me please';
-  fetchParams = null;
+  fetchParams: any | null = null;
 
   constructor () {
     items.set(this, new Map());
@@ -28,7 +29,7 @@ export default class AbstractApi {
     lastFetchDate.set(this, moment());
   }
 
-  async getById (id) {
+  async getById (id:number) {
     if (!items.get(this).has(id)) {
       await this.fetch();
 
@@ -38,12 +39,16 @@ export default class AbstractApi {
     return items.get(this).get(id);
   }
 
+  async getBySlug (slug:string) {
+    // FIXME: Implement this method
+  }
+
   async getAll () {
     const lastFetched = lastFetchDate.get(this);
     const aMinuteAgo  = moment().subtract(1, 'minute');
 
     if (
-      1 > items.get(this).size
+      items.get(this).size < 1
       || lastFetched.isBefore(aMinuteAgo)
     ) {
       await this.fetch();

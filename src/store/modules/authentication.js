@@ -44,6 +44,7 @@ export default {
         const token = await authentication.authenticate(email, password, stayConnected);
         commit(types.AUTHENTICATION_SUCCESSFUL, token);
       } catch (e) {
+        console.error(e); // eslint-disable-line no-console
         commit(types.AUTHENTICATION_FAILED, e);
       }
     },

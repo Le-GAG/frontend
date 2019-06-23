@@ -8,45 +8,51 @@
         'is-primary': producer,
       }"
       :style="{
-        backgroundSize:     'cover',
+        backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundImage:    `url('${photoUrl}')`,
+        backgroundImage: `url('${photoUrl}')`,
       }"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px"/>
+          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
           <template v-if="loadingError">
-            <h1 class="title">Erreur de chargement</h1>
-            <h2 class="subtitle">{{ loadingError }}</h2>
+            <h1 class="title">
+              Erreur de chargement
+            </h1>
+            <h2 class="subtitle">
+              {{ loadingError }}
+            </h2>
           </template>
 
           <template v-if="producer">
-            <h1 class="producer-details-page__name title" :data-content="producer.raison_sociale"></h1>
-            <ul class="producer-details-page__activites tags" v-if="producer.activites.data">
+            <h1 class="producer-details-page__name title" :data-content="producer.raison_sociale" />
+            <ul v-if="producer.activites" class="producer-details-page__activites tags">
               <li
+                v-for="activite in producer.activites"
+                :key="activite.id"
                 class="tag"
-                v-for="activite in producer.activites.data"
-                v-text="activite.nom"></li>
+                v-text="activite.nom"
+              />
             </ul>
           </template>
         </div>
       </div>
     </section>
 
-    <section class="section" v-if="producer">
+    <section v-if="producer" class="section">
       <div class="columns">
         <div class="column is-two-thirds">
-          <div class="content" v-html="producer.presentation"></div>
+          <div class="content" v-html="producer.presentation" /><!-- eslint-disable-line vue/no-v-html-->
         </div>
 
         <div class="column is-one-third">
           <contact-details-card-component
             :name="producer.raison_sociale"
-            :latLng="latLng"
-            :addressLine1="addressLine1"
-            :addressLine2="addressLine2"
+            :lat-lng="latLng"
+            :address-line1="addressLine1"
+            :address-line2="addressLine2"
             :email="producer.email"
             :phone="producer.numero_de_telephone"
             :website="producer.site_internet"
@@ -58,96 +64,123 @@
 </template>
 
 
-<script>
-  import ClipLoader from 'vue-spinner/src/ClipLoader';
-  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent';
+<script lang="ts">
+  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent.vue';
+  import {Component, Vue, Watch} from 'vue-property-decorator';
+  import ProducerModel from '../../models/ProducerModel';
 
-  export default {
-    name: 'producers-page',
+  @Component({components: {ClipLoader, ContactDetailsCardComponent}})
+  export default class ProducerDetailsPage extends Vue
+  {
+    producer:ProducerModel|null = null;
+    loadingError:any = null;
+    loading:boolean = true;
 
-    components: {
-      ClipLoader,
-      ContactDetailsCardComponent,
-    },
-
-    data() {
-      return {
-        producer:     null,
-        loadingError: null,
-        loading:      true,
-      };
-    },
-
-    computed: {
-      latLng() {
-        const parts = this.producer.adresse.split(',');
-        return { lat: parseFloat(parts[ 0 ]), lng: parseFloat(parts[ 1 ]) };
-      },
-
-      photoUrl() {
-        if (this.producer && this.producer.photo_de_presentation) {
-          return this.$directusSdk.getThumbnailUrl(`/1200/675/crop/good/${this.producer.photo_de_presentation.data.name}`);
-        }
-
-        return 'https://via.placeholder.com/480x270';
-      },
-
-      addressLine1() {
-        if (
-          (this.producer.numero && this.producer.numero.trim().length > 0)
-          || (this.producer.rue && this.producer.rue.trim().length > 0)
-        ) {
-          return [ this.producer.numero, this.producer.rue ].join(' ').trim();
-        }
-
+    get latLng(): any|null
+    {
+      if (!this.producer || !this.producer.adresse) {
         return null;
-      },
+      }
 
-      addressLine2() {
-        if (
-          (this.producer.code_postal && this.producer.code_postal.trim().length > 0)
-          || (this.producer.ville && this.producer.ville.trim().length > 0)
-        ) {
-          return [ this.producer.code_postal, this.producer.ville ].join(' ').trim();
+      return this.producer.adresse;
+    }
+
+    get photoUrl()
+    {
+      if (this.producer && this.producer.photo_de_presentation) {
+        const thumbnail = this.producer.photo_de_presentation.getThumbnailUrl('crop', 1200, 400);
+
+        if (thumbnail !== null) {
+          return thumbnail;
         }
+      }
 
+      return 'https://via.placeholder.com/1200x400';
+    }
+
+    get addressLine1(): string|null
+    {
+      if (
+        !this.producer
+        || (
+          (!this.producer.numero || this.producer.numero.trim().length === 0)
+          && (!this.producer.rue || this.producer.rue.trim().length === 0)
+        )
+      ) {
         return null;
-      },
-    },
+      }
 
-    async created() {
+      return [this.producer.numero, this.producer.rue].join(' ').trim();
+    }
+
+    get addressLine2(): string|null
+    {
+      if (
+        !this.producer
+        || (
+          (!this.producer.code_postal || this.producer.code_postal.trim().length === 0)
+          && (!this.producer.ville || this.producer.ville.trim().length === 0)
+        )
+      ) {
+        return null;
+      }
+
+      return [this.producer.code_postal, this.producer.ville].join(' ').trim();
+    }
+
+    async created()
+    {
       await this.fetchProducer();
-    },
+    }
 
-    watch: {
-      '$route': 'fetchProducer',
-    },
+    @Watch('$route')
+    async onRouteChanged()
+    {
+      await this.fetchProducer();
+    }
 
-    methods: {
-      async fetchProducer() {
-        this.loadingError = null;
-        this.loading      = true;
+    async fetchProducer()
+    {
+      this.loadingError = undefined;
+      this.loading      = true;
+      this.producer     = null;
 
-        try {
-          const result = await this.$directusSdk.getItems('producteurs', {
-            filters: { slug: this.$route.params.slug, },
-            limit:   1,
-          });
+      try {
+        const producer = await ProducerModel.getBySlug(this.$route.params['slug'], [
+          'id',
+          'raison_sociale',
+          'siret',
+          'slug',
 
-          if (result.data.length < 1) {
-            this.loadingError = 'Erreur 404';
-          }
+          'presentation',
+          'photo_de_presentation.*',
 
-          this.producer = result.data[ 0 ];
-        } catch (e) {
-          console.error(e);
-          this.loadingError = e.toString();
-        } finally {
-          this.loading = false;
+          'adresse',
+          'numero',
+          'rue',
+          'code_postal',
+          'ville',
+
+          'email',
+          'numero_de_telephone',
+          'site_internet',
+
+          'activites.*.*',
+        ]);
+        if (producer === null) {
+          this.loadingError = 'Ce producteur n\'existe pas';
         }
-      },
-    },
-  };
+
+        this.producer = producer;
+      } catch (e) {
+        console.error(e);// eslint-disable-line no-console
+        this.loadingError = e.toString();
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 </script>
 
 

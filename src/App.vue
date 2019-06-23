@@ -1,26 +1,23 @@
 <template>
   <div class="App">
-    <header-component class="App__header"/>
+    <header-component class="App__header" />
 
     <main>
-      <router-view/>
+      <router-view />
     </main>
 
-    <footer-component class="App__footer"/>
+    <footer-component class="App__footer" />
   </div>
 </template>
 
-<script>
-  import HeaderComponent from '@/components/layout/Header';
-  import FooterComponent from '@/components/layout/Footer';
+<script lang="ts">
+  import {Component, Vue} from 'vue-property-decorator';
+  import HeaderComponent from '@/components/layout/Header.vue';
+  import FooterComponent from '@/components/layout/Footer.vue';
 
-  export default {
-    name: 'App',
-
-    components: {
-      HeaderComponent,
-      FooterComponent,
-    },
+  @Component({components: {HeaderComponent, FooterComponent}})
+  export default class App extends Vue
+  {
   }
 </script>
 
