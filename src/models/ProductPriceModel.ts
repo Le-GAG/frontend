@@ -4,7 +4,7 @@
  */
 import UnitOfMeasurementModel, {UnitOfMeasurementModelConstructorOptions} from '@/models/UnitOfMeasurementModel';
 
-export interface ProductPriceModelConstructorOptions {
+export interface ProductVariantModelConstructorOptions {
   id: number,
 
   prix: string,
@@ -26,7 +26,7 @@ export default class ProductPriceModel {
   price: number;
   unitPrice: number;
 
-  public constructor (options: ProductPriceModelConstructorOptions) {
+  public constructor (options: ProductVariantModelConstructorOptions) {
     this.id = options.id;
 
     this.capacity          = options.contenance;

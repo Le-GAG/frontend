@@ -13,6 +13,7 @@
       v-if="loading || loadingError"
       class="hero is-medium"
       :class="{ 'is-danger': loadingError }"
+      @click="retryLoading"
     >
       <div class="hero-body">
         <div class="container has-text-centered">
@@ -48,9 +49,17 @@
     loadingError: any    = null;
     loading: boolean     = true;
 
-    async created()
+    created()
     {
-      await this.populateProducts();
+      this.populateProducts();
+    }
+
+    retryLoading() {
+      if (this.loadingError) {
+        this.loadingError = null;
+        this.loading = true;
+        this.populateProducts();
+      }
     }
 
     async populateProducts()
@@ -64,22 +73,22 @@
             'description',
             'categorie.*',
             'tags.tag_id.*',
-            'prix.*',
-            'prix.conditionnement.*',
-            'prix.unite_de_mesure.*',
+            'variantes.*',
+            'variantes.conditionnement.*',
+            'variantes.unite_de_mesure.*',
             'photos.*.*',
             'slug',
           ],
           filter: {
-            'categorie.nom':     { nempty: true },
-            'producteur.active': 'published',
+            'variantes.prix':    { nnull: true },
+            'categorie':         { nnull: true },
             'active':            'published',
-            'prix':              { has: 1 },
+            'producteur.active': 'published',
           },
         });
       } catch (e) {
         console.error(e); // eslint-disable-line no-console
-        this.loadingError = e.toString();
+        this.loadingError = e.message;
       } finally {
         this.loading = false;
       }

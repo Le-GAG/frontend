@@ -35,9 +35,9 @@
           <span class="select is-small">
             <select>
               <option
-                v-for="prix in product.prices"
-                :key="prix.id"
-                v-text="getConditionnement(prix)"
+                v-for="variant in product.variants"
+                :key="variant.id"
+                v-text="getConditionnement(variant)"
               />
             </select>
           </span>
@@ -56,7 +56,7 @@
 <script lang="ts">
   import {Component, Prop, Vue} from 'vue-property-decorator';
   import ProductModel from '@/models/ProductModel';
-  import ProductPriceModel from '@/models/ProductPriceModel';
+  import ProductVariantModel from '@/models/ProductPriceModel';
 
   @Component
   export default class ProductCardComponent extends Vue
@@ -72,13 +72,13 @@
       return 'https://via.placeholder.com/480x270';
     }
 
-    getConditionnement(price: ProductPriceModel)
+    getConditionnement(variant: ProductVariantModel)
     {
-      if (price.unitOfMeasurement.isUnitless) {
-        return price.conditionnement;
+      if (variant.unitOfMeasurement.isUnitless) {
+        return variant.conditionnement;
       }
 
-      return price.conditionnement + ' ' + price.capacity;
+      return variant.conditionnement + ' ' + variant.capacity;
     }
   }</script>
 

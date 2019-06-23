@@ -8,7 +8,7 @@ import DirectusItemFactory from '@/factories/DirectusItemFactory';
 import ProductCategoryModel, {ProductCategoryModelConstructorOptions} from '@/models/ProductCategoryModel';
 import ProducerModel, {ProducerModelConstructorOptions} from '@/models/ProducerModel';
 import DirectusMediaModel, {DirectusMediaModelConstructorOptions} from '@/models/DirectusMediaModel';
-import ProductPriceModel, {ProductPriceModelConstructorOptions} from '@/models/ProductPriceModel';
+import ProductVariantModel, {ProductVariantModelConstructorOptions} from '@/models/ProductPriceModel';
 import ProductTagModel, {ProductTagModelConstructorOptions} from '@/models/ProductTagModel';
 
 interface ProductModelConstructorOptions
@@ -21,7 +21,7 @@ interface ProductModelConstructorOptions
   tags: { tag_id: ProductTagModelConstructorOptions }[];
 
   producteur: ProducerModel|ProducerModelConstructorOptions;
-  prix: ProductPriceModelConstructorOptions[];
+  variantes: ProductVariantModelConstructorOptions[];
   photos: { photo: DirectusMediaModelConstructorOptions }[];
 
   thumbnail: DirectusMediaModel|DirectusMediaModelConstructorOptions;
@@ -39,7 +39,7 @@ export default class ProductModel extends AbstractDirectusModel
   tags: ProductTagModel[];
 
   producer: ProducerModel;
-  prices: ProductPriceModel[];
+  variants: ProductVariantModel[];
   photos: DirectusMediaModel[];
 
   thumbnail?: DirectusMediaModel;
@@ -56,7 +56,7 @@ export default class ProductModel extends AbstractDirectusModel
     this.tags      = ProductModel.instanciateTags(options.tags);
 
     this.producer  = ProductModel.instantiateProducer(options.producteur);
-    this.prices    = ProductModel.instanciatePrices(options.prix);
+    this.variants  = ProductModel.instanciateVariantes(options.variantes);
     this.photos    = ProductModel.instanciatePhotos(options.photos);
   }
 
@@ -78,19 +78,19 @@ export default class ProductModel extends AbstractDirectusModel
     return <ProducerModel>producer;
   }
 
-  private static instanciatePrices(prices: ProductPriceModel[] | ProductCategoryModelConstructorOptions[]): ProductPriceModel[]
+  private static instanciateVariantes(variants: ProductVariantModel[] | ProductCategoryModelConstructorOptions[]): ProductVariantModel[]
   {
-    const instantiatedPrices:ProductPriceModel[] = [];
+    const instantiatedVariants:ProductVariantModel[] = [];
 
-    for (let price of prices) {
-      if (!(price instanceof ProductPriceModel)) {
-        price = new ProductPriceModel(<ProductPriceModelConstructorOptions>price);
+    for (let variant of variants) {
+      if (!(variant instanceof ProductVariantModel)) {
+        variant = new ProductVariantModel(<ProductVariantModelConstructorOptions>variant);
       }
 
-      instantiatedPrices.push(<ProductPriceModel>price) ;
+      instantiatedVariants.push(<ProductVariantModel>variant) ;
     }
 
-    return instantiatedPrices;
+    return instantiatedVariants;
   }
 
   private static instanciateTags(tags: ProductTagModel[] | { tag_id: ProductTagModelConstructorOptions}[])
