@@ -5,16 +5,15 @@ import * as types from '@/store/modules/authentication/mutationTypes';
 import authentication from '@/api/authenticate';
 
 export const actions: ActionTree<AuthenticationState, RootState> = {
-  // async authenticate ({ commit }, { email, password, stayConnected }) {
-  //   console.log('actions.ts->authenticate()');
-  //   try {
-  //     commit(types.AUTHENTICATE);
-  //     const token = await authentication.authenticate(email, password, stayConnected);
-  //     commit(types.AUTHENTICATION_SUCCESSFUL, token);
-  //   } catch (e) {
-  //     commit(types.AUTHENTICATION_FAILED, e);
-  //   }
-  // },
+  async authenticate ({ commit }, { email, password, stayConnected }) {
+    try {
+      commit(types.AUTHENTICATE);
+      const token = await authentication.authenticate(email, password, stayConnected);
+      commit(types.AUTHENTICATION_SUCCESSFUL, token);
+    } catch (e) {
+      commit(types.AUTHENTICATION_FAILED, e);
+    }
+  },
 
   deauthenticate ({ commit }) {
     authentication.deauthenticate();

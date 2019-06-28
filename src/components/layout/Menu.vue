@@ -77,7 +77,7 @@
     }
 
     signOutButtonClickedHandler () {
-      this.$store.dispatch('deauthenticate');
+      this.$store.dispatch('authentication/deauthenticate');
       this.close();
     }
   }

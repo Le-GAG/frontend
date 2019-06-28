@@ -16,7 +16,7 @@ Vue.use({
       token: null,
 
       get isAuthenticated () {
-        return null !== this.token;
+        return this.token !== null;
       },
     };
 

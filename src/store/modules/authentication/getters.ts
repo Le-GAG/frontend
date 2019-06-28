@@ -5,6 +5,6 @@ import { AuthenticationState } from '@/store/modules/authentication/types';
 export const getters:GetterTree<AuthenticationState, RootState> = {
   authToken:        (state:AuthenticationState) => state.token,
   isAuthenticating: (state:AuthenticationState) => state.isPending,
-  isLoggedIn:       (state:AuthenticationState) => null != state.token,
+  isLoggedIn:       (state:AuthenticationState) => state.token != null,
   errorMessage:     (state:AuthenticationState) => state.error,
 };

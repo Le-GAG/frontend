@@ -4,19 +4,21 @@
  */
 
 import Vue from 'vue';
-import Vuex, { StoreOptions } from 'vuex';
-import { authenticationVuexModule } from './modules/authentication/index';
-import { RootState } from './types';
+import Vuex, {StoreOptions} from 'vuex';
+import {authenticationVuexModule} from './modules/authentication/index';
+import {cartVuexModule} from './modules/cart/index';
+import {RootState} from './types';
 
 Vue.use(Vuex);
 
-const isDebug = 'production' !== process.env.NODE_ENV;
+const isDebug = process.env.NODE_ENV !== 'production';
 
 const store: StoreOptions<RootState> = {
   strict:  isDebug,
   modules: {
     authentication: authenticationVuexModule,
+    cart:           cartVuexModule,
   },
 };
 
-export default new Vuex.Store < RootState > (store);
+export default new Vuex.Store<RootState>(store);

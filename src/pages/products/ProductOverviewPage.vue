@@ -3,7 +3,7 @@
     <section class="hero is-primary">
       <div class="hero-body">
         <div class="container has-text-centered">
-          <h1 class="title">Les produits du G@G</h1>
+          <h1 class="title">Les produits du GAG</h1>
           <h2 class="subtitle">TODO: Trouver une accroche</h2>
         </div>
       </div>
