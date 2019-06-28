@@ -6,7 +6,7 @@
           <div class="navbar-item has-text-white">
             <span class="icon is-small"><i class="fa fa-shopping-basket" /></span>
           </div>
-          <h1 class="title is-4 has-text-white" title="Groupement d'Achats du Grésivaudan">Le G@G</h1>
+          <h1 class="title is-4 has-text-white" title="Groupement d'Achats du Grésivaudan">Le GAG</h1>
         </router-link>
         <div
           class="navbar-burger burger"
