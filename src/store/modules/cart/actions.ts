@@ -14,7 +14,7 @@ export const actions: ActionTree<CartState, RootState> = {
 
   removeFromCart({ commit }, { id }: {id: number})
   {
-    commit(types.ADD_TO_CART, id);
+    commit(types.REMOVE_FROM_CART, id);
   },
 
   increaseQuantity({ commit }, { id }: {id: number})
@@ -25,5 +25,10 @@ export const actions: ActionTree<CartState, RootState> = {
   decreaseQuantity({ commit }, { id }: {id: number})
   {
     commit(types.DECREASE_QUANTITY, id);
+  },
+
+  setQuantity({ commit }, payload: { id: number, quantity: number })
+  {
+    commit(types.SET_QUANTITY, payload);
   },
 };

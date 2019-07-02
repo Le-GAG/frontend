@@ -90,7 +90,7 @@
       return variant.conditionnement + ' ' + variant.capacity;
     }
 
-    onAddToCart(event)
+    onAddToCart(event: Event)
     {
       event.preventDefault();
       event.stopPropagation();
