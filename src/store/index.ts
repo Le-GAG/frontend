@@ -8,6 +8,7 @@ import Vuex, {StoreOptions} from 'vuex';
 import {authenticationVuexModule} from './modules/authentication/index';
 import {cartVuexModule} from './modules/cart/index';
 import {RootState} from './types';
+import {menuVuexModule} from '@/store/modules/menu';
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ const store: StoreOptions<RootState> = {
   modules: {
     authentication: authenticationVuexModule,
     cart:           cartVuexModule,
+    menu:           menuVuexModule,
   },
 };
 
