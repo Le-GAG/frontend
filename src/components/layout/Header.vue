@@ -46,8 +46,8 @@
 
   @Component({components: {MenuComponent, BurgerButtonComponent}})
   export default class HeaderComponent extends Vue {
-      @Action('deauthenticate', { namespace: 'authentication'}) deauthenticate;
-      @Getter('isLoggedIn', { namespace: 'authentication'}) isAuthenticated;
+      @Action('deauthenticate', { namespace: 'authentication'}) deauthenticate: any;
+      @Getter('isLoggedIn', { namespace: 'authentication'}) isAuthenticated: any;
 
       @Getter('itemCount', {namespace: 'cart'}) cartItemCount!: number;
       get shoppingCartSummary ()

@@ -12,8 +12,8 @@
 
   @Component
   export default class MenuOverlayComponent extends Vue {
-    @State('isOpen', { namespace: 'menu'}) isMenuOpen;
-    @Action('close', { namespace: 'menu'}) closeMenu;
+    @State('isOpen', { namespace: 'menu'}) isMenuOpen!: boolean;
+    @Action('close', { namespace: 'menu'}) closeMenu: any;
   }
 </script>
 

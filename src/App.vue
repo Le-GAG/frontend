@@ -31,7 +31,7 @@
   @Component({components: {HeaderComponent, FooterComponent, MenuComponent, MenuOverlayComponent}})
   export default class App extends Vue
   {
-    @State('isOpen', { namespace: 'menu' }) isMenuOpen;
+    @State('isOpen', { namespace: 'menu' }) isMenuOpen!: boolean;
   }
 </script>
 

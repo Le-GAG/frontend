@@ -40,7 +40,7 @@
   import {Component, Prop, Vue} from 'vue-property-decorator';
   import {ProductVariantModelConstructorOptions} from '@/models/ProductVariantModel';
   import {Action, State} from 'vuex-class';
-  import {CartState} from '@/store/modules/cart/types';
+  import {CartState} from '@/store/modules/cart';
 
   @Component
   export default class CartItemComponent extends Vue

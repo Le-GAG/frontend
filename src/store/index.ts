@@ -6,9 +6,9 @@
 import Vue from 'vue';
 import Vuex, {StoreOptions} from 'vuex';
 import {authenticationVuexModule} from './modules/authentication/index';
-import {cartVuexModule} from './modules/cart/index';
-import {RootState} from './types';
+import {cartVuexModule} from '@/store/modules/cart';
 import {menuVuexModule} from '@/store/modules/menu';
+import {RootState} from './types';
 
 Vue.use(Vuex);
 

@@ -19,12 +19,12 @@
       </div>
 
       <div v-if="!loading && cartItems.length > 0" class="level">
-        <div class="level-left"></div>
+        <div class="level-left" />
         <div class="level-right">
           <div class="level-item">
             <button class="button is-primary">
               <span class="icon">
-                <i class="fa fa-shopping-basket"></i>
+                <i class="fa fa-shopping-basket" />
               </span>
               <span>Passer commande</span>
             </button>
@@ -41,7 +41,7 @@
   import {namespace} from 'vuex-class';
   import ProductModel from '@/models/ProductModel';
   import CartItemComponent from '@/components/cart/CartItemComponent.vue';
-  import {CartState} from '@/store/modules/cart/types';
+  import {CartState} from '@/store/modules/cart';
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
 
   const cartModule = namespace('cart');

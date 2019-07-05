@@ -28,8 +28,8 @@
 
   @Component
   export default class MenuComponent extends Vue {
-    @State('isOpen', { namespace: 'menu'}) isOpen;
-    @Action('close', { namespace: 'menu'}) close;
+    @State('isOpen', { namespace: 'menu'}) isOpen!: boolean;
+    @Action('close', { namespace: 'menu'}) close: any;
 
     public readonly routes:Array<MenuRoutes> = [
       {
