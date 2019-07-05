@@ -8,7 +8,7 @@ import {RootState} from '@/store/types';
 import authentication from '@/api/authenticate';
 import Vue from 'vue';
 
-interface AuthenticationState
+export interface AuthenticationState
 {
   token:string|null|undefined,
   isPending: boolean,
@@ -23,6 +23,8 @@ const MUTATION_TYPES = {
 };
 
 export const authenticationVuexModule: Module<AuthenticationState, RootState> = {
+  namespaced: true,
+
   state: {
     token:     authentication.getToken(),
     isPending: false,

@@ -16,6 +16,8 @@ export default new Router({
       component: loadPage('HomePage'),
     },
 
+
+
     {
       path:      '/auth/sign-in',
       name:      'auth/sign-in',
@@ -32,6 +34,8 @@ export default new Router({
       component: loadPage('auth/AuthSignInPage'),
     },
 
+
+
     {
       path:      '/producteurs',
       name:      'producers',
@@ -43,6 +47,8 @@ export default new Router({
       component: loadPage('producers/ProducerDetailsPage'),
     },
 
+
+
     {
       path:      '/produits',
       name:      'products',
@@ -53,6 +59,16 @@ export default new Router({
       name:      'product',
       component: loadPage('products/ProductDetailsPage'),
     },
+
+
+
+    {
+      path:      '/mon-panier',
+      name:      'panier',
+      component: loadPage('cart/CartPage'),
+    },
+
+
 
     {
       path:     '*',

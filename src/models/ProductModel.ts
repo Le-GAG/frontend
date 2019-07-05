@@ -8,7 +8,7 @@ import DirectusItemFactory from '@/factories/DirectusItemFactory';
 import ProductCategoryModel, {ProductCategoryModelConstructorOptions} from '@/models/ProductCategoryModel';
 import ProducerModel, {ProducerModelConstructorOptions} from '@/models/ProducerModel';
 import DirectusMediaModel, {DirectusMediaModelConstructorOptions} from '@/models/DirectusMediaModel';
-import ProductVariantModel, {ProductVariantModelConstructorOptions} from '@/models/ProductPriceModel';
+import ProductVariantModel, {ProductVariantModelConstructorOptions} from '@/models/ProductVariantModel';
 import ProductTagModel, {ProductTagModelConstructorOptions} from '@/models/ProductTagModel';
 
 interface ProductModelConstructorOptions

@@ -1,60 +1,36 @@
 <template>
   <nav
-    class="navbar-menu Menu"
-    :class="{ 'is-active': isMenuOpened }"
+    :class="{ 'menu-component--is-active': isOpen }"
+    class="menu-component"
     role="navigation"
   >
-    <div class="navbar-start">
-      <router-link
-        v-for="route of routes"
-        :key="route.name"
-        class="navbar-item"
-        :to="{ name: route.name }"
-        @click.native="close"
-        v-text="route.label"
-      />
-    </div>
-
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="field is-grouped">
-          <p class="control">
-            <a
-              v-if="isAuthenticated"
-              class="button is-primary"
-              @click="signOutButtonClickedHandler"
-            >
-              <span class="icon"><i class="fa fa-sign-out" /></span>
-              <span>Déconnexion</span>
-            </a>
-
-            <router-link
-              v-else
-              class="button is-primary"
-              :to="{ name: 'auth/sign-in' }"
-              @click.native="close"
-            >
-              <span class="icon"><i class="fa fa-sign-in" /></span>
-              <span>Connexion</span>
-            </router-link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <router-link
+      v-for="route of routes"
+      :key="route.name"
+      class="navbar-item"
+      :to="{ name: route.name }"
+      @click.native="close"
+      v-text="route.label"
+    />
   </nav>
 </template>
 
 
 <script lang="ts">
+  import {Action, State} from 'vuex-class';
+
   interface MenuRoutes {
     name: string,
     label: string,
   }
 
-  import { Component, Vue, Prop} from 'vue-property-decorator';
+  import { Component, Vue } from 'vue-property-decorator';
 
   @Component
   export default class MenuComponent extends Vue {
+    @State('isOpen', { namespace: 'menu'}) isOpen!: boolean;
+    @Action('close', { namespace: 'menu'}) close: any;
+
     public readonly routes:Array<MenuRoutes> = [
       {
         name:  'producers',
@@ -65,24 +41,25 @@
         label: 'Produits',
       },
     ];
-
-    @Prop(Boolean) isMenuOpened: boolean = false;
-
-    get isAuthenticated () {
-        return this.$store.getters.isLoggedIn;
-    }
-
-    close () {
-      this.$emit('close');
-    }
-
-    signOutButtonClickedHandler () {
-      this.$store.dispatch('deauthenticate');
-      this.close();
-    }
   }
 </script>
 
 
 <style scoped lang="scss">
+  @import "~@/styles/bulma";
+
+  .menu-component {
+    width: $menu-width;
+
+    padding: 1rem;
+
+    background: $white;
+
+    transform: translateX(-$menu-width);
+    transition: transform 250ms ease-in-out;
+
+    &--is-active {
+      transform: none;
+    }
+  }
 </style>

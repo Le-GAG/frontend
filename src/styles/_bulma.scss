@@ -75,3 +75,6 @@ $colors: map-merge($colors, $addColors);
 @import "~bulma/sass/layout/footer";
 @import "~bulma/sass/layout/section";
 @import "~bulma/sass/grid/columns";
+
+// Additional config
+$menu-width: 250px;

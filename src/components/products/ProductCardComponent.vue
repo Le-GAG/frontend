@@ -27,27 +27,33 @@
         />
       </ul>
 
-      <div class="field has-addons">
+      <form class="field has-addons" @submit="onAddToCart">
         <p class="control">
-          <input class="input is-small has-text-centered" type="text" placeholder="Quantité">
+          <input
+            ref="quantity"
+            class="input is-small has-text-centered"
+            type="text"
+            placeholder="Quantité"
+          >
         </p>
         <p class="control">
           <span class="select is-small">
-            <select>
+            <select ref="variantId">
               <option
                 v-for="variant in product.variants"
                 :key="variant.id"
+                :value="variant.id"
                 v-text="getConditionnement(variant)"
               />
             </select>
           </span>
         </p>
         <p class="control">
-          <a class="button is-primary is-small">
+          <a class="button is-primary is-small" @click="onAddToCart">
             <i class="fa fa-shopping-basket" />
           </a>
         </p>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -55,12 +61,15 @@
 
 <script lang="ts">
   import {Component, Prop, Vue} from 'vue-property-decorator';
+  import {Action} from 'vuex-class';
   import ProductModel from '@/models/ProductModel';
-  import ProductVariantModel from '@/models/ProductPriceModel';
+  import ProductVariantModel from '@/models/ProductVariantModel';
 
   @Component
   export default class ProductCardComponent extends Vue
   {
+    @Action('addToCart', { namespace: 'cart' }) addToCart: any;
+
     @Prop() protected product!: ProductModel;
 
     get photoUrl()
@@ -79,6 +88,27 @@
       }
 
       return variant.conditionnement + ' ' + variant.capacity;
+    }
+
+    onAddToCart(event: Event)
+    {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const quantityField = (this.$refs.quantity as HTMLInputElement);
+      const quantity = Number(quantityField.value);
+      const variantId = Number((this.$refs.variantId as HTMLInputElement).value);
+
+      if (quantity < 1) {
+        return;
+      }
+
+      this.addToCart({
+        id:       variantId,
+        quantity: quantity,
+      });
+
+      quantityField.value = '';
     }
   }</script>
 

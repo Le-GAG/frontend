@@ -88,7 +88,7 @@ export default class ProducerModel extends AbstractDirectusModel
 
     this.photo_de_presentation = ProducerModel.instantiatePhoto(options.photo_de_presentation);
 
-    if (options.adresse && 'object' == typeof options.adresse) {
+    if (options.adresse && typeof options.adresse == 'object') {
       const {lat, lng} = options.adresse;
       this.adresse     = {
         lat: lat,

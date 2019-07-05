@@ -16,7 +16,7 @@ export interface ProductVariantModelConstructorOptions {
   unite_de_mesure: UnitOfMeasurementModelConstructorOptions,
 }
 
-export default class ProductPriceModel {
+export default class ProductVariantModel {
   id: number;
 
   conditionnement: string;

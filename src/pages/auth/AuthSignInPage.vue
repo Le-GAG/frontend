@@ -95,7 +95,7 @@
 
     async submitForm()
     {
-      await this.$store.dispatch('authenticate', {
+      await this.$store.dispatch('authentication/authenticate', {
         email:         this.email,
         password:      this.password,
         stayConnected: this.rememberMe,
