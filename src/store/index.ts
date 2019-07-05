@@ -5,12 +5,12 @@
 
 import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
-import { authenticationVuexModule } from './modules/authentication/index';
+import { authenticationVuexModule } from './modules/authentication';
 import { RootState } from './types';
 
 Vue.use(Vuex);
 
-const isDebug = 'production' !== process.env.NODE_ENV;
+const isDebug = process.env.NODE_ENV !== 'production';
 
 const store: StoreOptions<RootState> = {
   strict:  isDebug,
