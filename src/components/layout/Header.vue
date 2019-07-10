@@ -8,13 +8,20 @@
     </router-link>
 
     <div class="header-component__right">
-      <router-link :to="{ name: 'panier' }" class="button is-primary">
-        <span class="icon">
+      <router-link
+        :to="{ name: 'panier' }"
+        class="button is-primary"
+      >
+        <span
+          class="icon"
+          :class="{ 'has-badge-rounded has-badge-danger': cartItemCount > 0 }"
+          :data-badge="cartItemCount > 0 ? cartItemCount : false"
+        >
           <i class="fa fa-shopping-basket" />
-        </span>
-        <span>{{ shoppingCartSummary }}</span>
-      </router-link>
 
+        </span>
+        <span class="is-hidden-mobile">{{ shoppingCartSummary }}</span>
+      </router-link>
 
       <a
         v-if="isAuthenticated"
@@ -89,6 +96,10 @@
             align-items: center;
 
             margin-left: auto;
+        }
+
+        .has-badge-rounded::after {
+          box-shadow: none;
         }
     }
 </style>

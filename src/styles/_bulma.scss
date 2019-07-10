@@ -77,5 +77,10 @@ $navbar-breakpoint: 999999;
 @import "~bulma/sass/layout/section";
 @import "~bulma/sass/grid/columns";
 
+
+// 7. Bulma extensions
+@import "~bulma-badge/src/sass/index";
+
+
 // Additional config
 $menu-width: 250px;
