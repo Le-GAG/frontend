@@ -51,6 +51,7 @@ $addColors: (
               "github": ($github, $github-invert)
             );
 $colors: map-merge($colors, $addColors);
+$navbar-breakpoint: 999999;
 
 
 // 6. Import the rest of Bulma
