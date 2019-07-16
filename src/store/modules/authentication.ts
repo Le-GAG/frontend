@@ -51,8 +51,8 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
         const {token} = await Vue.prototype.$directusSdk.login({email, password});
         commit(MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL, token);
       } catch (e) {
-        console.error(e);// eslint-disable-line no-console
-        commit(MUTATION_TYPES.AUTHENTICATION_FAILED, e);
+        commit(MUTATION_TYPES.AUTHENTICATION_FAILED);
+        throw new Error('Email ou mot de passe invalide.');
       }
     },
 
@@ -69,7 +69,7 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     },
 
     [ MUTATION_TYPES.AUTHENTICATION_FAILED ] (state:AuthenticationState, error:Error) {
-      state.error = error.message;
+      state.error = error;
       state.isPending = false;
     },
 
@@ -79,7 +79,6 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
 
     [ MUTATION_TYPES.AUTHENTICATE ] (state:AuthenticationState) {
       state.isPending = true;
-      state.error = null;
     },
   },
 };
