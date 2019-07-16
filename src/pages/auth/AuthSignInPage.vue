@@ -22,6 +22,7 @@
                       type="email"
                       required
                       placeholder="Adresse e-mail"
+                      :disabled="isAuthenticating"
                     >
                     <span class="icon is-small is-left"><i class="fa fa-envelope" /></span>
                     <span class="auth-sign-in-page__validation-icon icon is-small is-right"><i class="fa fa-close" /></span>
@@ -29,7 +30,7 @@
                 </div>
 
                 <div class="field">
-                  <label class="label is-medium">Password</label>
+                  <label class="label is-medium">Mot de passe</label>
                   <div class="control has-icons-left has-icons-right">
                     <input
                       v-model="password"
@@ -37,22 +38,17 @@
                       type="password"
                       required
                       placeholder="Mot de passe"
+                      :disabled="isAuthenticating"
                     >
                     <span class="icon is-small is-left"><i class="fa fa-lock" /></span>
                     <span class="auth-sign-in-page__validation-icon icon is-small is-right"><i class="fa fa-close" /></span>
                   </div>
                 </div>
 
-                <div class="auth-sign-in-page__remember-me field">
-                  <label class="checkbox">
-                    <input v-model="rememberMe" type="checkbox">
-                    Se souvenir de moi
-                  </label>
-                </div>
-
                 <button
                   class="auth-sign-in-page__submit-button button is-block is-primary is-medium"
                   :class="{ 'is-loading': isAuthenticating }"
+                  :disabled="isAuthenticating"
                   type="submit"
                 >
                   Connexion
@@ -61,7 +57,7 @@
             </div>
 
             <p class="auth-sign-in-page__footer has-text-centered has-text-grey">
-              <router-link :to="{ name: 'auth/sign-up' }">Inscription</router-link>
+              <router-link :to="{ name: 'pages/join' }">Rejoindre le GAG</router-link>
               ·
               <router-link :to="{ name: 'auth/recover-password' }">Mot de passe oublié ?</router-link>
             </p>
@@ -82,16 +78,14 @@
   {
     email: string       = '';
     password: string    = '';
-    rememberMe: boolean = false;
     @State('error', {namespace: 'authentication'}) authError!: number;
     @Getter('isAuthenticating', {namespace: 'authentication'}) isAuthenticating!: number;
 
     async submitForm()
     {
       await this.$store.dispatch('authentication/authenticate', {
-        email:         this.email,
-        password:      this.password,
-        stayConnected: this.rememberMe,
+        email:    this.email,
+        password: this.password,
       });
 
       if (this.$store.getters.isLoggedIn) {
