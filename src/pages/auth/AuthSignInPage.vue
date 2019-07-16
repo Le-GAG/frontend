@@ -9,7 +9,7 @@
                 <div class="auth-sign-in-page__validation-message field">
                   <p
                     ref="validationMessage"
-                    v-text="errorMessage"
+                    v-text="authError"
                   />
                 </div>
 
@@ -75,6 +75,7 @@
 
 <script lang="ts">
   import {Component, Vue, Prop} from 'vue-property-decorator';
+  import {Getter, State} from 'vuex-class';
 
   @Component
   export default class AuthSignInPage extends Vue
@@ -82,16 +83,8 @@
     email: string       = '';
     password: string    = '';
     rememberMe: boolean = false;
-
-    get isAuthenticating()
-    {
-      return this.$store.getters.isAuthenticating;
-    }
-
-    get errorMessage()
-    {
-      return this.$store.getters.errorMessage;
-    }
+    @State('error', {namespace: 'authentication'}) authError!: number;
+    @Getter('isAuthenticating', {namespace: 'authentication'}) isAuthenticating!: number;
 
     async submitForm()
     {

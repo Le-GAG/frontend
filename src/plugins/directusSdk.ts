@@ -3,9 +3,10 @@
  * @date 02/01/2018 23:51
  */
 
-import VuexStore from '@/store';
-
 import DirectusSDK from '@directus/sdk-js';
+import cartStorage from '@/store/storage/cart-storage';
+
+import VuexStore from '@/store';
 
 import Vue from 'vue';
 declare module 'vue/types/vue' {
@@ -21,8 +22,9 @@ Vue.use({
     }
 
     Vue.prototype.$directusSdk = new DirectusSDK({
-      token: VuexStore.getters.authToken,
-      url:   process.env.VUE_APP_BACKEND_ENDPOINT,
+      token:   VuexStore.getters.authToken,
+      url:     process.env.VUE_APP_BACKEND_ENDPOINT,
+      storage: cartStorage,
     });
 
     Vue.prototype.$directusSdk.getThumbnailUrl = (thumbnailSpecification: string):string => {

@@ -11,6 +11,7 @@
   "dependencies": {
     "@directus/sdk-js": "^5.3.1",
     "@types/googlemaps": "^3.36.0",
+    "@types/jwt-decode": "^2.2.1",
     "@types/node": "^12.0.2",
     "bulma": "^0.7.5",
     "bulma-badge": "^3.0.1",
@@ -21,6 +22,7 @@
     "font-awesome": "^4.7.0",
     "gsap": "^2.1.3",
     "js-cookie": "^2.2.0",
+    "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "npm-check-updates": "^3.1.9",
