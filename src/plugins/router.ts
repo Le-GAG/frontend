@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import AuthSignInPage from '@/pages/auth/AuthSignInPage.vue';
 
 Vue.use(Router);
 
@@ -27,7 +26,7 @@ export default new Router({
     {
       path:      '/connexion/mot-de-passe-oublie',
       name:      'auth/recover-password',
-      component: loadPage('auth/AuthSignInPage'),
+      component: loadPage('auth/AuthRecoverPasswordPage'),
     },
 
 
@@ -68,7 +67,7 @@ export default new Router({
     {
       path:      '/rejoindre-le-gag',
       name:      'pages/join',
-      component: AuthSignInPage,
+      component: loadPage('auth/AuthSignInPage'),
     },
 
     {
