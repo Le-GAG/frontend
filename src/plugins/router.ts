@@ -58,10 +58,19 @@ export default new Router({
 
 
     {
+      path:      '/vente-en-cours',
+      name:      'current-sale',
+      component: loadPage('sales/CurrentSalePage'),
+    },
+
+
+
+    {
       path:      '/mon-panier',
       name:      'panier',
       component: loadPage('cart/CartPage'),
     },
+
 
 
     {
@@ -69,6 +78,7 @@ export default new Router({
       name:      'pages/join',
       component: loadPage('auth/AuthSignInPage'),
     },
+
 
     {
       path:     '*',

@@ -14,5 +14,8 @@ new Vue({
   store:      store,
   router:     router,
   components: { App },
-  template:   '<App></App>',
+  created() {
+    this.$store.dispatch(`currentSale/fetchCurrentSale`);
+  },
+  template: '<App></App>',
 });

@@ -11,6 +11,9 @@
         <p class="level-item has-text-centered">
           <router-link :to="{ name: 'about' }">À propos</router-link>
         </p>
+        <p class="level-item has-text-centered">
+          <router-link :to="{ name: 'current-sale' }">Vente en cours</router-link>
+        </p>
       </nav>
     </div>
   </div>

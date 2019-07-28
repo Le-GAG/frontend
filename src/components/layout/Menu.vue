@@ -15,6 +15,7 @@
         Adhérents
       </p>
       <ul class="menu-list">
+        <li><router-link :to="{ name: 'current-sale' }">Vente en cours</router-link></li>
         <li><router-link :to="{ name: 'auth/sign-in' }">Connexion</router-link></li>
       </ul>
     </nav>

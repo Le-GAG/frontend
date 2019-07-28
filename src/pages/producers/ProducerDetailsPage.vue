@@ -1,45 +1,11 @@
 <template>
   <div class="producer-details-page">
-    <section
-      class="hero"
-      :class="{
-        'is-danger': loadingError,
-        'is-medium': loadingError || producer,
-        'is-primary': producer,
-      }"
-      :style="{
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundImage: `url('${photoUrl}')`,
-      }"
-    >
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <clip-loader :loading="loading" color="#00d1b2" size="100px" />
-
-          <template v-if="loadingError">
-            <h1 class="title">
-              Erreur de chargement
-            </h1>
-            <h2 class="subtitle">
-              {{ loadingError }}
-            </h2>
-          </template>
-
-          <template v-if="producer">
-            <h1 class="producer-details-page__name title" :data-content="producer.raison_sociale" />
-            <ul v-if="producer.activites" class="producer-details-page__activites tags">
-              <li
-                v-for="activite in producer.activites"
-                :key="activite.id"
-                class="tag"
-                v-text="activite.nom"
-              />
-            </ul>
-          </template>
-        </div>
-      </div>
-    </section>
+    <hero :title="producer ? producer.raison_sociale : null"
+          :background="photoUrl"
+          :is-loading="loading"
+          :loading-error="loadingError"
+          :tags="producerActivities"
+    />
 
     <section v-if="producer" class="section">
       <div class="columns">
@@ -65,12 +31,12 @@
 
 
 <script lang="ts">
-  import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
-  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent.vue';
   import {Component, Vue, Watch} from 'vue-property-decorator';
-  import ProducerModel from '../../models/ProducerModel';
+  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent.vue';
+  import Hero from '@/components/layout/Hero.vue';
+  import ProducerModel from '@/models/ProducerModel';
 
-  @Component({components: {ClipLoader, ContactDetailsCardComponent}})
+  @Component({components: {ContactDetailsCardComponent, Hero}})
   export default class ProducerDetailsPage extends Vue
   {
     producer:ProducerModel|null = null;
@@ -97,6 +63,15 @@
       }
 
       return 'https://via.placeholder.com/1200x400';
+    }
+
+    get producerActivities()
+    {
+        if (!this.producer) {
+            return [];
+        }
+
+        return this.producer.activites.map(activity => { return {id: activity.id, title: activity.nom}});
     }
 
     get addressLine1(): string|null
@@ -185,35 +160,4 @@
 
 
 <style scoped lang="scss">
-  .producer-details-page {
-    &__name {
-      position: relative;
-
-      &::before {
-        content:       '';
-        position:      absolute;
-
-        top:           0;
-        bottom:        0;
-        left:          0;
-        right:         0;
-
-        background:    black;
-        border-radius: 50%;
-        filter:        blur(50px);
-        transform:     scaleX(0.5) scaleY(2);
-      }
-
-      &::after {
-        content:  attr(data-content);
-        position: relative;
-      }
-    }
-
-    &__activites {
-      position:        relative;
-
-      justify-content: center;
-    }
-  }
 </style>

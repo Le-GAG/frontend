@@ -9,6 +9,7 @@ import {RootState} from '@/store/types';
 import {authenticationVuexModule} from '@/store/modules/authentication';
 import {cartVuexModule} from '@/store/modules/cart';
 import {menuVuexModule} from '@/store/modules/menu';
+import {currentSaleVuexModule} from '@/store/modules/current-sale';
 import createPersistedState from 'vuex-persistedstate';
 import cartStorage from '@/store/storage/cart-storage';
 import sessionCookieStorage from '@/store/storage/session-cookie-storage';
@@ -34,6 +35,7 @@ const store: StoreOptions<RootState> = {
     authentication: authenticationVuexModule,
     cart:           cartVuexModule,
     menu:           menuVuexModule,
+    currentSale:    currentSaleVuexModule,
   },
 };
 
