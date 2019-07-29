@@ -1,18 +1,24 @@
 <template>
-  <nav
-    :class="{ 'menu-component--is-active': isOpen }"
-    class="menu-component"
-    role="navigation"
+  <section :class="{ 'menu-component--is-active': isOpen }"
+           class="section menu-component"
   >
-    <router-link
-      v-for="route of routes"
-      :key="route.name"
-      class="navbar-item"
-      :to="{ name: route.name }"
-      @click.native="close"
-      v-text="route.label"
-    />
-  </nav>
+    <nav class="menu" role="navigation">
+      <router-link :to="{ name: 'home'}" class="menu-label">
+        Le GAG
+      </router-link>
+      <ul class="menu-list">
+        <li><router-link :to="{ name: 'about' }">À propos</router-link></li>
+        <li><a>Rejoindre le GAG</a></li>
+        <li><router-link :to="{ name: 'producers' }">Les producteurs</router-link></li>
+      </ul>
+      <p class="menu-label">
+        Adhérents
+      </p>
+      <ul class="menu-list">
+        <li><router-link :to="{ name: 'auth/sign-in' }">Connexion</router-link></li>
+      </ul>
+    </nav>
+  </section>
 </template>
 
 
@@ -25,8 +31,9 @@
   }
 
   import { Component, Vue } from 'vue-property-decorator';
+  import NavigationLinkComponent from '@/components/NavigationlinkComponent.vue';
 
-  @Component
+  @Component({ components: { 'router-link': NavigationLinkComponent } })
   export default class MenuComponent extends Vue {
     @State('isOpen', { namespace: 'menu'}) isOpen!: boolean;
     @Action('close', { namespace: 'menu'}) close: any;
