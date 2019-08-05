@@ -7,12 +7,13 @@ export interface CartState
   productVariants: { [key: number]: number },
 }
 
-const MUTATION_TYPES = {
+export const MUTATION_TYPES = {
   SET_QUANTITY:      'setQuantity',
   ADD_TO_CART:       'addToCart',
   REMOVE_FROM_CART:  'removeFromCart',
   DECREASE_QUANTITY: 'decreaseQuantity',
   INCREASE_QUANTITY: 'increaseQuantity',
+  CLEAR_CART:        'clearCart',
 };
 
 export const cartVuexModule: Module<CartState, RootState> = {
@@ -34,6 +35,11 @@ export const cartVuexModule: Module<CartState, RootState> = {
   },
 
   mutations: {
+    [MUTATION_TYPES.CLEAR_CART](state: CartState)
+    {
+      Vue.set(state, 'productVariants', {});
+    },
+
     [MUTATION_TYPES.ADD_TO_CART](state: CartState, {id, quantity}: { id: number, quantity: number })
     {
       if (!(id in state.productVariants)) {

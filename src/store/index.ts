@@ -16,6 +16,13 @@ import sessionCookieStorage from '@/store/storage/session-cookie-storage';
 
 Vue.use(Vuex);
 
+export const MODULES_NAMES = {
+  authentication: 'authentication',
+  cart:           'cart',
+  menu:           'menu',
+  currentSale:    'currentSale',
+};
+
 const isDebug = process.env.NODE_ENV !== 'production';
 
 const store: StoreOptions<RootState> = {
@@ -32,10 +39,10 @@ const store: StoreOptions<RootState> = {
     }),
   ],
   modules: {
-    authentication: authenticationVuexModule,
-    cart:           cartVuexModule,
-    menu:           menuVuexModule,
-    currentSale:    currentSaleVuexModule,
+    [MODULES_NAMES.authentication]: authenticationVuexModule,
+    [MODULES_NAMES.cart]:           cartVuexModule,
+    [MODULES_NAMES.menu]:           menuVuexModule,
+    [MODULES_NAMES.currentSale]:    currentSaleVuexModule,
   },
 };
 

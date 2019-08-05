@@ -1,6 +1,8 @@
 import {Module} from 'vuex';
 import {RootState} from '@/store/types';
 import SaleModel from '@/models/SaleModel';
+import {MODULES_NAMES} from '@/store';
+import {MUTATION_TYPES as CART_MUTATION_TYPES} from '@/store/modules/cart';
 
 export interface CurrentSaleState
 {
@@ -19,8 +21,6 @@ export const MUTATION_TYPES = {
   START_LOADING:              'startLoading',
   FINISH_LOADING:             'finishLoading',
   ERROR_LOADING_CURRENT_SALE: 'errorLoadingCurrentSale',
-
-
 };
 
 export const currentSaleVuexModule: Module<CurrentSaleState, RootState> = {
@@ -42,6 +42,10 @@ export const currentSaleVuexModule: Module<CurrentSaleState, RootState> = {
             date_cloture:   {gte: sqlDate},
           },
         });
+
+        if (result.length === 0) {
+          commit(`${MODULES_NAMES.cart}/${CART_MUTATION_TYPES.CLEAR_CART}`, null, {root: true});
+        }
 
         commit(MUTATION_TYPES.UPDATE_CURRENT_SALE, result.length > 0 ? result.pop() : null);
       } catch (e) {
