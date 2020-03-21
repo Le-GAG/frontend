@@ -138,6 +138,10 @@
       border: none;
     }
 
+    &_total-price {
+      min-width: 100px;
+    }
+
     &__remove,
     &__quantity-button {
         cursor: pointer;

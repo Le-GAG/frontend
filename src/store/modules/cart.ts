@@ -1,19 +1,29 @@
-import {Module} from 'vuex';
+import {Commit, Module} from 'vuex';
 import {RootState} from '@/store/types';
 import Vue from 'vue';
+import directusSdk from '@/plugins/directusSdk';
+
+export interface CartContent
+{
+  [key: number]: number,
+}
 
 export interface CartState
 {
-  productVariants: { [key: number]: number },
+  checkoutStatus:  boolean|null,
+  productVariants: CartContent,
 }
 
 export const MUTATION_TYPES = {
-  SET_QUANTITY:      'setQuantity',
-  ADD_TO_CART:       'addToCart',
-  REMOVE_FROM_CART:  'removeFromCart',
-  DECREASE_QUANTITY: 'decreaseQuantity',
-  INCREASE_QUANTITY: 'increaseQuantity',
-  CLEAR_CART:        'clearCart',
+  ADD_TO_CART:         'addToCart',
+  REMOVE_FROM_CART:    'removeFromCart',
+  SET_ITEMS:           'setItems',
+  CLEAR_CART:          'clearCart',
+  DECREASE_QUANTITY:   'decreaseQuantity',
+  INCREASE_QUANTITY:   'increaseQuantity',
+  SET_QUANTITY:        'setQuantity',
+  SET_CHECKOUT_STATUS: 'setCheckoutStatus',
+
 };
 
 export const cartVuexModule: Module<CartState, RootState> = {
@@ -21,6 +31,7 @@ export const cartVuexModule: Module<CartState, RootState> = {
 
   state: {
     productVariants: {},
+    checkoutStatus: null,
   },
 
   getters: {
@@ -82,6 +93,16 @@ export const cartVuexModule: Module<CartState, RootState> = {
         Vue.set(state, 'productVariants', Object.assign({}, state.productVariants));
       }
     },
+
+    [MUTATION_TYPES.SET_CHECKOUT_STATUS](state: CartState, status: boolean|null)
+    {
+      state.checkoutStatus = status;
+    },
+
+    [MUTATION_TYPES.SET_ITEMS](state: CartState, items: CartContent)
+    {
+      Vue.set(state, 'productVariants', Object.assign({}, items));
+    },
   },
 
   actions: {
@@ -111,6 +132,34 @@ export const cartVuexModule: Module<CartState, RootState> = {
     setQuantity({commit}, payload: { id: number, quantity: number })
     {
       commit(MUTATION_TYPES.SET_QUANTITY, payload);
+    },
+
+    async checkout({commit, state, rootState}: { commit: Commit, state: CartState, rootState: RootState })
+    {
+      const savedproductVariants: CartContent = Object.assign({}, state.productVariants);
+      commit(MUTATION_TYPES.SET_CHECKOUT_STATUS, null);
+      //commit(MUTATION_TYPES.CLEAR_CART);
+
+      // TODO: Enregistrer la commande, les variantes de produits et leur quantité
+      try {
+        const junctionTableContent = Object.entries(state.productVariants).map(([productVariantId, quantity]) => {
+          return {
+            produits_variantes_id: { id: productVariantId },
+            prix:                  0.00,
+            quantite:              quantity,
+          };
+        });
+
+        const result = await directusSdk.createItem('commandes', {
+          vente:              rootState.currentSale.currentSale.id,
+          statut:             'cart',
+          produits_variantes: junctionTableContent,
+        });
+
+        console.info(result);
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };

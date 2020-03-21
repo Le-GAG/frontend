@@ -15,6 +15,7 @@
     "@types/node": "^12.0.2",
     "bulma": "^0.7.5",
     "bulma-badge": "^3.0.1",
+    "bulma-modal-fx": "^1.1.1",
     "core-js": "2",
     "directus-sdk-javascript": "^2.15.0",
     "eslint": "^5.16.0",
@@ -26,7 +27,6 @@
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
     "npm-check-updates": "^3.1.9",
-    "typescript-eslint-parser": "^22.0.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-property-decorator": "^8.1.1",
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@types/dom-inputevent": "^1.0.5",
     "@types/js-cookie": "^2.2.2",
+    "@typescript-eslint/typescript-estree": "^1.13.0",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-plugin-typescript": "^3.8.1",

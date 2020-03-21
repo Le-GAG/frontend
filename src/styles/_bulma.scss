@@ -62,6 +62,7 @@ $navbar-breakpoint: 999999;
 @import "~bulma/sass/components/navbar";
 @import "~bulma/sass/components/level";
 @import "~bulma/sass/components/menu";
+@import "~bulma/sass/components/modal";
 
 @import "~bulma/sass/form/_all";
 @import "~bulma/sass/elements/box";
@@ -81,6 +82,7 @@ $navbar-breakpoint: 999999;
 
 // 7. Bulma extensions
 @import "~bulma-badge/src/sass/index";
+@import "~bulma-modal-fx/dist/css/modal-fx.css";
 
 
 // Additional config
