@@ -22,6 +22,7 @@ export default new Router({
       path:      '/connexion',
       name:      'auth/sign-in',
       component: loadPage('auth/AuthSignInPage'),
+      props:     route => ({ returnTo: route.query.returnTo }),
     },
     {
       path:      '/connexion/mot-de-passe-oublie',

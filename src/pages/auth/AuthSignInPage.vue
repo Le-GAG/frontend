@@ -78,7 +78,7 @@
 
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator';
+  import {Component, Vue, Prop} from 'vue-property-decorator';
   import {Action, Getter} from 'vuex-class';
 
   @Component
@@ -87,6 +87,7 @@
     email: string          = '';
     password: string       = '';
     authError: string|null = null;
+    @Prop({ type: String, default: '/' }) protected returnTo!: string;
     @Getter('isAuthenticating', {namespace: 'authentication'}) isAuthenticating!: number;
     @Getter('isLoggedIn', {namespace: 'authentication'}) isAuthenticated!: number;
     @Action('authenticate', {namespace: 'authentication'}) authenticate: any;
@@ -105,7 +106,7 @@
       }
 
       if (this.isAuthenticated) {
-        this.$router.push('/');
+        this.$router.push(this.returnTo);
       } else {
         this.shakeForm();
       }

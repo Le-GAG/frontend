@@ -10,19 +10,21 @@ export interface CartContent
 
 export interface CartState
 {
-  checkoutStatus:  boolean|null,
-  productVariants: CartContent,
+  checkoutStatus:       string|null,
+  productVariants:      CartContent,
+  isCheckoutInProgress: boolean,
 }
 
 export const MUTATION_TYPES = {
-  ADD_TO_CART:         'addToCart',
-  REMOVE_FROM_CART:    'removeFromCart',
-  SET_ITEMS:           'setItems',
-  CLEAR_CART:          'clearCart',
-  DECREASE_QUANTITY:   'decreaseQuantity',
-  INCREASE_QUANTITY:   'increaseQuantity',
-  SET_QUANTITY:        'setQuantity',
-  SET_CHECKOUT_STATUS: 'setCheckoutStatus',
+  ADD_TO_CART:                 'addToCart',
+  REMOVE_FROM_CART:            'removeFromCart',
+  SET_ITEMS:                   'setItems',
+  CLEAR_CART:                  'clearCart',
+  DECREASE_QUANTITY:           'decreaseQuantity',
+  INCREASE_QUANTITY:           'increaseQuantity',
+  SET_QUANTITY:                'setQuantity',
+  SET_CHECKOUT_STATUS:         'setCheckoutStatus',
+  SET_IS_CHECKOUT_IN_PROGRESS: 'setIsCheckoutInProgress',
 
 };
 
@@ -32,6 +34,7 @@ export const cartVuexModule: Module<CartState, RootState> = {
   state: {
     productVariants: {},
     checkoutStatus: null,
+    isCheckoutInProgress: false,
   },
 
   getters: {
@@ -94,7 +97,7 @@ export const cartVuexModule: Module<CartState, RootState> = {
       }
     },
 
-    [MUTATION_TYPES.SET_CHECKOUT_STATUS](state: CartState, status: boolean|null)
+    [MUTATION_TYPES.SET_CHECKOUT_STATUS](state: CartState, status: string|null)
     {
       state.checkoutStatus = status;
     },
@@ -103,6 +106,11 @@ export const cartVuexModule: Module<CartState, RootState> = {
     {
       Vue.set(state, 'productVariants', Object.assign({}, items));
     },
+
+    [MUTATION_TYPES.SET_IS_CHECKOUT_IN_PROGRESS](state: CartState, isCheckoutInProgress: boolean)
+    {
+      state.isCheckoutInProgress = isCheckoutInProgress;
+    }
   },
 
   actions: {
@@ -138,7 +146,7 @@ export const cartVuexModule: Module<CartState, RootState> = {
     {
       const savedproductVariants: CartContent = Object.assign({}, state.productVariants);
       commit(MUTATION_TYPES.SET_CHECKOUT_STATUS, null);
-      //commit(MUTATION_TYPES.CLEAR_CART);
+      commit(MUTATION_TYPES.SET_IS_CHECKOUT_IN_PROGRESS, true);
 
       // TODO: Enregistrer la commande, les variantes de produits et leur quantité
       try {
@@ -151,15 +159,20 @@ export const cartVuexModule: Module<CartState, RootState> = {
         });
 
         const result = await directusSdk.createItem('commandes', {
+          // @ts-ignore
           vente:              rootState.currentSale.currentSale.id,
-          statut:             'cart',
+          statut:             'order',
           produits_variantes: junctionTableContent,
         });
 
+        commit(MUTATION_TYPES.SET_CHECKOUT_STATUS, 'successful');
+        commit(MUTATION_TYPES.CLEAR_CART);
         console.info(result);
       } catch (e) {
+        commit(MUTATION_TYPES.SET_CHECKOUT_STATUS, 'failed');
         console.error(e);
       }
+      commit(MUTATION_TYPES.SET_IS_CHECKOUT_IN_PROGRESS, false);
     },
   },
 };
