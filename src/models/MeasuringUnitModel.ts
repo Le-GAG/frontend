@@ -2,15 +2,16 @@ import {Fields, Model} from '@vuex-orm/core';
 import {Response} from '@vuex-orm/plugin-axios';
 import {querify} from '@/utils/qs';
 
-export default class ProductTagModel extends Model
+export default class MeasuringUnitModel extends Model
 {
-  static entity = 'tags_des_produits';
+  static entity = 'unites';
 
   static fields(): Fields
   {
     return {
-      id:  this.attr(null),
-      nom: this.string(''),
+      id:            this.attr(null),
+      nom:           this.string(''),
+      sans_quantite: this.boolean(false),
     };
   }
 
@@ -24,7 +25,7 @@ export default class ProductTagModel extends Model
     const fetchParams = Object.assign({}, this.fetchParams);
     fetchParams.filter = Object.assign(fetchParams.filter, filters);
 
-    const result = await this.api().get(`items/tags_des_produits?${querify(fetchParams)}`);
+    const result = await this.api().get(`items/unites?${querify(fetchParams)}`);
     return result.response.data.data;
   }
 
@@ -33,10 +34,11 @@ export default class ProductTagModel extends Model
     const fetchParams = Object.assign({}, this.fetchParams);
     fetchParams.filter = Object.assign(fetchParams.filter, filters);
 
-    const result = await this.api().get(`items/tags_des_produits?${querify(fetchParams)}`);
+    const result = await this.api().get(`items/unites?${querify(fetchParams)}`);
     return result.response.data.data;
   }
 
   id!: number;
   nom!: string;
+  sans_quantite!: boolean;
 }

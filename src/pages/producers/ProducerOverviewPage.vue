@@ -47,7 +47,7 @@
   import ProducerMapComponent from '@/components/producers/ProducerMapComponent.vue';
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
   import {Component, Vue} from 'vue-property-decorator';
-  import ProducerModel from '../../models/ProducerModel';
+  import ProducerModel from '@/models/ProducerModel';
 
   @Component({components: {ProducerListComponent, ProducerMapComponent, ClipLoader}})
   export default class ProducerOverviewPage extends Vue
@@ -64,32 +64,8 @@
     async populateProducers()
     {
       try {
-        this.producers = await ProducerModel.findAll({
-          fields: [
-            'id',
-            'raison_sociale',
-            'siret',
-            'slug',
-
-            'presentation',
-            'photo_de_presentation.*',
-
-            'adresse',
-            'numero',
-            'rue',
-            'code_postal',
-            'ville',
-
-            'email',
-            'numero_de_telephone',
-            'site_internet',
-
-            'activites.*.*',
-          ],
-          filter: {
-            'active': 'published',
-          },
-        });
+        await ProducerModel.fetchAll();
+        this.producers = ProducerModel.query().with(['photo_de_presentation', 'activites']).all();
       } catch (e) {
         console.error(e);// eslint-disable-line no-console
         this.loadingError = e.toString();

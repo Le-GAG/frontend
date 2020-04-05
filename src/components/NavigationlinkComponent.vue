@@ -1,6 +1,6 @@
 <template>
   <router-link v-bind="$attrs" @click.native="closeMenu">
-    <slot/>
+    <slot />
   </router-link>
 </template>
 

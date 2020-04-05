@@ -1,39 +1,73 @@
-/**
- * @author nstCactus
- * @date 2018-12-09 13:59
- */
-import UnitOfMeasurementModel, {UnitOfMeasurementModelConstructorOptions} from '@/models/UnitOfMeasurementModel';
+import {Fields, Model} from '@vuex-orm/core';
+import ProductModel from '@/models/ProductModel';
+import PackagingModel from '@/models/PackagingModel';
+import MeasuringUnitModel from '@/models/MeasuringUnitModel';
+import {Response} from '@vuex-orm/plugin-axios';
+import {querify} from '@/utils/qs';
+import {DirectusSdkFetchParams} from 'directus-sdk-javascript';
 
-export interface ProductVariantModelConstructorOptions {
-  id: number,
+export default class ProductVariantModel extends Model
+{
+  static entity = 'produits_variantes';
 
-  prix: string,
-  prix_unitaire: string,
-
-  contenance: string,
-  conditionnement: {id: number, nom: string},
-  produit: {id: number, active: 0|1, nom: string, [key:string]: any},
-  unite_de_mesure: UnitOfMeasurementModelConstructorOptions,
-}
-
-export default class ProductVariantModel {
-  id: number;
-
-  conditionnement: string;
-  unitOfMeasurement: UnitOfMeasurementModel;
-
-  capacity: string;
-  price: number;
-  unitPrice: number;
-
-  public constructor (options: ProductVariantModelConstructorOptions) {
-    this.id = options.id;
-
-    this.capacity          = options.contenance;
-    this.conditionnement   = options.conditionnement.nom;
-    this.unitOfMeasurement = new UnitOfMeasurementModel(options.unite_de_mesure);
-
-    this.price = Number(options.prix);
-    this.unitPrice = Number(options.prix_unitaire);
+  static fields(): Fields
+  {
+    return {
+      id:                 this.attr(null),
+      produit:            this.belongsTo(ProductModel, 'produit_id'),
+      produit_id:         this.attr(null),
+      prix:               this.number(0),
+      conditionnement:    this.belongsTo(PackagingModel, 'conditionnement_id'),
+      conditionnement_id: this.attr(null),
+      contenance:         this.string(''),
+      prix_de_base:       this.number(0),
+      unite_de_mesure:    this.belongsTo(MeasuringUnitModel, 'unite_de_mesure_id'),
+      unite_de_mesure_id: this.attr(null),
+    };
   }
+
+  static defaultFetchParams = {
+    fields: [
+      '*',
+      'produit.*',
+      // 'unite_de_mesure.*',
+      // 'conditionnement.*',
+    ],
+    filter: {},
+  };
+
+  static async fetchAll(fetchParams: DirectusSdkFetchParams = {}): Promise<Response>
+  {
+    fetchParams = Object.assign({}, this.defaultFetchParams, fetchParams);
+
+    const result = await ProductVariantModel.api().get(`items/produits_variantes?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  static async fetchByIdWithProducts(ids: number[]): Promise<Response>
+  {
+    await this.fetchAll({ fields: ['*'], filter: { id: { in: ids } } });
+    const productIds = ProductVariantModel.findIn(ids).map((variant: ProductVariantModel) => variant.produit_id);
+    return ProductModel.fetchAll({ id: { in: productIds } });
+  }
+
+  static async fetchOne(fetchParams: DirectusSdkFetchParams = {}): Promise<Response>
+  {
+    fetchParams = Object.assign({}, this.defaultFetchParams, fetchParams);
+
+    const result = await this.api().get(`items/produits_variantes?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+
+  id!: number;
+  produit!: ProductModel;
+  produit_id!: number;
+  prix!: number;
+  conditionnement!: PackagingModel;
+  conditionnement_id!: number;
+  contenance!: string;
+  prix_de_base!: number;
+  unite_de_mesure!: MeasuringUnitModel;
+  unite_de_mesure_id!: number;
 }

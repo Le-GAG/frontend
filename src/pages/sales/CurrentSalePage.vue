@@ -15,16 +15,17 @@
 <script lang="ts">
   import {Component, Vue, Watch} from 'vue-property-decorator';
   import SaleModel from '@/models/SaleModel';
-  import ProductModel from '@/models/ProductModel';
   import Hero from '@/components/layout/Hero.vue';
   import ProductListComponent from '@/components/products/ProductListComponent.vue';
   import {State} from 'vuex-class';
+  import ProductVariantModel from '@/models/ProductVariantModel';
+  import ProductModel from '@/models/ProductModel';
 
   @Component({components: {Hero, ProductListComponent}})
   export default class CurrentSalePage extends Vue
   {
-    @State('currentSale', { namespace: 'currentSale' }) currentSale!: SaleModel;
-    @State('isLoading', { namespace: 'currentSale' })   isLoading!: boolean;
+    @State('currentSale', {namespace: 'currentSale'}) currentSale!: SaleModel;
+    @State('isLoading', {namespace: 'currentSale'}) isLoading!: boolean;
 
     areProductsLoading: boolean = false;
     loadingError?: string | null;
@@ -51,51 +52,51 @@
         minute:  'numeric',
       };
 
-      return `Commande à passer avant ${this.currentSale.closureDate.toLocaleString('fr-fr',
+      return `Commande à passer avant ${this.currentSale.date_cloture.toLocaleString('fr-fr',
         dateFormatterOptions)}`;
+    }
+
+
+    retryLoading()
+    {
+      if (this.loadingError) {
+        this.loadingError = null;
+        this.populateProducts();
       }
+    }
 
-
-      retryLoading()
-      {
-        if (this.loadingError) {
-          this.loadingError = null;
-          this.populateProducts();
+    @Watch('currentSale')
+    async populateProducts()
+    {
+      try {
+        if (!this.currentSale) {
+          return;
         }
+
+        const variantIds = this.currentSale.produits.map(variant => {
+          return variant.id;
+        });
+
+        await ProductVariantModel.fetchAll({ fields: ['*'], filter: { id: { in: variantIds } } });
+        const productIds = ProductVariantModel.findIn(variantIds).map(variant => variant.produit_id);
+        await ProductModel.fetchAll({ id: { in: productIds } });
+
+          this.products = ProductModel
+          .query()
+          .with('variantes', query => {
+            query.whereIdIn(this.currentSale.produits.map(variant => variant.id));
+            query.with(['conditionnement', 'unite_de_mesure']);
+          })
+          .with('producteur')
+          .with('photos')
+          .with('categorie')
+          .get();
+      } catch (e) {
+        console.error(e); // eslint-disable-line no-console
+        this.loadingError = e.message;
+      } finally {
+        this.areProductsLoading = false;
       }
-
-      @Watch('currentSale')
-      async populateProducts()
-      {
-        this.areProductsLoading = true;
-        try {
-          this.products = await ProductModel.findAll({
-            fields: [
-              'id',
-              'slug',
-              'nom',
-              'description',
-              'producteur.*.*',
-              'categorie.*',
-              'tags.tag_id.*',
-              'variantes.*',
-              'variantes.conditionnement.*',
-              'variantes.unite_de_mesure.*',
-              'variantes.ventes.*',
-              'photos.*.*',
-            ],
-            filter: {
-              'variantes.prix':             { nnull: true },
-              'categorie':                  { nnull: true },
-              'variantes.ventes.ventes_id': this.currentSale.id,
-            },
-          });
-        } catch (e) {
-          console.error(e); // eslint-disable-line no-console
-          this.loadingError = e.message;
-        } finally {
-          this.areProductsLoading = false;
-        }
     }
   }
 </script>

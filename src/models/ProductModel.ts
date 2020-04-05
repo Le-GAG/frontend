@@ -1,136 +1,145 @@
-/**
- * @author nstCactus
- * @date 18/07/2018 13:13
- */
+import {Fields, Model} from '@vuex-orm/core';
+import ProducerModel from '@/models/ProducerModel';
+import UserModel from '@/models/UserModel';
+import ProductCategoryModel from '@/models/ProductCategoryModel';
+import {Response} from '@vuex-orm/plugin-axios';
+import {AxiosResponse} from 'axios';
+import {querify} from '@/utils/qs';
+import DirectusFileModel from '@/models/DirectusFileModel';
+import JunctionProductPhotosModel from '@/models/JunctionProductPhotosModel';
+import ProductTagModel from '@/models/ProductTagModel';
+import JunctionProductTagModel from '@/models/JunctionProductTagModel';
+import ProductVariantModel from '@/models/ProductVariantModel';
 
-import AbstractDirectusModel from '@/models/AbstractDirectusModel';
-import DirectusItemFactory from '@/factories/DirectusItemFactory';
-import ProductCategoryModel, {ProductCategoryModelConstructorOptions} from '@/models/ProductCategoryModel';
-import ProducerModel, {ProducerModelConstructorOptions} from '@/models/ProducerModel';
-import DirectusMediaModel, {DirectusMediaModelConstructorOptions} from '@/models/DirectusMediaModel';
-import ProductVariantModel, {ProductVariantModelConstructorOptions} from '@/models/ProductVariantModel';
-import ProductTagModel, {ProductTagModelConstructorOptions} from '@/models/ProductTagModel';
-
-interface ProductModelConstructorOptions
+export default class ProductModel extends Model
 {
-  id: number,
-  nom: string;
-  slug: string,
+  static entity = 'produits';
 
-  categorie: ProductCategoryModel|ProductCategoryModelConstructorOptions;
-  tags: { tag_id: ProductTagModelConstructorOptions }[];
-
-  producteur: ProducerModel|ProducerModelConstructorOptions;
-  variantes: ProductVariantModelConstructorOptions[];
-  photos: { photo: DirectusMediaModelConstructorOptions }[];
-
-  thumbnail: DirectusMediaModel|DirectusMediaModelConstructorOptions;
-}
-
-export default class ProductModel extends AbstractDirectusModel
-{
-  protected static readonly itemName: string = 'produits';
-
-  id: number;
-  name: string;
-  slug: string;
-
-  category: ProductCategoryModel;
-  tags: ProductTagModel[];
-
-  producer: ProducerModel;
-  variants: ProductVariantModel[];
-  photos: DirectusMediaModel[];
-
-  thumbnail?: DirectusMediaModel;
-
-  constructor(options: ProductModelConstructorOptions)
+  static fields(): Fields
   {
-    super();
-
-    this.id        = options.id;
-    this.name      = options.nom;
-    this.slug      = options.slug;
-
-    this.category  = ProductModel.instanciateCategory(options.categorie);
-    this.tags      = ProductModel.instanciateTags(options.tags);
-
-    this.producer  = ProductModel.instantiateProducer(options.producteur);
-    this.variants  = ProductModel.instanciateVariantes(options.variantes);
-    this.photos    = ProductModel.instanciatePhotos(options.photos);
+    return {
+      id:            this.attr(null),
+      active:        this.string(''),
+      nom:           this.string(''),
+      slug:          this.string(''),
+      description:   this.string(''),
+      producteur:    this.belongsTo(ProducerModel, 'producteur_id'),
+      producteur_id: this.attr(null),
+      categorie:     this.belongsTo(ProductCategoryModel, 'categorie_id'),
+      categorie_id:  this.attr(null),
+      created_by:    this.belongsTo(UserModel, 'created_by_id'),
+      created_by_id: this.attr(null),
+      updated_by:    this.belongsTo(UserModel, 'update_by_id'),
+      updated_by_id: this.attr(null),
+      date_created:  this.attr(new Date()),
+      date_updated:  this.attr(new Date()),
+      variantes:     this.hasMany(ProductVariantModel, 'produit_id'),
+      photos:        this.belongsToMany(
+        DirectusFileModel,
+        JunctionProductPhotosModel,
+        'produit_id',
+        'photo_id'
+      ),
+      tags: this.belongsToMany(
+        ProductTagModel,
+        JunctionProductTagModel,
+        'produit_id',
+        'tag_id'
+      ),
+    };
   }
 
-  private static instanciateCategory(category: ProductCategoryModel|ProductCategoryModelConstructorOptions): ProductCategoryModel
-  {
-    if (!(category instanceof ProductCategoryModel)) {
-      category = new ProductCategoryModel(<ProductCategoryModelConstructorOptions>category);
-    }
+  static apiConfig = {
+    dataTransformer: (response: AxiosResponse) => {
+      let data = response.data.data;
 
-    return <ProductCategoryModel>category;
-  }
-
-  private static instantiateProducer(producer: ProducerModel|ProducerModelConstructorOptions): ProducerModel
-  {
-    if (!(producer instanceof ProducerModel)) {
-      producer = new ProducerModel(<ProducerModelConstructorOptions>producer);
-    }
-
-    return <ProducerModel>producer;
-  }
-
-  private static instanciateVariantes(variants: ProductVariantModel[] | ProductCategoryModelConstructorOptions[]): ProductVariantModel[]
-  {
-    const instantiatedVariants:ProductVariantModel[] = [];
-
-    for (let variant of variants) {
-      if (!(variant instanceof ProductVariantModel)) {
-        variant = new ProductVariantModel(<ProductVariantModelConstructorOptions>variant);
+      if (data instanceof Array) {
+        data = data.map(ProductModel.transformPhotos);
+        data = data.map(ProductModel.transformTags);
+      } else {
+        data = ProductModel.transformPhotos(data);
+        data = ProductModel.transformTags(data);
       }
 
-      instantiatedVariants.push(<ProductVariantModel>variant) ;
+      return data;
+    },
+  }
+
+  static fetchParams = {
+    fields: [
+      '*',
+      'producteur.*',
+      'categorie.*',
+      'tags.tag_id.*',
+      'variantes.*',
+      'variantes.conditionnement.*',
+      'variantes.unite_de_mesure.*',
+      'photos.*.*',
+    ],
+    filter: {
+      'variantes.prix':    {nnull: true},
+      'categorie':         {nnull: true},
+      'active':            'published',
+      'producteur.active': 'published',
+    },
+  };
+
+  static async fetchAll(filters?: any): Promise<Response>
+  {
+    const fetchParams  = Object.assign({}, ProductModel.fetchParams);
+    fetchParams.filter = Object.assign(fetchParams.filter, filters);
+
+    const result = await ProductModel.api().get(`items/produits?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  static async fetchOne(filters: any): Promise<Response>
+  {
+    const fetchParams = Object.assign({}, this.fetchParams);
+    fetchParams.filter = Object.assign(fetchParams.filter, filters);
+
+    const result = await this.api().get(`items/produits?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  protected static transformPhotos(product: any)
+  {
+    if ('photos' in product) {
+      product.photos = product.photos.map((photo: any) => {
+        return photo.photo;
+      });
     }
 
-    return instantiatedVariants;
+    return product;
   }
 
-  private static instanciateTags(tags: ProductTagModel[] | { tag_id: ProductTagModelConstructorOptions}[])
+  protected static transformTags(product: any)
   {
-    const instantiatedTags:ProductTagModel[] = [];
-
-    for (let tag of tags) {
-      if (!(tag instanceof ProductTagModel)) {
-        instantiatedTags.push(new ProductTagModel(<ProductTagModelConstructorOptions>tag.tag_id));
-      }
+    if ('tags' in product) {
+      product.tags = product.tags.map((tag: any) => {
+        return tag.tag_id;
+      });
     }
 
-    return instantiatedTags;
+    return product;
   }
 
-  private static instanciatePhotos(photoDescriptors: { photo: DirectusMediaModelConstructorOptions}[])
-  {
-    const photos: DirectusMediaModel[] = [];
-    photoDescriptors.forEach(photoDescriptor => {
-      photos.push(new DirectusMediaModel(photoDescriptor.photo));
-    });
-
-    return photos;
-  }
-
-
-  static async getBySlug(slug: string): Promise<ProductModel|null>
-  {
-    const response = await ProductModel._findAll(ProductModel.itemName, {
-      filter: { slug },
-      limit:  1,
-    });
-
-    return DirectusItemFactory.instantiateSingleItem(ProductModel, response);
-  }
-
-  static async findAll(fetchParams?: {}): Promise<ProductModel[]>
-  {
-    const results = await AbstractDirectusModel._findAll(ProductModel.itemName, fetchParams);
-
-    return DirectusItemFactory.instantiateCollection(ProductModel, results);
-  }
+  id!: number;
+  active!: string;
+  nom!: string;
+  slug!: string;
+  description!: string;
+  producteur!: ProducerModel;
+  producteur_id!: number;
+  categorie!: ProductCategoryModel;
+  categorie_id!: number;
+  created_by!: UserModel;
+  created_by_id!: number;
+  updated_by!: UserModel;
+  updated_by_id!: number;
+  date_created!: any;
+  date_updated!: any;
+  variantes!: ProductVariantModel[];
+  photos!: DirectusFileModel[];
+  tags!: ProductTagModel[];
 }

@@ -17,7 +17,7 @@
 <script lang="ts">
   import ProducerCardComponent from '@/components/producers/ProducerCardComponent.vue';
   import {Component, Vue, Prop} from 'vue-property-decorator';
-  import ProducerModel from '../../models/ProducerModel';
+  import ProducerModel from '@/models/ProducerModel';
 
   @Component({components: {ProducerCardComponent}})
   export default class ProducerListComponent extends Vue

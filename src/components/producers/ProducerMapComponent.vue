@@ -42,10 +42,10 @@
 
 <script lang="ts">
   import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
-  import ProducerModel from '../../models/ProducerModel';
-  import ProducerActivityModel from '../../models/ProducerActivityModel';
+  import ProducerModel from '@/models/ProducerModel';
+  import ProducerActivityModel from '@/models/ProducerActivityModel';
 
-    @Component
+  @Component
   export default class ProducerMapComponent extends Vue
   {
         @Prop({default: []}) protected producers!: ProducerModel[];

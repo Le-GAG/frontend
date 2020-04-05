@@ -25,7 +25,7 @@
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
 
   @Component({components: {ProductCardComponent, ClipLoader}})
-  export default class ProductListComponent extends Vue{
+  export default class ProductListComponent extends Vue {
     @Prop({ default: []}) protected products!: ProductModel[];
     @Prop({ default: false}) protected isLoading!: boolean;
   }

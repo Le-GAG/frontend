@@ -7,6 +7,7 @@ import {Module} from 'vuex';
 import {RootState} from '@/store/types';
 import jwtDecode from 'jwt-decode';
 import Vue from 'vue';
+import axios from 'axios';
 
 export interface AuthenticationState
 {
@@ -59,6 +60,7 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     deauthenticate ({ commit }) {
       Vue.prototype.$directusSdk.logout();
       commit(MUTATION_TYPES.DEAUTHENTICATE);
+      delete axios.defaults.headers.common['Authorization'];
     },
   },
 
@@ -66,6 +68,11 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     [ MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL ] (state:AuthenticationState, token:string) {
       state.token = token;
       state.isPending = false;
+
+      const directusSdkStorage = localStorage.getItem('directus-sdk-js');
+      if (directusSdkStorage) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(directusSdkStorage).token;
+      }
     },
 
     [ MUTATION_TYPES.AUTHENTICATION_FAILED ] (state:AuthenticationState, error:Error) {

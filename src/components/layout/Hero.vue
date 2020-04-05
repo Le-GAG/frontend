@@ -59,9 +59,9 @@
           }
 
           return {
-              backgroundSize: 'cover',
+              backgroundSize:     'cover',
               backgroundPosition: 'center',
-              backgroundImage: `url('${this.background}')`,
+              backgroundImage:    `url('${this.background}')`,
           };
       }
   }

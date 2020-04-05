@@ -34,21 +34,17 @@
 
 <script lang="ts">
   import {Component, Prop, Vue} from 'vue-property-decorator';
-  import ProducerModel from '../../models/ProducerModel';
+  import ProducerModel from '@/models/ProducerModel';
 
   @Component
   export default class ProducerCardComponent extends Vue
   {
     @Prop() protected producer!: ProducerModel;
 
-    get photoUrl()
+    get photoUrl(): string
     {
       if (this.producer.photo_de_presentation) {
-        const thumbnail = this.producer.photo_de_presentation.getThumbnailUrl('crop', 480, 270);
-
-        if (thumbnail !== null) {
-          return thumbnail;
-        }
+        return this.$directusSdk.getAssetUrl(this.producer.photo_de_presentation.private_hash, {key: 'card'});
       }
 
       return 'https://via.placeholder.com/480x270';

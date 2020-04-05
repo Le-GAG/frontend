@@ -39,10 +39,10 @@
 <script lang="ts">
   import {Component, Vue} from 'vue-property-decorator';
   import {namespace} from 'vuex-class';
-  import ProductModel from '@/models/ProductModel';
   import CartItemComponent from '@/components/cart/CartItemComponent.vue';
   import {CartState} from '@/store/modules/cart';
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import ProductVariantModel from '@/models/ProductVariantModel';
 
   const cartModule = namespace('cart');
 
@@ -52,7 +52,7 @@
     @cartModule.State('productVariants') cart!: CartState;
 
     /** Holds productVariant data. Only those in the shopping cart are fetched */
-    protected productVariants: ProductModel[] = [];
+    protected productVariants: ProductVariantModel[] = [];
     protected loading: boolean = true;
 
     async created() {
@@ -81,23 +81,13 @@
       if (Object.values(this.cart).length === 0) {
         this.productVariants = [];
         this.loading = false;
-        return;
+        return [];
       }
 
-      const result = await Vue.prototype.$directusSdk.getItems('produits_variantes', {
-        fields: [
-          '*',
-          'produit.*',
-          'produit.photos.photo.*',
-          'conditionnement.*',
-        ],
-        filter: {
-          id: { in: Object.keys(this.cart) },
-        },
-      });
-
+      const variantIds:number[] = Object.keys(this.cart).map((variantId: string) => parseInt(variantId, 10));
+      await ProductVariantModel.fetchByIdWithProducts(variantIds);
       this.loading = false;
-      return result.data;
+      return ProductVariantModel.query().withAllRecursive().whereIdIn(variantIds).all();
     }
   }
 </script>

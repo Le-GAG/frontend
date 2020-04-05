@@ -1,20 +1,20 @@
 module.exports = {
-  'root':          true,
-  'env':           {
+  'root': true,
+  'env':  {
     'node': true,
   },
 
-  'extends':       [
+  'extends': [
     'eslint:recommended',
     'plugin:vue/recommended',
     '@vue/typescript',
   ],
 
-  'plugins':       [ 'html' ],
+  'plugins': [ 'html' ],
 
-  'rules':         {
-    'indent':            [ 'warn', 2 ],
-    'vue/script-indent': [ 'warn', 2, { 'baseIndent': 1 } ],
+  'rules': {
+    'indent':             [ 'warn', 2 ],
+    'vue/script-indent':  [ 'warn', 2, { 'baseIndent': 1 } ],
     'comma-dangle':       [ 'warn', 'always-multiline' ],
     'semi':               [ 'error', 'always', { 'omitLastInOneLineBlock': true } ],
     'operator-linebreak': [ 'warn', 'before' ],
@@ -30,22 +30,22 @@ module.exports = {
       },
     }],
     'vue/singleline-html-element-content-newline': false,
-    'vue/max-attributes-per-line': ['warn', {
+    'vue/max-attributes-per-line':                 ['warn', {
       'singleline': 4,
-      'multiline': {
-        'max': 1,
-        'allowFirstLine': true
-      }
+      'multiline':  {
+        'max':            1,
+        'allowFirstLine': true,
+      },
     }],
   },
 
-  'overrides':         [
+  'overrides': [
     {
       'files': [ '*.vue' ],
       'rules': {
-        'indent': 'off'
-      }
-    }
+        'indent': 'off',
+      },
+    },
   ],
 
   'parserOptions': {

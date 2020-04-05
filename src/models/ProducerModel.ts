@@ -1,141 +1,108 @@
-/**
- * @author nstCactus
- * @date 18/07/2018 13:13
- */
+import {Fields, Model} from '@vuex-orm/core';
+import DirectusFileModel from '@/models/DirectusFileModel';
+import ProducerActivityModel from '@/models/ProducerActivityModel';
+import JunctionProducerActivityModel from '@/models/JunctionProducerActivityModel';
+import {Response} from '@vuex-orm/plugin-axios';
+import {AxiosResponse} from 'axios';
+import {querify} from '@/utils/qs';
 
-import AbstractDirectusModel from '@/models/AbstractDirectusModel';
-import ProducerActivityModel, {ProducerActivityConstructorOptions} from '@/models/ProducerActivityModel';
-import DirectusItemFactory from '@/factories/DirectusItemFactory';
-import DirectusMediaModel, {DirectusMediaModelConstructorOptions} from '@/models/DirectusMediaModel';
-
-interface DirectusMedia
+export default class ProducerModel extends Model
 {
-  name: string,
-  width: number,
-  height: number,
-}
+  static entity = 'producteurs';
 
-export interface LatLng
-{
-  lat: number,
-  lng: number,
-}
-
-export interface ProducerModelConstructorOptions
-{
-  id: number,
-  slug: string,
-  raison_sociale: string,
-  siret: string,
-
-  email: string,
-  site_internet: string,
-  numero_de_telephone: string,
-
-  adresse: string,
-  numero: string,
-  rue: string,
-  code_postal: string,
-  ville: string,
-
-  activites: { activite_id: ProducerActivityConstructorOptions }[],
-  photo_de_presentation: DirectusMediaModelConstructorOptions;
-
-  presentation: string,
-}
-
-export default class ProducerModel extends AbstractDirectusModel
-{
-  protected static readonly itemName: string = 'producteurs';
-
-  id: number;
-  slug: string;
-
-  raison_sociale: string;
-  siret: string;
-
-  email: string;
-  site_internet: string;
-  numero_de_telephone: string;
-
-  photo_de_presentation: DirectusMediaModel|null;
-
-  adresse: LatLng|null = null;
-  numero: string       = '';
-  rue: string          = '';
-  code_postal: string  = '';
-  ville: string        = '';
-
-  activites: ProducerActivityModel[] = [];
-  presentation: string;
-
-  constructor(options: ProducerModelConstructorOptions)
+  static fields(): Fields
   {
-    super();
+    return {
+      id:                       this.attr(null),
+      active:                   this.string(null),
+      adresse:                  this.attr(null),
+      code_postal:              this.string(null),
+      email:                    this.string(null),
+      numero:                   this.string(null),
+      numero_de_telephone:      this.string(null),
+      photo_de_presentation:    this.belongsTo(DirectusFileModel, 'photo_de_presentation_id'),
+      photo_de_presentation_id: this.attr(null),
+      presentation:             this.string(null),
+      raison_sociale:           this.string(null),
+      rue:                      this.string(null),
+      siret:                    this.string(null),
+      site_internet:            this.string(null),
+      slug:                     this.string(null),
+      ville:                    this.string(null),
+      activites:                this.belongsToMany(
+        ProducerActivityModel,
+        JunctionProducerActivityModel,
+        'producteur_id',
+        'activite_id'
+      ),
+    };
+  }
 
-    this.id = options.id;
-    this.slug = options.slug;
-    this.raison_sociale = options.raison_sociale;
-    this.siret = options.siret;
-    this.email = options.email;
-    this.site_internet = options.site_internet;
-    this.numero_de_telephone = options.numero_de_telephone;
-    this.numero = options.numero;
-    this.rue = options.rue;
-    this.code_postal = options.code_postal;
-    this.ville = options.ville;
-    this.presentation = options.presentation;
+  static apiConfig = {
+    dataTransformer: (response: AxiosResponse) => {
+      let data = response.data.data;
 
-    this.photo_de_presentation = ProducerModel.instantiatePhoto(options.photo_de_presentation);
+      if (data instanceof Array) {
+        data = data.map(ProducerModel.transformActivities);
+      } else {
+        data = ProducerModel.transformActivities(data);
+      }
 
-    if (options.adresse && typeof options.adresse == 'object') {
-      const {lat, lng} = options.adresse;
-      this.adresse     = {
-        lat: lat,
-        lng: lng,
-      };
+      return data;
+    },
+  }
+
+  static fetchParams = {
+    fields: ['*', 'photo_de_presentation.*', 'activites.*.*'],
+    filter: {
+      active: 'published',
+    },
+  };
+
+  static async fetchOne(filters: any): Promise<Response>
+  {
+    const fetchParams = Object.assign({}, this.fetchParams);
+    fetchParams.filter = Object.assign(fetchParams.filter, filters);
+
+    const result = await this.api().get(`items/producteurs?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  static async fetchAll(filters?: any): Promise<Response>
+  {
+    const fetchParams = Object.assign({}, this.fetchParams);
+    fetchParams.filter = Object.assign(fetchParams.filter, filters);
+
+    const result = await this.api().get(`items/producteurs?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  protected static transformActivities(producer: any)
+  {
+    if ('activites' in producer) {
+      producer.activites = producer.activites.map((activite:any) => {
+        return activite.activite_id;
+      });
     }
 
-    this.activites = ProducerModel.instantiateActivites(options.activites);
+    return producer;
   }
 
-  static async getBySlug(slug: string, fields?: string[]): Promise<ProducerModel|null>
-  {
-    const response = await ProducerModel._findAll(ProducerModel.itemName, {
-      fields: fields,
-      filter: {
-        slug:   slug,
-        active: 'published',
-      },
-      limit: 1,
-    });
-
-    return DirectusItemFactory.instantiateSingleItem(ProducerModel, response);
-  }
-
-  static async findAll(fetchParams?: {}): Promise<ProducerModel[]>
-  {
-    const results = await AbstractDirectusModel._findAll(ProducerModel.itemName, fetchParams);
-
-    return DirectusItemFactory.instantiateCollection(ProducerModel, results);
-  }
-
-  private static instantiatePhoto(photoDescriptor: DirectusMediaModelConstructorOptions): DirectusMediaModel|null
-  {
-    if (!photoDescriptor) {
-      return null;
-    }
-
-    return new DirectusMediaModel(photoDescriptor);
-  }
-
-  private static instantiateActivites(activiteDescriptors: { activite_id: ProducerActivityConstructorOptions }[]): ProducerActivityModel[]
-  {
-    const activites: ProducerActivityModel[] = [];
-    activiteDescriptors.forEach(activiteDescriptor => {
-      activites.push(new ProducerActivityModel(activiteDescriptor.activite_id));
-    });
-
-    return activites;
-  }
+  id!: number;
+  active!: string;
+  adresse!: { lat: number; lng: number } | null;
+  code_postal!: string;
+  email!: string;
+  numero!: string;
+  numero_de_telephone!: string;
+  photo_de_presentation!: DirectusFileModel;
+  photo_de_presentation_id!: number;
+  presentation!: string;
+  raison_sociale!: string;
+  rue!: string;
+  siret!: string;
+  site_internet!: string;
+  slug!: string;
+  ville!: string;
+  activites!: ProducerActivityModel[];
 }

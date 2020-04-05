@@ -1,39 +1,85 @@
-/**
- * @author nstCactus
- * @date 22/07/2019 08:47
- */
+import {Fields, Model} from '@vuex-orm/core';
+import {Response} from '@vuex-orm/plugin-axios';
+import {AxiosResponse} from 'axios';
+import {querify} from '@/utils/qs';
+import ProductVariantModel from '@/models/ProductVariantModel';
+import JunctionSaleProductVariantModel from '@/models/JunctionSaleProductVariantModel';
 
-import AbstractDirectusModel from '@/models/AbstractDirectusModel';
-import DirectusItemFactory from '@/factories/DirectusItemFactory';
-
-export interface SaleModelConstructorOptions
+export default class SaleModel extends Model
 {
-  id: number,
-  date_ouverture: string,
-  date_cloture: string,
-}
+  static entity = 'ventes';
 
-export default class SaleModel extends AbstractDirectusModel
-{
-  protected static readonly itemName: string = 'ventes';
-
-  id: number;
-  openingDate: Date;
-  closureDate: Date;
-
-  constructor(options: SaleModelConstructorOptions)
+  static fields(): Fields
   {
-    super();
-
-    this.id = options.id;
-    this.openingDate = new Date(options.date_ouverture);
-    this.closureDate = new Date(options.date_cloture);
+    return {
+      id:             this.attr(null),
+      date_ouverture: this.attr(null),
+      date_cloture:   this.attr(null),
+      produits:       this.belongsToMany(
+        ProductVariantModel,
+        JunctionSaleProductVariantModel,
+        'ventes_id',
+        'produits_variantes_id',
+      ),
+    };
   }
 
-  static async findAll(fetchParams?: {}): Promise<SaleModel[]>
-  {
-    const results = await AbstractDirectusModel._findAll(SaleModel.itemName, fetchParams);
+  static apiConfig = {
+    dataTransformer: (response: AxiosResponse) => {
+      let data = response.data.data;
+      if (data instanceof Array) {
+        data = data.map(SaleModel.transformProducts);
+      } else {
+        data = SaleModel.transformProducts(data);
+      }
 
-    return DirectusItemFactory.instantiateCollection(SaleModel, results);
+      return data;
+    },
   }
+
+  static fetchParams = {
+    fields: [
+      '*',
+      'produits.*.*',
+    ],
+    filter: {},
+  };
+
+  static async fetchAll(filters?: any): Promise<Response>
+  {
+    const fetchParams  = Object.assign({}, SaleModel.fetchParams);
+    fetchParams.filter = Object.assign(fetchParams.filter, filters);
+
+    const result = await SaleModel.api().get(`items/ventes?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  static async fetchOne(filters: any): Promise<Response>
+  {
+    const fetchParams  = Object.assign({}, SaleModel.fetchParams);
+    fetchParams.filter = Object.assign(fetchParams.filter, filters);
+
+    const result = await SaleModel.api().get(`items/produits_variantes?${querify(fetchParams)}`);
+    return result.response.data.data;
+  }
+
+  protected static transformProducts(sale: any)
+  {
+    if ('produits' in sale) {
+      sale.produits = sale.produits.map((productVariant: any) => {
+        if (typeof productVariant.produits_variantes_id === 'number') {
+          return {id: productVariant.produits_variantes_id};
+        }
+
+        return productVariant.produits_variantes_id;
+      });
+    }
+
+    return sale;
+  }
+
+  id!: number;
+  date_ouverture!: any;
+  date_cloture!: any;
+  produits!: ProductVariantModel[];
 }

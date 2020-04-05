@@ -38,9 +38,9 @@
 
 <script lang="ts">
   import {Component, Prop, Vue} from 'vue-property-decorator';
-  import {ProductVariantModelConstructorOptions} from '@/models/ProductVariantModel';
   import {Action, State} from 'vuex-class';
   import {CartState} from '@/store/modules/cart';
+  import ProductVariantModel from '@/models/ProductVariantModel';
 
   @Component
   export default class CartItemComponent extends Vue
@@ -54,7 +54,7 @@
     //@formatter:on
 
     @Prop({required: true})
-    productVariant!: ProductVariantModelConstructorOptions;
+    productVariant!: ProductVariantModel;
 
     @Prop({default: 1})
     quantity!: number;
@@ -65,12 +65,8 @@
 
     get photoUrl()
     {
-      for (const photo of this.productVariant.produit.photos) {
-        for (const thumbnail of photo.photo.data.thumbnails) {
-          if (thumbnail.dimension == `${this.thumbnailWidth}x${this.thumbnailHeight}`) {
-            return thumbnail.url;
-          }
-        }
+      if (this.productVariant.produit.photos.length > 0) {
+        return this.$directusSdk.getAssetUrl(this.productVariant.produit.photos[0].private_hash, {key: 'card'});
       }
 
       return 'https://via.placeholder.com/200x130';
