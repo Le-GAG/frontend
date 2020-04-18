@@ -6,11 +6,12 @@ module.exports = {
 
   'extends': [
     'eslint:recommended',
-    'plugin:vue/recommended',
+    'plugin:vue/vue3-recommended',
+    'plugin:vue/base',
     '@vue/typescript',
   ],
 
-  'plugins': [ 'html' ],
+  'plugins': [ 'vue' ],
 
   'rules': {
     'indent':             [ 'warn', 2 ],
@@ -29,7 +30,7 @@ module.exports = {
         ClassProperty:        true,
       },
     }],
-    'vue/singleline-html-element-content-newline': false,
+    'vue/singleline-html-element-content-newline': 'off',
     'vue/max-attributes-per-line':                 ['warn', {
       'singleline': 4,
       'multiline':  {
@@ -47,8 +48,7 @@ module.exports = {
       },
     },
   ],
-
   'parserOptions': {
-    'parser': 'typescript-eslint-parser',
+    'parser': '@typescript-eslint/parser',
   },
 };
