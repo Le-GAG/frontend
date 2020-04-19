@@ -3,7 +3,9 @@
 @import "./_bulma";
 
 body {
-  background-color: #f9f5ee;
-
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+
+  background-color: #f9f5ee;
 }

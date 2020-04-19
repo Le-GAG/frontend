@@ -9,10 +9,10 @@
     />
 
     <main :class="{ 'app__pushable-layout-item--is-pushed': isMenuOpen }"
-          class="app__pushable-layout-item"
+          class="app__main app__pushable-layout-item"
     >
       <router-view v-if="!isLoading" />
-      <div v-else>{{ loadingMessage }}</div>
+      <preload-indicator v-else :text="loadingMessage" />
     </main>
 
     <footer-component :class="{ 'app__pushable-layout-item--is-pushed': isMenuOpen }"
@@ -34,23 +34,33 @@
   import ProductTagModel from '@/models/ProductTagModel';
   import MeasuringUnitModel from '@/models/MeasuringUnitModel';
   import ProductCategoryModel from '@/models/ProductCategoryModel';
+  import PreloadIndicator from '@/components/PreloadIndicator.vue';
 
-  @Component({components: {HeaderComponent, FooterComponent, MenuComponent, MenuOverlayComponent}})
+  @Component({
+    components: {
+      HeaderComponent,
+      FooterComponent,
+      MenuComponent,
+      MenuOverlayComponent,
+      PreloadIndicator,
+    },
+  })
   export default class App extends Vue
   {
-    @State('isOpen', { namespace: 'menu' }) isMenuOpen!: boolean;
-    protected isLoading: boolean = true;
+    @State('isOpen', {namespace: 'menu'}) isMenuOpen!: boolean;
+    protected isLoading: boolean     = true;
     protected loadingMessage: string = '';
-    protected prefetch = [
-      { name: 'producteurs', model: ProducerModel },
-      { name: 'conditionnements', model: PackagingModel },
-      { name: 'activités', model: ProducerActivityModel },
-      { name: 'tags', model: ProductTagModel },
-      { name: 'unités de mesure', model: MeasuringUnitModel },
-      { name: 'categories de produits', model: ProductCategoryModel },
+    protected prefetch               = [
+      {name: 'producteurs', model: ProducerModel},
+      {name: 'conditionnements', model: PackagingModel},
+      {name: 'activités', model: ProducerActivityModel},
+      {name: 'tags', model: ProductTagModel},
+      {name: 'unités de mesure', model: MeasuringUnitModel},
+      {name: 'categories de produits', model: ProductCategoryModel},
     ];
 
-    async mounted() {
+    async mounted()
+    {
       for (const item of this.prefetch) {
         this.loadingMessage = `Chargement des ${item.name}…`;
         await (item.model as any).fetchAll();
@@ -69,6 +79,16 @@
   @import '~@/styles/bulma';
 
   .app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &__main {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
     &__menu {
       position: fixed;
       top: 0;
