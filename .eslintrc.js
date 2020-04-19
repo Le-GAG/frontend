@@ -14,6 +14,15 @@ module.exports = {
   'plugins': [ 'vue' ],
 
   'rules': {
+    'vue/html-self-closing': ["warn", {
+      "html": {
+        "void": "always",
+        "normal": "always",
+        "component": "always"
+      },
+      "svg": "always",
+      "math": "always"
+    }],
     'no-unused-vars':                    0,
     '@typescript-eslint/no-unused-vars': [ 'warn' ],
     'vue/component-tags-order':          0,

@@ -18,9 +18,10 @@
                 </div>
 
                 <div class="field">
-                  <label class="label is-medium">Adresse e-mail</label>
+                  <label class="label is-medium" for="email">Adresse e-mail</label>
                   <div class="control has-icons-left has-icons-right">
                     <input
+                      id="email"
                       v-model="email"
                       class="input is-medium"
                       type="email"
@@ -28,9 +29,9 @@
                       placeholder="Adresse e-mail"
                       :disabled="isSubmitting"
                       autocomplete="email"
-                    >
+                    />
                     <span class="icon is-small is-left"><i class="fa fa-envelope" /></span>
-                    <span class="auth-recover-password-page__validation-icon icon is-small is-right"><i class="fa fa-close" /></span>
+                    <span class="auth-recover-password-page__validation-icon icon is-small has-text-danger is-right"><i class="fa fa-close" /></span>
                   </div>
                 </div>
 
@@ -90,4 +91,13 @@
 
 <style scoped lang="scss">
   // FIXME: Use biulma helpers to style links and message
+  .auth-recover-password-page {
+    &__validation-icon {
+      display: none;
+    }
+
+    input:invalid ~ &__validation-icon {
+      display: inline-flex;
+    }
+  }
 </style>
