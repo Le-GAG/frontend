@@ -12,7 +12,7 @@
           class="app__pushable-layout-item"
     >
       <router-view v-if="!isLoading" />
-      <div v-else>Chargement des {{ loadingMessage }}</div>
+      <div v-else>{{ loadingMessage }}</div>
     </main>
 
     <footer-component :class="{ 'app__pushable-layout-item--is-pushed': isMenuOpen }"
@@ -40,7 +40,7 @@
   {
     @State('isOpen', { namespace: 'menu' }) isMenuOpen!: boolean;
     protected isLoading: boolean = true;
-    protected loadingMessage!: string;
+    protected loadingMessage: string = '';
     protected prefetch = [
       { name: 'producteurs', model: ProducerModel },
       { name: 'conditionnements', model: PackagingModel },
@@ -50,9 +50,9 @@
       { name: 'categories de produits', model: ProductCategoryModel },
     ];
 
-    async created() {
+    async mounted() {
       for (const item of this.prefetch) {
-        this.loadingMessage = item.name;
+        this.loadingMessage = `Chargement des ${item.name}…`;
         await (item.model as any).fetchAll();
       }
 
@@ -61,7 +61,9 @@
   }
 </script>
 
-<style src="@/styles/main.scss" lang="scss"></style>
+<style lang="scss">
+  @import "~@/styles/main";
+</style>
 
 <style scoped lang="scss">
   @import '~@/styles/bulma';
