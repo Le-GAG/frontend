@@ -33,7 +33,7 @@ export default class ProducerModel extends Model
         ProducerActivityModel,
         JunctionProducerActivityModel,
         'producteur_id',
-        'activite_id'
+        'activite_id',
       ),
     };
   }

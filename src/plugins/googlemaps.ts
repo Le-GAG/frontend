@@ -4,7 +4,7 @@
  */
 
 import Vue from 'vue';
-import {install, Vue2GoogleMapsPluginOptions} from 'vue2-google-maps';
+import {install} from 'vue2-google-maps';
 
 declare module 'vue/types/vue' {
   interface Vue {

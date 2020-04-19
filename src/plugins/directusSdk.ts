@@ -4,7 +4,6 @@
  */
 
 import {SDK as DirectusSDK} from '@directus/sdk-js';
-import cartStorage from '@/store/storage/cart-storage';
 
 import VuexStore from '@/store';
 

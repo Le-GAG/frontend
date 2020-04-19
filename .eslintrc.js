@@ -14,14 +14,17 @@ module.exports = {
   'plugins': [ 'vue' ],
 
   'rules': {
-    'indent':             [ 'warn', 2 ],
-    'vue/script-indent':  [ 'warn', 2, { 'baseIndent': 1 } ],
-    'comma-dangle':       [ 'warn', 'always-multiline' ],
-    'semi':               [ 'error', 'always', { 'omitLastInOneLineBlock': true } ],
-    'operator-linebreak': [ 'warn', 'before' ],
-    'yoda':               [ 'warn', 'never' ],
-    'key-spacing':        [ 'warn', { 'align': { 'beforeColon': false, 'afterColon': true, 'on': 'value' } } ],
-    'no-multi-spaces':    [ 'warn', {
+    'no-unused-vars':                    0,
+    '@typescript-eslint/no-unused-vars': [ 'warn' ],
+    'vue/component-tags-order':          0,
+    'indent':                            [ 'warn', 2 ],
+    'vue/script-indent':                 [ 'warn', 2, { 'baseIndent': 1 } ],
+    'comma-dangle':                      [ 'warn', 'always-multiline' ],
+    'semi':                              [ 'error', 'always', { 'omitLastInOneLineBlock': true } ],
+    'operator-linebreak':                [ 'warn', 'before' ],
+    'yoda':                              [ 'warn', 'never' ],
+    'key-spacing':                       [ 'warn', { 'align': { 'beforeColon': false, 'afterColon': true, 'on': 'value' } } ],
+    'no-multi-spaces':                   [ 'warn', {
       exceptions: {
         Property:             true,
         VariableDeclarator:   true,

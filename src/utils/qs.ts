@@ -5,13 +5,13 @@ const defaultSerializeTransform: QuerifySerializer = (key, value) => `${key}=${e
 export function querify(
   obj: { [index: string]: any },
   prefix?: string,
-  serializer: QuerifySerializer = defaultSerializeTransform
+  serializer: QuerifySerializer = defaultSerializeTransform,
 ): string {
   let qs: string[] = [],
     prop: string;
 
   for (prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
+    if (Object.prototype.hasOwnProperty.call(obj, "prop")) {
       const key = prefix ? `${prefix}[${prop}]` : prop;
       const val = obj[prop];
 

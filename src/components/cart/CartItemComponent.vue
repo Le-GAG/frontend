@@ -98,7 +98,7 @@
       this.cartItemRemove({ id: this.productVariant.id });
     }
 
-    onQuantityChanged(event: InputEvent)
+    onQuantityChanged()
     {
       const quantity = Number((this.$refs.quantity as HTMLInputElement).value);
       this.cartItemSetQuantity( { id: this.productVariant.id, quantity: quantity });

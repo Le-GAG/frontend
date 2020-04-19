@@ -38,13 +38,13 @@ export default class ProductModel extends Model
         DirectusFileModel,
         JunctionProductPhotosModel,
         'produit_id',
-        'photo_id'
+        'photo_id',
       ),
       tags: this.belongsToMany(
         ProductTagModel,
         JunctionProductTagModel,
         'produit_id',
-        'tag_id'
+        'tag_id',
       ),
     };
   }
