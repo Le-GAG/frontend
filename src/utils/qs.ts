@@ -11,7 +11,7 @@ export function querify(
     prop: string;
 
   for (prop in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, "prop")) {
+    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
       const key = prefix ? `${prefix}[${prop}]` : prop;
       const val = obj[prop];
 
