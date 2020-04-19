@@ -92,7 +92,7 @@
     async fetchProduct()
     {
       try {
-        await ProductModel.fetchOne({slug: this.$route.params.slug});
+        await ProductModel.fetchAll({ filter: { slug: this.$route.params.slug } });
 
         const product = ProductModel.query()
           .where('slug', this.$route.params['slug'])

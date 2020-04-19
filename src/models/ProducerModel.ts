@@ -1,14 +1,28 @@
-import {Fields, Model} from '@vuex-orm/core';
+import {Fields} from '@vuex-orm/core';
 import DirectusFileModel from '@/models/DirectusFileModel';
 import ProducerActivityModel from '@/models/ProducerActivityModel';
 import JunctionProducerActivityModel from '@/models/JunctionProducerActivityModel';
-import {Response} from '@vuex-orm/plugin-axios';
 import {AxiosResponse} from 'axios';
-import {querify} from '@/utils/qs';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class ProducerModel extends Model
+export default class ProducerModel extends AbstractModel
 {
   static entity = 'producteurs';
+
+  static get collectionName()
+  {
+    return 'producteurs';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*', 'photo_de_presentation.*', 'activites.*.*'],
+      filter: {
+        active: 'published',
+      },
+    };
+  }
 
   static fields(): Fields
   {
@@ -50,31 +64,6 @@ export default class ProducerModel extends Model
 
       return data;
     },
-  }
-
-  static fetchParams = {
-    fields: ['*', 'photo_de_presentation.*', 'activites.*.*'],
-    filter: {
-      active: 'published',
-    },
-  };
-
-  static async fetchOne(filters: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/producteurs?${querify(fetchParams)}`);
-    return result.response.data.data;
-  }
-
-  static async fetchAll(filters?: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/producteurs?${querify(fetchParams)}`);
-    return result.response.data.data;
   }
 
   protected static transformActivities(producer: any)

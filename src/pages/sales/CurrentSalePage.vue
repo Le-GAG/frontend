@@ -79,7 +79,7 @@
 
         await ProductVariantModel.fetchAll({ fields: ['*'], filter: { id: { in: variantIds } } });
         const productIds = ProductVariantModel.findIn(variantIds).map(variant => variant.produit_id);
-        await ProductModel.fetchAll({ id: { in: productIds } });
+        await ProductModel.fetchAll({ filter: { id: { in: productIds } } });
 
           this.products = ProductModel
           .query()

@@ -36,10 +36,12 @@ export const currentSaleVuexModule: Module<CurrentSaleState, RootState> = {
       try {
         const sqlDate = new Date().toISOString().substr(0, 10);
         await SaleModel.fetchAll({
-          date_ouverture: {lte: sqlDate},
-          date_cloture:   {gte: sqlDate},
+          filter: {
+            date_ouverture: {lte: sqlDate},
+            date_cloture:   {gte: sqlDate},
+          },
         });
-        const currentSale: SaleModel|null = SaleModel.query()
+        const currentSale: SaleModel | null = SaleModel.query()
           .where('date_ouverture', (value: string) => value <= sqlDate)
           .where('date_cloture', (value: string) => value >= sqlDate)
           .withAllRecursive()

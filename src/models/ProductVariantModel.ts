@@ -1,14 +1,26 @@
-import {Fields, Model} from '@vuex-orm/core';
+import {Fields} from '@vuex-orm/core';
 import ProductModel from '@/models/ProductModel';
 import PackagingModel from '@/models/PackagingModel';
 import MeasuringUnitModel from '@/models/MeasuringUnitModel';
 import {Response} from '@vuex-orm/plugin-axios';
-import {querify} from '@/utils/qs';
-import {DirectusSdkFetchParams} from 'directus-sdk-javascript';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class ProductVariantModel extends Model
+export default class ProductVariantModel extends AbstractModel
 {
   static entity = 'produits_variantes';
+
+  static get collectionName()
+  {
+    return 'produits_variantes';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*', 'produit.*'],
+      filter: {},
+    };
+  }
 
   static fields(): Fields
   {
@@ -26,37 +38,11 @@ export default class ProductVariantModel extends Model
     };
   }
 
-  static defaultFetchParams = {
-    fields: [
-      '*',
-      'produit.*',
-      // 'unite_de_mesure.*',
-      // 'conditionnement.*',
-    ],
-    filter: {},
-  };
-
-  static async fetchAll(fetchParams: DirectusSdkFetchParams = {}): Promise<Response>
-  {
-    fetchParams = Object.assign({}, this.defaultFetchParams, fetchParams);
-
-    const result = await ProductVariantModel.api().get(`items/produits_variantes?${querify(fetchParams)}`);
-    return result.response.data.data;
-  }
-
   static async fetchByIdWithProducts(ids: number[]): Promise<Response>
   {
     await this.fetchAll({ fields: ['*'], filter: { id: { in: ids } } });
-    const productIds = ProductVariantModel.findIn(ids).map((variant: ProductVariantModel) => variant.produit_id);
-    return ProductModel.fetchAll({ id: { in: productIds } });
-  }
-
-  static async fetchOne(fetchParams: DirectusSdkFetchParams = {}): Promise<Response>
-  {
-    fetchParams = Object.assign({}, this.defaultFetchParams, fetchParams);
-
-    const result = await this.api().get(`items/produits_variantes?${querify(fetchParams)}`);
-    return result.response.data.data;
+    const productIds = this.findIn(ids).map((variant: ProductVariantModel) => variant.produit_id);
+    return ProductModel.fetchAll({ filter: { id: { in: productIds } } });
   }
 
 

@@ -1,9 +1,23 @@
-import {Fields, Model} from '@vuex-orm/core';
+import {Fields} from '@vuex-orm/core';
 import RoleModel from '@/models/RoleModel';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class UserModel extends Model
+export default class UserModel extends AbstractModel
 {
   static entity = 'directus_users';
+
+  static get collectionName()
+  {
+    return 'directus_users';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*'],
+      filter: {},
+    };
+  }
 
   static fields(): Fields
   {

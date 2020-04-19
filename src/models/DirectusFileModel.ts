@@ -1,9 +1,23 @@
-import {Fields, Model} from '@vuex-orm/core';
+import {Fields} from '@vuex-orm/core';
 import UserModel from '@/models/UserModel';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class DirectusFileModel extends Model
+export default class DirectusFileModel extends AbstractModel
 {
-  static entity = 'directus_file';
+  static entity = 'directus_files';
+
+  static get collectionName()
+  {
+    return 'directus_files';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*'],
+      filter: {},
+    };
+  }
 
   static fields(): Fields
   {

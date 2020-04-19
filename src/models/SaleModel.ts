@@ -1,13 +1,24 @@
-import {Fields, Model} from '@vuex-orm/core';
-import {Response} from '@vuex-orm/plugin-axios';
+import {Fields} from '@vuex-orm/core';
 import {AxiosResponse} from 'axios';
-import {querify} from '@/utils/qs';
 import ProductVariantModel from '@/models/ProductVariantModel';
 import JunctionSaleProductVariantModel from '@/models/JunctionSaleProductVariantModel';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class SaleModel extends Model
+export default class SaleModel extends AbstractModel
 {
   static entity = 'ventes';
+  static get collectionName()
+  {
+    return 'ventes';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*', 'produits.*.*'], // FIXME: Decide whether to fetch related products with sales
+      filter: {},
+    };
+  }
 
   static fields(): Fields
   {
@@ -35,32 +46,6 @@ export default class SaleModel extends Model
 
       return data;
     },
-  }
-
-  static fetchParams = {
-    fields: [
-      '*',
-      'produits.*.*',
-    ],
-    filter: {},
-  };
-
-  static async fetchAll(filters?: any): Promise<Response>
-  {
-    const fetchParams  = Object.assign({}, SaleModel.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await SaleModel.api().get(`items/ventes?${querify(fetchParams)}`);
-    return result.response.data.data;
-  }
-
-  static async fetchOne(filters: any): Promise<Response>
-  {
-    const fetchParams  = Object.assign({}, SaleModel.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await SaleModel.api().get(`items/produits_variantes?${querify(fetchParams)}`);
-    return result.response.data.data;
   }
 
   protected static transformProducts(sale: any)

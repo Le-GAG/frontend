@@ -1,19 +1,45 @@
-import {Fields, Model} from '@vuex-orm/core';
+import {Fields} from '@vuex-orm/core';
 import ProducerModel from '@/models/ProducerModel';
 import UserModel from '@/models/UserModel';
 import ProductCategoryModel from '@/models/ProductCategoryModel';
-import {Response} from '@vuex-orm/plugin-axios';
 import {AxiosResponse} from 'axios';
-import {querify} from '@/utils/qs';
 import DirectusFileModel from '@/models/DirectusFileModel';
 import JunctionProductPhotosModel from '@/models/JunctionProductPhotosModel';
 import ProductTagModel from '@/models/ProductTagModel';
 import JunctionProductTagModel from '@/models/JunctionProductTagModel';
 import ProductVariantModel from '@/models/ProductVariantModel';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class ProductModel extends Model
+export default class ProductModel extends AbstractModel
 {
   static entity = 'produits';
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: [
+        '*',
+        'producteur.*',
+        'categorie.*',
+        'tags.tag_id.*',
+        'variantes.*',
+        'variantes.conditionnement.*',
+        'variantes.unite_de_mesure.*',
+        'photos.*.*',
+      ],
+      filter: {
+        'variantes.prix':    {nnull: true},
+        'categorie':         {nnull: true},
+        'active':            'published',
+        'producteur.active': 'published',
+      },
+    };
+  }
+
+  static get collectionName()
+  {
+    return 'produits';
+  }
 
   static fields(): Fields
   {
@@ -40,6 +66,7 @@ export default class ProductModel extends Model
         'produit_id',
         'photo_id',
       ),
+
       tags: this.belongsToMany(
         ProductTagModel,
         JunctionProductTagModel,
@@ -63,43 +90,6 @@ export default class ProductModel extends Model
 
       return data;
     },
-  }
-
-  static fetchParams = {
-    fields: [
-      '*',
-      'producteur.*',
-      'categorie.*',
-      'tags.tag_id.*',
-      'variantes.*',
-      'variantes.conditionnement.*',
-      'variantes.unite_de_mesure.*',
-      'photos.*.*',
-    ],
-    filter: {
-      'variantes.prix':    {nnull: true},
-      'categorie':         {nnull: true},
-      'active':            'published',
-      'producteur.active': 'published',
-    },
-  };
-
-  static async fetchAll(filters?: any): Promise<Response>
-  {
-    const fetchParams  = Object.assign({}, ProductModel.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await ProductModel.api().get(`items/produits?${querify(fetchParams)}`);
-    return result.response.data.data;
-  }
-
-  static async fetchOne(filters: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/produits?${querify(fetchParams)}`);
-    return result.response.data.data;
   }
 
   protected static transformPhotos(product: any)

@@ -1,10 +1,22 @@
-import {Fields, Model} from '@vuex-orm/core';
-import {Response} from '@vuex-orm/plugin-axios';
-import {querify} from '@/utils/qs';
+import {Fields} from '@vuex-orm/core';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class ProductTagModel extends Model
+export default class ProductTagModel extends AbstractModel
 {
   static entity = 'tags_des_produits';
+
+  static get collectionName()
+  {
+    return 'tags_des_produits';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*'],
+      filter: {},
+    };
+  }
 
   static fields(): Fields
   {
@@ -12,29 +24,6 @@ export default class ProductTagModel extends Model
       id:  this.attr(null),
       nom: this.string(''),
     };
-  }
-
-  static fetchParams = {
-    fields: ['*'],
-    filter: {},
-  };
-
-  static async fetchOne(filters: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/tags_des_produits?${querify(fetchParams)}`);
-    return result.response.data.data;
-  }
-
-  static async fetchAll(filters?: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/tags_des_produits?${querify(fetchParams)}`);
-    return result.response.data.data;
   }
 
   id!: number;

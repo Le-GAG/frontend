@@ -1,10 +1,23 @@
-import {Fields, Model} from '@vuex-orm/core';
-import {Response} from '@vuex-orm/plugin-axios';
-import {querify} from '@/utils/qs';
+import {Fields} from '@vuex-orm/core';
+import AbstractModel from '@/models/AbstractModel';
 
-export default class PackagingModel extends Model
+export default class PackagingModel extends AbstractModel
 {
   static entity = 'conditionnements';
+
+  static get collectionName()
+  {
+    return 'conditionnements';
+  }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*'],
+      filter: {},
+    };
+  }
+
 
   static fields(): Fields
   {
@@ -12,29 +25,6 @@ export default class PackagingModel extends Model
       id:  this.attr(null),
       nom: this.string(''),
     };
-  }
-
-  static fetchParams = {
-    fields: ['*'],
-    filter: {},
-  };
-
-  static async fetchOne(filters: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/conditionnements?${querify(fetchParams)}`);
-    return result.response.data.data;
-  }
-
-  static async fetchAll(filters?: any): Promise<Response>
-  {
-    const fetchParams = Object.assign({}, this.fetchParams);
-    fetchParams.filter = Object.assign(fetchParams.filter, filters);
-
-    const result = await this.api().get(`items/conditionnements?${querify(fetchParams)}`);
-    return result.response.data.data;
   }
 
   id!: number;

@@ -77,7 +77,7 @@
       this.producer     = null;
 
       try {
-        await ProducerModel.fetchOne({ slug: this.$route.params.slug });
+        await ProducerModel.fetchAll({ filter: { slug: this.$route.params.slug } });
 
         const producer = ProducerModel.query()
           .where('slug', this.$route.params['slug'])
