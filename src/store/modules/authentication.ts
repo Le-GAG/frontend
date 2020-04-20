@@ -8,6 +8,7 @@ import {RootState} from '@/store/types';
 import jwtDecode from 'jwt-decode';
 import Vue from 'vue';
 import axios from 'axios';
+import UserModel from '@/models/UserModel';
 
 export interface AuthenticationState
 {
@@ -49,8 +50,10 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     async authenticate ({ commit }, { email, password }) {
       try {
         commit(MUTATION_TYPES.AUTHENTICATE);
-        const {token} = await Vue.prototype.$directusSdk.login({email, password});
-        commit(MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL, token);
+        const response = await Vue.prototype.$directusSdk.login({email, password});
+        commit(MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL, response.data.token);
+        // noinspection ES6MissingAwait
+        UserModel.insert({ data: response.data.user });
       } catch (e) {
         commit(MUTATION_TYPES.AUTHENTICATION_FAILED);
         throw new Error('Email ou mot de passe invalide.');

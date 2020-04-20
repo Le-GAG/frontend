@@ -8,6 +8,7 @@ import {SDK as DirectusSDK} from '@directus/sdk-js';
 import VuexStore from '@/store';
 
 import Vue from 'vue';
+import {IStorageAPI} from '@directus/sdk-js/dist/types/Configuration';
 
 declare module 'vue/types/vue'
 {
@@ -24,12 +25,15 @@ Vue.use({
       throw new ReferenceError('The "VUE_APP_BACKEND_ENDPOINT" environment variable must be defined.');
     }
 
+    const ONE_MINUTE = 60000;
     Vue.prototype.$directusSdk = new DirectusSDK({
-      token:   VuexStore.getters.authToken,
-      url:     process.env.VUE_APP_BACKEND_ENDPOINT,
-      project: '_',
-      mode:    'jwt',
-      //storage: cartStorage,
+      token:               VuexStore.getters.authToken,
+      url:                 process.env.VUE_APP_BACKEND_ENDPOINT,
+      project:             '_',
+      mode:                'jwt',
+      storage:             localStorage as IStorageAPI,
+      persist:             true,
+      tokenExpirationTime: 5 * ONE_MINUTE,
     });
   },
 });
