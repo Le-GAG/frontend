@@ -31,6 +31,15 @@ $input-background-color: $beige-lighter;
 $input-border-color: transparent;
 $input-shadow: none;
 
+// Navbar customization
+$navbar-breakpoint: 0;
+$navbar-height: 3.5rem;
+$control-height: $navbar-height;
+$navbar-item-color: $grey;
+$navbar-item-hover-background-color: transparent;
+$navbar-dropdown-border-top: 0;
+$navbar-dropdown-offset: 2px;
+
 // 3. Set the derived variables
 
 
@@ -51,7 +60,6 @@ $addColors: (
               "github": ($github, $github-invert)
             );
 $colors: map-merge($colors, $addColors);
-$navbar-breakpoint: 999999;
 
 
 // 6. Import the rest of Bulma

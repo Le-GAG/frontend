@@ -16,19 +16,21 @@
   import {Action, State} from 'vuex-class';
 
   @Component
-  export default class BurgerButtonComponent extends Vue {
-      @State('isOpen', { namespace: 'menu' }) isOpen!: boolean;
-      @Action('toggle', { namespace: 'menu' }) toggleMenu: any;
+  export default class BurgerButtonComponent extends Vue
+  {
+    @State('isOpen', {namespace: 'menu'}) isOpen!: boolean;
+    @Action('toggle', {namespace: 'menu'}) toggleMenu: any;
   }
 </script>
 
 
 <style scoped lang="scss">
-    @import '~@/styles/bulma';
+  @import '~@/styles/bulma';
 
-    .burger-button-component {
-        margin-left: initial !important;
+  .burger-button-component {
+    display: block !important;
+    margin-left: initial !important;
 
-        color: $white;
-    }
+    color: $white;
+  }
 </style>
