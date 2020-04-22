@@ -2,7 +2,7 @@
   <div class="product-card-component card">
     <router-link :to="{ name: 'product', params: { slug: product.slug } }" class="card-image">
       <figure class="image is-16by9">
-        <img :src="photoUrl" alt="Placeholder image" class="product-card-component__product-photo">
+        <img :src="photoUrl" alt="Placeholder image" class="product-card-component__product-photo" />
       </figure>
     </router-link>
     <div class="card-content">
@@ -10,11 +10,11 @@
         class="product-card-component__link title is-4"
         :to="{ name: 'product', params: { slug: product.slug } }"
       >
-        {{ product.name }}
+        {{ product.nom }}
       </router-link>
       <p class="subtitle is-6">
-        <router-link :to="{ name: 'producer', params: { slug: product.producer.slug }}">
-          {{ product.producer.raison_sociale }}
+        <router-link :to="{ name: 'producer', params: { slug: product.producteur.slug }}">
+          {{ product.producteur.raison_sociale }}
         </router-link>
       </p>
 
@@ -23,7 +23,7 @@
           v-for="tag in product.tags"
           :key="tag.id"
           class="tag"
-          v-text="tag.name"
+          v-text="tag.nom"
         />
       </ul>
 
@@ -34,13 +34,13 @@
             class="input is-small has-text-centered"
             type="text"
             placeholder="Quantité"
-          >
+          />
         </p>
         <p class="control">
           <span class="select is-small">
             <select ref="variantId">
               <option
-                v-for="variant in product.variants"
+                v-for="variant in product.variantes"
                 :key="variant.id"
                 :value="variant.id"
                 v-text="getConditionnement(variant)"
@@ -75,7 +75,7 @@
     get photoUrl()
     {
       if (this.product.photos.length > 0) {
-        return this.product.photos[0].getThumbnailUrl('crop', 480, 270);
+        return this.$directusSdk.getAssetUrl(this.product.photos[0].private_hash, { key: 'card' });
       }
 
       return 'https://via.placeholder.com/480x270';
@@ -83,11 +83,11 @@
 
     getConditionnement(variant: ProductVariantModel)
     {
-      if (variant.unitOfMeasurement.isUnitless) {
-        return variant.conditionnement;
+      if (variant.unite_de_mesure.sans_quantite) {
+        return variant.conditionnement.nom;
       }
 
-      return variant.conditionnement + ' ' + variant.capacity;
+      return variant.conditionnement.nom + ' ' + variant.contenance;
     }
 
     onAddToCart(event: Event)

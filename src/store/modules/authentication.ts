@@ -7,6 +7,8 @@ import {Module} from 'vuex';
 import {RootState} from '@/store/types';
 import jwtDecode from 'jwt-decode';
 import Vue from 'vue';
+import axios from 'axios';
+import UserModel from '@/models/UserModel';
 
 export interface AuthenticationState
 {
@@ -48,8 +50,10 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     async authenticate ({ commit }, { email, password }) {
       try {
         commit(MUTATION_TYPES.AUTHENTICATE);
-        const {token} = await Vue.prototype.$directusSdk.login({email, password});
-        commit(MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL, token);
+        const response = await Vue.prototype.$directusSdk.login({email, password});
+        commit(MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL, response.data.token);
+        // noinspection ES6MissingAwait
+        UserModel.insert({ data: response.data.user });
       } catch (e) {
         commit(MUTATION_TYPES.AUTHENTICATION_FAILED);
         throw new Error('Email ou mot de passe invalide.');
@@ -59,6 +63,7 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     deauthenticate ({ commit }) {
       Vue.prototype.$directusSdk.logout();
       commit(MUTATION_TYPES.DEAUTHENTICATE);
+      delete axios.defaults.headers.common['Authorization'];
     },
   },
 
@@ -66,6 +71,11 @@ export const authenticationVuexModule: Module<AuthenticationState, RootState> = 
     [ MUTATION_TYPES.AUTHENTICATION_SUCCESSFUL ] (state:AuthenticationState, token:string) {
       state.token = token;
       state.isPending = false;
+
+      const directusSdkStorage = localStorage.getItem('directus-sdk-js');
+      if (directusSdkStorage) {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + JSON.parse(directusSdkStorage).token;
+      }
     },
 
     [ MUTATION_TYPES.AUTHENTICATION_FAILED ] (state:AuthenticationState, error:Error) {

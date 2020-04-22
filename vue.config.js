@@ -21,4 +21,6 @@ module.exports = {
       openAnalyzer: false,
     },
   },
+
+  productionSourceMap: false,
 };

@@ -1,13 +1,13 @@
 import {Fields} from '@vuex-orm/core';
 import AbstractModel from '@/models/AbstractModel';
 
-export default class ProductTagModel extends AbstractModel
+export default class MeasuringUnitModel extends AbstractModel
 {
-  static entity = 'tags_des_produits';
+  static entity = 'unites';
 
   static get collectionName()
   {
-    return 'tags_des_produits';
+    return 'unites';
   }
 
   static get defaultFetchParams()
@@ -21,11 +21,13 @@ export default class ProductTagModel extends AbstractModel
   static fields(): Fields
   {
     return {
-      id:  this.attr(null),
-      nom: this.string(''),
+      id:            this.attr(null),
+      nom:           this.string(''),
+      sans_quantite: this.boolean(false),
     };
   }
 
   id!: number;
   nom!: string;
+  sans_quantite!: boolean;
 }

@@ -23,13 +23,13 @@
           </template>
 
           <template v-if="product">
-            <h1 class="product-details-page__name title" :data-content="product.raison_sociale" />
-            <ul v-if="false && product.activites.data" class="product-details-page__activites tags">
+            <h1 class="product-details-page__name title" :data-content="product.nom" />
+            <ul v-if="product.tags" class="product-details-page__activites tags">
               <li
-                v-for="(activite, index) in product.activites.data"
-                :key="index"
+                v-for="({ nom, id}) in product.tags"
+                :key="id"
                 class="tag"
-                v-text="activite.name"
+                v-text="nom"
               />
             </ul>
           </template>
@@ -40,19 +40,11 @@
     <section v-if="product" class="section">
       <div class="columns">
         <div class="column is-two-thirds">
-          <div class="content" v-html="product.presentation" /><!-- eslint-disable-line vue/no-v-html -->
+          <div class="content" v-html="product.description" /><!-- eslint-disable-line vue/no-v-html -->
         </div>
 
         <div class="column is-one-third">
-          <contact-details-card-component
-            :name="product.raison_sociale"
-            :lat-lng="latLng"
-            :address-line1="addressLine1"
-            :address-line2="addressLine2"
-            :email="product.email"
-            :phone="product.numero_de_telephone"
-            :website="product.site_internet"
-          />
+          <producer-contact-card-component :producer="product.producteur" />
         </div>
       </div>
     </section>
@@ -62,32 +54,33 @@
 
 <script lang="ts">
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
-  import ContactDetailsCardComponent from '@/components/producers/ProducerContactDetailsCardComponent.vue';
+  import ProducerContactCardComponent from '@/components/producers/ProducerContactCardComponent.vue';
   import {Component, Vue, Watch} from 'vue-property-decorator';
+  import ProductModel from '@/models/ProductModel';
 
-  @Component({components: {ClipLoader, ContactDetailsCardComponent}})
+  @Component({components: {ClipLoader, ProducerContactCardComponent}})
   export default class ProductDetailsPage extends Vue
   {
     product: any      = null;
     loadingError: any = null;
     loading: boolean  = true;
 
-    get latLng()
-    {
-      const parts = this.product.producer.adresse.split(',');
-      return {lat: parseFloat(parts[0]), lng: parseFloat(parts[1])};
-    }
-
     get photoUrl()
     {
-      // TODO: implement this
-      return 'https://via.placeholder.com/480x270';
+      if (this.product && this.product.photos && this.product.photos.length) {
+        const thumbnail = this.$directusSdk.getAssetUrl(this.product.photos[0].private_hash, { key: 'cover'});
+
+        if (thumbnail !== null) {
+          return thumbnail;
+        }
+      }
+
+      return 'https://via.placeholder.com/1200x400';
     }
 
     async created()
     {
       await this.fetchProduct();
-      // TODO: Fetch Producer details using the ProductModel
     }
 
     @Watch('$route')
@@ -98,6 +91,24 @@
 
     async fetchProduct()
     {
+      try {
+        await ProductModel.fetchAll({ filter: { slug: this.$route.params.slug } });
+
+        const product = ProductModel.query()
+          .where('slug', this.$route.params['slug'])
+          .withAllRecursive()
+          .first();
+        if (product === null) {
+          this.loadingError = 'Ce produit n\'existe pas';
+        }
+
+        this.product = product;
+      } catch (e) {
+        console.error(e);// eslint-disable-line no-console
+        this.loadingError = e.toString();
+      } finally {
+        this.loading = false;
+      }
     }
   }
 </script>
@@ -109,28 +120,28 @@
       position: relative;
 
       &::before {
-        content:       '';
-        position:      absolute;
+        content: '';
+        position: absolute;
 
-        top:           0;
-        bottom:        0;
-        left:          0;
-        right:         0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
 
-        background:    black;
+        background: black;
         border-radius: 50%;
-        filter:        blur(50px);
-        transform:     scaleX(0.5) scaleY(2);
+        filter: blur(50px);
+        transform: scaleX(0.5) scaleY(2);
       }
 
       &::after {
-        content:  attr(data-content);
+        content: attr(data-content);
         position: relative;
       }
     }
 
     &__activites {
-      position:        relative;
+      position: relative;
 
       justify-content: center;
     }

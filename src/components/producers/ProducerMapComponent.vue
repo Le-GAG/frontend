@@ -1,9 +1,9 @@
 <template>
   <gmap-map
     ref="map"
+    v-model:center="center"
+    v-model:zoom="zoom"
     class="producer-map-component"
-    :center.sync="center"
-    :zoom.sync="zoom"
   >
     <gmap-info-window
       :options="infoOptions"
@@ -41,11 +41,13 @@
 
 
 <script lang="ts">
-  import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
-  import ProducerModel from '../../models/ProducerModel';
-  import ProducerActivityModel from '../../models/ProducerActivityModel';
+  /*global google */
 
-    @Component
+  import {Component, Vue, Prop, Watch} from 'vue-property-decorator';
+  import ProducerModel from '@/models/ProducerModel';
+  import ProducerActivityModel from '@/models/ProducerActivityModel';
+
+  @Component
   export default class ProducerMapComponent extends Vue
   {
         @Prop({default: []}) protected producers!: ProducerModel[];

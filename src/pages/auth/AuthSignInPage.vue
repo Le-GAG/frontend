@@ -24,7 +24,7 @@
                       placeholder="Adresse e-mail"
                       :disabled="isAuthenticating"
                       autocomplete="username"
-                    >
+                    />
                     <span class="icon is-small is-left"><i class="fa fa-envelope" /></span>
                     <span class="auth-sign-in-page__validation-icon icon is-small is-right has-text-danger"><i class="fa fa-close" /></span>
                   </div>
@@ -41,7 +41,7 @@
                       placeholder="Mot de passe"
                       :disabled="isAuthenticating"
                       autocomplete="current-password"
-                    >
+                    />
                     <span class="icon is-small is-left"><i class="fa fa-lock" /></span>
                     <span class="auth-sign-in-page__validation-icon icon is-small is-right has-text-danger"><i class="fa fa-close" /></span>
                   </div>

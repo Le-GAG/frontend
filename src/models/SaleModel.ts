@@ -1,39 +1,70 @@
-/**
- * @author nstCactus
- * @date 22/07/2019 08:47
- */
+import {Fields} from '@vuex-orm/core';
+import {AxiosResponse} from 'axios';
+import ProductVariantModel from '@/models/ProductVariantModel';
+import JunctionSaleProductVariantModel from '@/models/JunctionSaleProductVariantModel';
+import AbstractModel from '@/models/AbstractModel';
 
-import AbstractDirectusModel from '@/models/AbstractDirectusModel';
-import DirectusItemFactory from '@/factories/DirectusItemFactory';
-
-export interface SaleModelConstructorOptions
+export default class SaleModel extends AbstractModel
 {
-  id: number,
-  date_ouverture: string,
-  date_cloture: string,
-}
-
-export default class SaleModel extends AbstractDirectusModel
-{
-  protected static readonly itemName: string = 'ventes';
-
-  id: number;
-  openingDate: Date;
-  closureDate: Date;
-
-  constructor(options: SaleModelConstructorOptions)
+  static entity = 'ventes';
+  static get collectionName()
   {
-    super();
-
-    this.id = options.id;
-    this.openingDate = new Date(options.date_ouverture);
-    this.closureDate = new Date(options.date_cloture);
+    return 'ventes';
   }
 
-  static async findAll(fetchParams?: {}): Promise<SaleModel[]>
+  static get defaultFetchParams()
   {
-    const results = await AbstractDirectusModel._findAll(SaleModel.itemName, fetchParams);
-
-    return DirectusItemFactory.instantiateCollection(SaleModel, results);
+    return {
+      fields: ['*', 'produits.*.*'], // FIXME: Decide whether to fetch related products with sales
+      filter: {},
+    };
   }
+
+  static fields(): Fields
+  {
+    return {
+      id:             this.attr(null),
+      date_ouverture: this.attr(null),
+      date_cloture:   this.attr(null),
+      produits:       this.belongsToMany(
+        ProductVariantModel,
+        JunctionSaleProductVariantModel,
+        'ventes_id',
+        'produits_variantes_id',
+      ),
+    };
+  }
+
+  static apiConfig = {
+    dataTransformer: (response: AxiosResponse) => {
+      let data = response.data.data;
+      if (data instanceof Array) {
+        data = data.map(SaleModel.transformProducts);
+      } else {
+        data = SaleModel.transformProducts(data);
+      }
+
+      return data;
+    },
+  }
+
+  protected static transformProducts(sale: any)
+  {
+    if ('produits' in sale) {
+      sale.produits = sale.produits.map((productVariant: any) => {
+        if (typeof productVariant.produits_variantes_id === 'number') {
+          return {id: productVariant.produits_variantes_id};
+        }
+
+        return productVariant.produits_variantes_id;
+      });
+    }
+
+    return sale;
+  }
+
+  id!: number;
+  date_ouverture!: any;
+  date_cloture!: any;
+  produits!: ProductVariantModel[];
 }

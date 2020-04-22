@@ -1,7 +1,7 @@
 import {Commit, Module} from 'vuex';
 import {RootState} from '@/store/types';
 import Vue from 'vue';
-import directusSdk from '@/plugins/directusSdk';
+import OrderModel from '@/models/OrderModel';
 
 export interface CartContent
 {
@@ -10,8 +10,8 @@ export interface CartContent
 
 export interface CartState
 {
-  checkoutStatus:       string|null,
-  productVariants:      CartContent,
+  checkoutStatus: string|null,
+  productVariants: CartContent,
   isCheckoutInProgress: boolean,
 }
 
@@ -32,8 +32,8 @@ export const cartVuexModule: Module<CartState, RootState> = {
   namespaced: true,
 
   state: {
-    productVariants: {},
-    checkoutStatus: null,
+    productVariants:      {},
+    checkoutStatus:       null,
     isCheckoutInProgress: false,
   },
 
@@ -110,7 +110,7 @@ export const cartVuexModule: Module<CartState, RootState> = {
     [MUTATION_TYPES.SET_IS_CHECKOUT_IN_PROGRESS](state: CartState, isCheckoutInProgress: boolean)
     {
       state.isCheckoutInProgress = isCheckoutInProgress;
-    }
+    },
   },
 
   actions: {
@@ -152,22 +152,22 @@ export const cartVuexModule: Module<CartState, RootState> = {
       try {
         const junctionTableContent = Object.entries(state.productVariants).map(([productVariantId, quantity]) => {
           return {
-            produits_variantes_id: { id: productVariantId },
-            prix:                  0.00,
-            quantite:              quantity,
+            id:    productVariantId,
+            pivot: { prix: 4.20, quantite: quantity },
           };
         });
-
-        const result = await directusSdk.createItem('commandes', {
-          // @ts-ignore
-          vente:              rootState.currentSale.currentSale.id,
-          statut:             'order',
-          produits_variantes: junctionTableContent,
-        });
-
+        const payload = {
+          data: {
+            vente:              rootState.currentSale.currentSale,
+            produits_variantes: junctionTableContent,
+            statut:             'order',
+          },
+        };
+        const result = await OrderModel.insert(payload);
+        const order = OrderModel.query().withAllRecursive().whereId((result.commandes[0] as OrderModel).id).first();
+        OrderModel.postItem(order as OrderModel);
         commit(MUTATION_TYPES.SET_CHECKOUT_STATUS, 'successful');
         commit(MUTATION_TYPES.CLEAR_CART);
-        console.info(result);
       } catch (e) {
         commit(MUTATION_TYPES.SET_CHECKOUT_STATUS, 'failed');
         console.error(e);

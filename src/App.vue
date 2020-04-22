@@ -9,9 +9,10 @@
     />
 
     <main :class="{ 'app__pushable-layout-item--is-pushed': isMenuOpen }"
-          class="app__pushable-layout-item"
+          class="app__main app__pushable-layout-item"
     >
-      <router-view />
+      <router-view v-if="!isLoading" />
+      <preload-indicator v-else :text="loadingMessage" />
     </main>
 
     <footer-component :class="{ 'app__pushable-layout-item--is-pushed': isMenuOpen }"
@@ -27,20 +28,67 @@
   import MenuComponent from '@/components/layout/Menu.vue';
   import MenuOverlayComponent from '@/components/layout/menu/MenuOverlayComponent.vue';
   import {State} from 'vuex-class';
+  import ProducerModel from '@/models/ProducerModel';
+  import PackagingModel from '@/models/PackagingModel';
+  import ProducerActivityModel from '@/models/ProducerActivityModel';
+  import ProductTagModel from '@/models/ProductTagModel';
+  import MeasuringUnitModel from '@/models/MeasuringUnitModel';
+  import ProductCategoryModel from '@/models/ProductCategoryModel';
+  import PreloadIndicator from '@/components/PreloadIndicator.vue';
 
-  @Component({components: {HeaderComponent, FooterComponent, MenuComponent, MenuOverlayComponent}})
+  @Component({
+    components: {
+      HeaderComponent,
+      FooterComponent,
+      MenuComponent,
+      MenuOverlayComponent,
+      PreloadIndicator,
+    },
+  })
   export default class App extends Vue
   {
-    @State('isOpen', { namespace: 'menu' }) isMenuOpen!: boolean;
+    @State('isOpen', {namespace: 'menu'}) isMenuOpen!: boolean;
+    protected isLoading: boolean     = true;
+    protected loadingMessage: string = '';
+    protected prefetch               = [
+      {name: 'producteurs', model: ProducerModel},
+      {name: 'conditionnements', model: PackagingModel},
+      {name: 'activités', model: ProducerActivityModel},
+      {name: 'tags', model: ProductTagModel},
+      {name: 'unités de mesure', model: MeasuringUnitModel},
+      {name: 'categories de produits', model: ProductCategoryModel},
+    ];
+
+    async mounted()
+    {
+      for (const item of this.prefetch) {
+        this.loadingMessage = `Chargement des ${item.name}…`;
+        await (item.model as any).fetchAll();
+      }
+
+      this.isLoading = false;
+    }
   }
 </script>
 
-<style src="@/styles/main.scss" lang="scss"></style>
+<style lang="scss">
+  @import "~@/styles/main";
+</style>
 
 <style scoped lang="scss">
   @import '~@/styles/bulma';
 
   .app {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &__main {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
     &__menu {
       position: fixed;
       top: 0;

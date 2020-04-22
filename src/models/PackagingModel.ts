@@ -1,13 +1,13 @@
 import {Fields} from '@vuex-orm/core';
 import AbstractModel from '@/models/AbstractModel';
 
-export default class ProductTagModel extends AbstractModel
+export default class PackagingModel extends AbstractModel
 {
-  static entity = 'tags_des_produits';
+  static entity = 'conditionnements';
 
   static get collectionName()
   {
-    return 'tags_des_produits';
+    return 'conditionnements';
   }
 
   static get defaultFetchParams()
@@ -17,6 +17,7 @@ export default class ProductTagModel extends AbstractModel
       filter: {},
     };
   }
+
 
   static fields(): Fields
   {

@@ -35,19 +35,23 @@ export const currentSaleVuexModule: Module<CurrentSaleState, RootState> = {
 
       try {
         const sqlDate = new Date().toISOString().substr(0, 10);
-        const result  = await SaleModel.findAll({
-          fields: ['id', 'date_ouverture', 'date_cloture'],
+        await SaleModel.fetchAll({
           filter: {
             date_ouverture: {lte: sqlDate},
             date_cloture:   {gte: sqlDate},
           },
         });
+        const currentSale: SaleModel | null = SaleModel.query()
+          .where('date_ouverture', (value: string) => value <= sqlDate)
+          .where('date_cloture', (value: string) => value >= sqlDate)
+          .withAllRecursive()
+          .first();
 
-        if (result.length === 0) {
+        if (!currentSale) {
           commit(`${MODULES_NAMES.cart}/${CART_MUTATION_TYPES.CLEAR_CART}`, null, {root: true});
         }
 
-        commit(MUTATION_TYPES.UPDATE_CURRENT_SALE, result.length > 0 ? result.pop() : null);
+        commit(MUTATION_TYPES.UPDATE_CURRENT_SALE, currentSale);
       } catch (e) {
         console.error(e);// eslint-disable-line no-console
         commit(MUTATION_TYPES.ERROR_LOADING_CURRENT_SALE);

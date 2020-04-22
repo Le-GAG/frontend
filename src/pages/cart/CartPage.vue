@@ -3,9 +3,9 @@
     <div class="container">
       <h1 class="title">Panier</h1>
 
-      <clip-loader :loading="areProductsLoading" color="#00d1b2" size="100px" />
+      <clip-loader :loading="loading" color="#00d1b2" size="100px" />
 
-      <form v-if="!areProductsLoading" class="cart-page__items">
+      <form v-if="!loading" class="cart-page__items">
         <cart-item-component v-for="productVariant in cartItems"
                              :key="productVariant.id"
                              class="cart-page__item"
@@ -14,7 +14,7 @@
         />
       </form>
 
-      <div v-if="!areProductsLoading && cartItems.length < 1" class="cart-page__empty-cart-message">
+      <div v-if="!loading && cartItems.length < 1" class="cart-page__empty-cart-message">
         Votre panier est vide. Allez faire un tour sur la page <router-link :to="{ name: 'current-sale' }">produits</router-link> pour en ajouter.
       </div>
 
@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div v-if="!areProductsLoading && cartItems.length > 0" class="level">
+      <div v-if="!loading && cartItems.length > 0" class="level">
         <div class="level-left" />
         <div class="level-right">
           <div class="level-item">
@@ -44,7 +44,7 @@
       </div>
 
       <template v-if="isLoggedIn">
-        <hr class="has-background-grey-light">
+        <hr class="has-background-grey-light" />
 
         <h1 class="title is-4">Ma commande</h1>
         <clip-loader :loading="isOrderLoading" color="#00d1b2" size="100px" />
@@ -58,7 +58,6 @@
           </article>
         </div>
       </template>
-
     </div>
 
     <div class="modal modal-fx-slideBottom" :class="{ 'is-active': isModalOpened }" role="dialog">
@@ -66,7 +65,7 @@
       <div class="modal-content">
         <div class="box">
           Vous devez être connecté pour pouvoir passer commande.
-          <br>
+          <br />
           Ne vous en faîtes pas, votre panier sera conservé.
 
           <div class="level">
@@ -75,8 +74,8 @@
               <div class="level-item">
                 <router-link class="button is-primary"
                              :to="{
-                                 name: 'auth/sign-in',
-                                 query: { returnTo: $route.path },
+                               name: 'auth/sign-in',
+                               query: { returnTo: $route.path },
                              }"
                 >
                   Connexion
@@ -94,23 +93,22 @@
 
 <script lang="ts">
   interface OrderItem {
-    id:               number,
-    productName:      string,
+    id: number,
+    productName: string,
     productVariantId: number,
-    capacity:         string,
-    packagingName:    string,
-    quantity:         number,
-    unitPrice:        number,
+    capacity: string,
+    packagingName: string,
+    quantity: number,
+    unitPrice: number,
   }
 
   import {Component, Vue} from 'vue-property-decorator';
-  import ProductModel from '@/models/ProductModel';
   import CartItemComponent from '@/components/cart/CartItemComponent.vue';
   import ClipLoader from 'vue-spinner/src/ClipLoader.vue';
+  import ProductVariantModel from '@/models/ProductVariantModel';
   import {MODULES_NAMES} from '@/store';
   import {Action, Getter, State} from 'vuex-class';
-  import {CartContent, CartState} from '@/store/modules/cart';
-  import {AuthenticationState} from '@/store/modules/authentication';
+  import {CartContent} from '@/store/modules/cart';
   import SaleModel from '@/models/SaleModel';
 
   @Component({ components: {ClipLoader, CartItemComponent}})
@@ -123,8 +121,8 @@
     @Action('checkout', { namespace: MODULES_NAMES.cart}) checkout!: any;
 
     /** Holds productVariant data. Only those in the shopping cart are fetched */
-    protected productVariants: ProductModel[] = [];
-    protected areProductsLoading: boolean = true;
+    protected productVariants: ProductVariantModel[] = [];
+    protected loading: boolean = true;
     protected isModalOpened: boolean = false;
     protected order: any;
     protected isOrderLoading: boolean = false;
@@ -168,31 +166,22 @@
     }
 
     async fetchProductVariants() {
-      this.areProductsLoading = true;
+      this.loading = true;
 
       if (Object.values(this.cart).length === 0) {
         this.productVariants = [];
-        this.areProductsLoading = false;
-        return;
+        this.loading = false;
+        return [];
       }
 
-      const result = await Vue.prototype.$directusSdk.getItems('produits_variantes', {
-        fields: [
-          '*',
-          'produit.*',
-          'produit.photos.*.*',
-          'conditionnement.*',
-        ],
-        filter: {
-          id: { in: Object.keys(this.cart) },
-        },
-      });
-
-      this.areProductsLoading = false;
-      return result.data;
+      const variantIds:number[] = Object.keys(this.cart).map((variantId: string) => parseInt(variantId, 10));
+      await ProductVariantModel.fetchByIdWithProducts(variantIds);
+      this.loading = false;
+      return ProductVariantModel.query().withAllRecursive().whereIdIn(variantIds).all();
     }
 
     async fetchOrder() {
+      // TODO: Reprendre ça
       this.isOrderLoading = true;
 
       const { data: currentUser } = await Vue.prototype.$directusSdk.getMe();
@@ -209,7 +198,7 @@
             'produits_variantes.produits_variantes_id.contenance',
           ],
           filter: {
-            vente: this.currentsSale.id,
+            vente:      this.currentsSale.id,
             created_by: currentUser.id,
           },
         });
@@ -223,7 +212,7 @@
           console.warn(`Unexpected order count. Expected 1, got ${result.data.length}.`, result.data);
         }
 
-        this.orderItems = result.data[0].produits_variantes.map(item => {
+        this.orderItems = result.data[0].produits_variantes.map((item:any) => {
           return {
             id:               item.id,
             productName:      item.produits_variantes_id.produit.nom,

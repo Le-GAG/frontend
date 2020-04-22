@@ -46,18 +46,19 @@
   export default class ProductOverviewPage extends Vue
   {
     products: ProductModel[] = [];
-    loadingError: any    = null;
-    loading: boolean     = true;
+    loadingError: any        = null;
+    loading: boolean         = true;
 
     created()
     {
       this.populateProducts();
     }
 
-    retryLoading() {
+    retryLoading()
+    {
       if (this.loadingError) {
         this.loadingError = null;
-        this.loading = true;
+        this.loading      = true;
         this.populateProducts();
       }
     }
@@ -65,27 +66,8 @@
     async populateProducts()
     {
       try {
-        this.products = await ProductModel.findAll({
-          fields: [
-            'id',
-            'nom',
-            'producteur.*.*',
-            'description',
-            'categorie.*',
-            'tags.tag_id.*',
-            'variantes.*',
-            'variantes.conditionnement.*',
-            'variantes.unite_de_mesure.*',
-            'photos.*.*',
-            'slug',
-          ],
-          filter: {
-            'variantes.prix':    { nnull: true },
-            'categorie':         { nnull: true },
-            'active':            'published',
-            'producteur.active': 'published',
-          },
-        });
+        await ProductModel.fetchAll();
+        this.products = ProductModel.query().withAllRecursive().all();
       } catch (e) {
         console.error(e); // eslint-disable-line no-console
         this.loadingError = e.message;
@@ -93,8 +75,5 @@
         this.loading = false;
       }
     }
-  }</script>
-
-
-<style scoped lang="scss">
-</style>
+  }
+</script>

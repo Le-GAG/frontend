@@ -7,7 +7,7 @@
         :zoom="12"
       >
         <gmap-marker
-          :title="name"
+          :title="producer.raison_sociale"
           :position="latLng"
         />
       </gmap-map>
@@ -15,19 +15,19 @@
     <div class="card-content">
       <div class="producer-contact-details-component__contact-details content">
         <div
-          v-if="website"
+          v-if="producer.site_internet"
           class="producer-contact-details-component__website"
         >
           <span class="icon"><i class="fa fa-globe" /></span>
-          <a :href="website" target="_blank" rel="noopener noreferrer">{{ website }}</a>
+          <a :href="producer.site_internet" target="_blank" rel="noopener noreferrer">{{ producer.site_internet }}</a>
         </div>
 
         <div
-          v-if="email"
+          v-if="producer.email"
           class="producer-contact-details-component__email"
         >
           <span class="icon"><i class="fa fa-at" /></span>
-          <a :href="`mailto:${email}`">{{ email }}</a>
+          <a :href="`mailto:${producer.email}`">{{ producer.email }}</a>
         </div>
 
         <address
@@ -44,12 +44,12 @@
         </address>
 
         <div
-          v-if="phone"
+          v-if="producer.numero_de_telephone"
           class="producer-contact-details-component__phone"
         >
           <span class="icon"><i class="fa fa-phone" /></span>
-          <a :href="`tel:${phone.replace(/[ -()]/, '')}`">
-            {{ phone }}</a>
+          <a :href="`tel:${producer.numero_de_telephone.replace(/[ -()]/g, '')}`">
+            {{ producer.numero_de_telephone }}</a>
         </div>
       </div>
     </div>
@@ -59,17 +59,51 @@
 
 <script lang="ts">
   import {Component, Vue, Prop} from 'vue-property-decorator';
+  import ProducerModel from '@/models/ProducerModel';
 
   @Component
-  export default class ContactDetailsCardComponent extends Vue
+  export default class ProducerContactDetailsCardComponent extends Vue
   {
-    @Prop({ default: '', type: String }) protected name!:string;
-    @Prop({ default: {}, type: Object }) protected latLng!:object;
-    @Prop({ default: '', type: String }) protected addressLine1!:string;
-    @Prop({ default: '', type: String }) protected addressLine2!:string;
-    @Prop({ default: '', type: String }) protected phone!:string;
-    @Prop({ default: '', type: String }) protected email!:string;
-    @Prop({ default: '', type: String }) protected website!:string;
+    @Prop({ required: true }) protected producer!: ProducerModel;
+
+    get latLng(): any|null
+    {
+      if (!this.producer || !this.producer.adresse) {
+        return null;
+      }
+
+      return this.producer.adresse;
+    }
+
+    get addressLine1(): string|null
+    {
+      if (
+        !this.producer
+        || (
+          (!this.producer.numero || this.producer.numero.trim().length === 0)
+          && (!this.producer.rue || this.producer.rue.trim().length === 0)
+        )
+      ) {
+        return null;
+      }
+
+      return [this.producer.numero, this.producer.rue].join(' ').trim();
+    }
+
+    get addressLine2(): string|null
+    {
+      if (
+        !this.producer
+        || (
+          (!this.producer.code_postal || this.producer.code_postal.trim().length === 0)
+          && (!this.producer.ville || this.producer.ville.trim().length === 0)
+        )
+      ) {
+        return null;
+      }
+
+      return [this.producer.code_postal, this.producer.ville].join(' ').trim();
+    }
   }
 </script>
 

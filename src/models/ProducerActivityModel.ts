@@ -1,19 +1,31 @@
-/**
- * @author nstCactus
- * @date 2018-10-13 14:04
- */
+import {Fields} from '@vuex-orm/core';
+import AbstractModel from '@/models/AbstractModel';
 
-export interface ProducerActivityConstructorOptions {
-  id: number;
-  nom: string;
-}
+export default class ProducerActivityModel extends AbstractModel
+{
+  static entity = 'activites_des_producteurs';
 
-export default class ProducerActivityModel {
-  id: number;
-  nom: string;
-
-  constructor(options: ProducerActivityConstructorOptions) {
-    this.nom = options.nom;
-    this.id = options.id;
+  static get collectionName()
+  {
+    return 'activites_des_producteurs';
   }
+
+  static get defaultFetchParams()
+  {
+    return {
+      fields: ['*'],
+      filter: {},
+    };
+  }
+
+  static fields(): Fields
+  {
+    return {
+      id:  this.attr(null),
+      nom: this.string(null),
+    };
+  }
+
+  id!: number;
+  nom!: string;
 }
