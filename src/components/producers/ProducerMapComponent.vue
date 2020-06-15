@@ -1,8 +1,8 @@
 <template>
   <gmap-map
     ref="map"
-    v-model:center="center"
-    v-model:zoom="zoom"
+    :center="center"
+    :zoom="zoom"
     class="producer-map-component"
   >
     <gmap-info-window
